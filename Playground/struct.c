@@ -28,5 +28,7 @@ int main()
 
     printf("Length: %d. Width:%d\n", myRectangle.length, myRectangle.width);
 
+    printf("finished");
+
     return 0;
 }
