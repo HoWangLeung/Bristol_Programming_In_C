@@ -6,16 +6,13 @@
 
 int askForTheNumber();
 int determineResult(int secret, int bet_amount, int bet_type);
-
 enum BetType
 {
     odd,
     even,
     particularNumber
 };
-
 typedef enum BetType BetType;
-
 int main()
 {
     //create the secret

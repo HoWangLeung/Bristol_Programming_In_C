@@ -32,7 +32,7 @@ int main()
     {
         printf("%d\n", songList[i]);
     }
-
+    free(songList);
     return 0;
 }
 
