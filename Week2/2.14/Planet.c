@@ -8,25 +8,33 @@
 #include <assert.h>
 #define MAX_LENGTH 5
 
-typedef struct
-{
-    char firstname;
-    char middlename;
-    char lastname;
-} name;
-
 int main()
 {
-    name myname;
-    char vowelList[] = {'a', 'e', 'i', 'o', 'u'};
-    char alphabetList[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-    for (int i = 0; i <= 26; i++)
-    {
+    char firstName[100000];
+    char middleName[100000];
+    char lastName[100000];
 
-        myname.firstname = alphabetList[i];
+    char vowelList[] = {'a', 'e', 'i', 'o', 'u'};
+    char nonVowelList[] = {'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'};
+    int count = 0;
+    for (int k = 0; k < 21; k++)
+    {
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 21; i++)
+            {
+                firstName[count] = nonVowelList[k];
+                middleName[count] = vowelList[j];
+                lastName[count] = nonVowelList[i];
+                count++;
+            }
+        }
     }
 
-    printf("%d\n", myname.firstname);
+    for (int i = 0; i < 52; i++)
+    {
+        printf("%i first= %c middle = %c last = %c\n", i, firstName[i], middleName[i], lastName[i]);
+    }
 
-        return 0;
+    return 0;
 }

@@ -9,27 +9,27 @@
 
 int main()
 {
-    int longest = 0;
+
     int largest = 0;
     int count = 1;
     int sum = 0;
-    int longest_initial = 0;
+    // int longest_initial = 0;
     int largest_initial = 0;
-    for (int i = 2; i < 50000; i++)
+
+    int longest = 0;
+
+    int longest_initial = 0;
+
+    for (int i = 2; i < 5000; i++)
     {
+
+        count = 1;
         int number = i;
         sum = number;
-        longest = count;
         while (number != 1)
         {
-            if (number % 2 == 0)
-            {
-                number /= 2;
-            }
-            else
-            {
-                number = number * 3 + 1;
-            }
+
+            number = number % 2 == 0 ? (number / 2) : (number * 3 + 1);
             sum += number;
             count++;
 
@@ -46,11 +46,11 @@ int main()
         }
     }
 
-    printf("\nlongest hailstone = %d\n", longest);
-    printf("sum of hailstone = %d\n\n", largest);
+    printf("sum of hailstone = %d\n", largest);
+    printf("largest initial = %d\n\n", largest_initial);
 
     printf("longest initial = %d\n", longest_initial);
-    printf("largest initial = %d\n\n", largest_initial);
+    printf("largest count = %d\n", longest);
 
     return 0;
 }
