@@ -1,17 +1,18 @@
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <assert.h>
-// #define MAXTHROW 6
-// #define NUMDICE 5
-// #define TESTS 10000000
-// enum bool
-// {
-//     false,
-//     true
-// };
-// typedef enum bool bool;
-// /* Fill the array d with random numbers 1..6 */
-// void randomthrow(int d[NUMDICE]);
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <time.h>
+#define MAXTHROW 6
+#define NUMDICE 5
+#define TESTS 10000000
+enum bool
+{
+    false,
+    true
+};
+typedef enum bool bool;
+/* Fill the array d with random numbers 1..6 */
+void randomthrow(int d[NUMDICE]);
 // /* Decide if the number n occurs anywhere in the histogram h */
 // bool histo_has(const int h[MAXTHROW], const int n);
 // /* Compute a histogram, given a dice hand */
@@ -19,42 +20,116 @@
 // /* Check that the histograms h1 & h2 are the same */
 // bool hists_same(const int h1[MAXTHROW], const int h2[MAXTHROW]);
 // /* Does this hand have 2 lots of one number and 3 lots of another */
-// bool isfullhouse(const int d[NUMDICE]);
+bool isfullhouse(int d[NUMDICE]);
 // /* Does this hand have 4 lots of one number and 1 of another ? */
-// bool is4ofakind(const int d[NUMDICE]);
+bool is4ofakind(int d[NUMDICE]);
 // /* Do some testing of the functions required */
 // void test(void);
-// int main(void)
-// {
-//     int dice[NUMDICE];
-//     int k4 = 0;
-//     int fh = 0;
-//     int i;
-//     test();
-//     for (i = 0; i < TESTS; i++)
-//     {
-//         randomthrow(dice);
-//         if (isfullhouse(dice))
-//         {
-//             fh++;
-//         }
-//         if (is4ofakind(dice))
-//         {
-//             k4++;
-//         }
-//     }
-//     printf("FH=%.2f%% 4oK=%.2f%%\n", (double)fh * 100.0 / (double)TESTS,
-//            (double)k4 * 100.0 / (double)TESTS);
-//     return 0;
-// }
+int main(void)
+{
+     srand(time(NULL));
+    int dice[NUMDICE];
+    int k4 = 0;
+    int fh = 0;
+    int i;
+    //test();
+    for (i = 0; i < TESTS; i++)
+    {
+        randomthrow(dice);
 
+        if (isfullhouse(dice))
+        {
+           // printf("isfullhouse + 1\n");
+            fh++;
+        }
+        if (is4ofakind(dice))
+        {
+           //   printf("is4ofakind + 1\n");
+            k4++;
+        }
+    }
+    printf("FH=%.2f%% 4oK=%.2f%%\n", (double)fh * 100.0 / (double)TESTS,
+           (double)k4 * 100.0 / (double)TESTS);
+    return 0;
+}
 
-// void randomThrow
+bool isfullhouse(int d[])
+{
 
+    if ((d[0] == d[1] && d[1] == d[2]) && (d[3] == d[4]))
+    {
+        //printf("true FH\n");
+        return true;
+    }
+    else if ((d[0] == d[1]) && (d[2] == d[3] && d[3] == d[4]))
+    {
+       // printf("true FH \n");
+        return true;
+    }
+    //printf("NOT 3 of a kind\n");
 
+    return false;
+}
 
+bool is4ofakind(int d[])
+{
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     printf("%d\n", d[i]);
+    // }
+    if ((d[0] == d[1] && d[1] == d[2] && d[2] == d[3] && d[3] == d[4] && d[4] == d[5]))
+    {
+        //printf("false, it is 5 of a kind\n");
+        return false;
+    }
+    if ((d[0] == d[1] && d[1] == d[2] && d[2] == d[3] && d[3] == d[4]))
+    {
+        //printf("true 4 of a kind \n");
+        return true;
+    }
+    else if ((d[1] == d[2] && d[2] == d[3] && d[3] == d[4] && d[4] == d[5]))
+    {
+       // printf("true 4 of a kind \n");
+        return true;
+    }
 
-// void test()
+       //printf("NOT 4 OF A KIND \n");
+
+    return false;
+}
+
+void randomthrow(int d[NUMDICE])
+{
+   
+    for (int i = 0; i < 5; i++)
+    {
+        d[i] = rand() % ((5 + 1) - 1) + 1;
+       // printf("%d\n", d[i]);
+    }
+
+    //SORT BY VALUE
+    int temp;
+
+    for (int i = 0; i < 5; i++)
+    {
+
+        for (int j = i + 1; j < 5; j++)
+        {
+            if (d[j] < d[i])
+            {
+                temp = d[i];
+                d[i] = d[j];
+                d[j] = temp;
+            }
+        }
+    }
+    // for(int i = 0;i<5;i++){
+    //     printf("%d ,",d[i]);
+    // }
+    // printf("\n");
+}
+
+// void test(void)
 // {
 //     int i, j;
 //     int h1[MAXTHROW] = {0, 0, 0, 0, 0, 5}; /* 5−of−a−kind */

@@ -20,7 +20,7 @@ int main()
 
     int longest_initial = 0;
 
-    for (int i = 2; i < 5000; i++)
+    for (int i = 2; i < 50000; i++)
     {
 
         count = 1;
@@ -28,11 +28,9 @@ int main()
         sum = number;
         while (number != 1)
         {
-
             number = number % 2 == 0 ? (number / 2) : (number * 3 + 1);
             sum += number;
             count++;
-
             if (sum > largest)
             {
                 largest = sum;
@@ -46,8 +44,8 @@ int main()
         }
     }
 
-    printf("sum of hailstone = %d\n", largest);
-    printf("largest initial = %d\n\n", largest_initial);
+    printf("\nlargest initial = %d\n", largest_initial);
+    printf("sum of hailstone = %d\n\n", largest);
 
     printf("longest initial = %d\n", longest_initial);
     printf("largest count = %d\n", longest);
