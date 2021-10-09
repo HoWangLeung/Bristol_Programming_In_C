@@ -5,7 +5,7 @@ int isPrime(int number);
 
 int main()
 {
-    int target = 10;
+    int target = 1000;
 
     int count = 0;
     int numberOfPrimeFound = 0;
@@ -13,15 +13,13 @@ int main()
     printf("before while loop\n");
     while (numberOfPrimeFound < target)
     {
-        // printf("numberOfPrimeFound = %d\n", numberOfPrimeFound);
-        // printf("user_input = %d\n", user_input);
         if (isPrime(i))
         {   
-            printf("%d\n",i);
+       
             if (i % 10 == 3)
             {
-
                 count++;
+                printf("%d ---> %d\n",count,i);
             }
             numberOfPrimeFound++;
             i++;
@@ -31,9 +29,7 @@ int main()
             i++;
         }
     }
-
-    printf("count = %d\n",count);
-
+   // printf("count = %d\n",count);
     return 0;
 }
 
