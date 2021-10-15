@@ -1,30 +1,58 @@
 #include <stdio.h>
-#include <stdbool.h>
-#include <time.h>
 #include <stdlib.h>
-#include <math.h>
+#include <stdbool.h>
 #include <string.h>
+#include <assert.h>
+#include <math.h>
 
-#define R 12
-#define C 12
-#define MAX_LEN 100
-void simulate(int a[R][C]);
-void get_player_board(int board[R][C], char *fileName);
+#define BIGSTR 1000
+#define GRID 100
 
+struct crossword
+{
+    char arr[GRID][GRID];
+    int sz;
+};
+typedef struct crossword crossword;
+
+void fillBoard(crossword *cw, char *ip);
+void print_crossword(const crossword *c);
 int main()
 {
 
-    int p1[R][C];
-    memset(p1, 0, sizeof(p1));
+    crossword c;
 
-    for (int r = 0; r < R; r++)
+    c.sz = 3;
+    fillBoard(&c, "...XX....");
+    print_crossword(&c);
+    return 0;
+}
+
+void fillBoard(crossword *cw, char *ip)
+{
+
+    printf("GRID is %d\n", cw->sz);
+    int k = 0;
+    for (int r = 0; r < cw->sz; r++)
     {
-        for (int c = 0; c < C; c++)
+        for (int c = 0; c < cw->sz; c++)
         {
-            printf("%c", p1[r][c]);
+            cw->arr[r][c] = ip[k];
+            k++;
+            if (k == cw->sz)
+                break;
+        }
+    }
+}
+
+void print_crossword(const crossword *c)
+{
+    for (int y = 0; y < c->sz; y++)
+    {
+        for (int x = 0; x < c->sz; x++)
+        {
+            printf("%c", c->arr[y][x]);
         }
         printf("\n");
     }
-
-    return 0;
 }
