@@ -1,58 +1,30 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <assert.h>
-#include <math.h>
+#include<stdio.h>
 
-#define BIGSTR 1000
-#define GRID 100
-
-struct crossword
-{
-    char arr[GRID][GRID];
-    int sz;
-};
-typedef struct crossword crossword;
-
-void fillBoard(crossword *cw, char *ip);
-void print_crossword(const crossword *c);
 int main()
 {
+char ar[20] = "User M 19 1.85";
 
-    crossword c;
+char str[10];
+char ch;
+int i;
+float f;
 
-    c.sz = 3;
-    fillBoard(&c, "...XX....");
-    print_crossword(&c);
-    return 0;
-}
+/* Calling sscanf() to read multiple values from a char[] array and store each value in matching variable */
+sscanf(ar, "%s %c %d", &str, &ch, &i, &f);
 
-void fillBoard(crossword *cw, char *ip)
-{
 
-    printf("GRID is %d\n", cw->sz);
-    int k = 0;
-    for (int r = 0; r < cw->sz; r++)
-    {
-        for (int c = 0; c < cw->sz; c++)
-        {
-            cw->arr[r][c] = ip[k];
-            k++;
-            if (k == cw->sz)
-                break;
-        }
-    }
-}
+printf("The value in string is : %s ", str);
+printf("\n");
 
-void print_crossword(const crossword *c)
-{
-    for (int y = 0; y < c->sz; y++)
-    {
-        for (int x = 0; x < c->sz; x++)
-        {
-            printf("%c", c->arr[y][x]);
-        }
-        printf("\n");
-    }
+printf("The value in char is : %c ", ch);
+printf("\n");
+
+printf("The value in int is : %d ", i);
+printf("\n");
+
+printf("The value in float is : %f ", f);
+
+sscanf(ar, "%s %c %d", &str, &ch, &i);
+
+return 0;
 }
