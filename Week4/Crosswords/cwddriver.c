@@ -67,5 +67,4 @@ int main(void)
    getcluestring(&c, str);
    assert(strcmp("A-1-5-6-7-8-11-12-13|D-2-3-4-5-9-10", str)==0);
    assert(getchecked(c)==43);
-
 }
