@@ -38,7 +38,6 @@ bool minimum_requirement(const crossword *c);
 //used to test if the fill_board() function works properly
 bool validate_filled_board(const crossword *c, char *ip);
 // Might be useful to be able to print them
-
 // to hep with debugging
 void print_crossword(const crossword *c)
 {
@@ -174,21 +173,30 @@ void check_down(const crossword *c, int y, int x, char down[MAX], int *count, bo
 
 void test(void)
 {
-   // char str[BIGSTR];
-
-   //Test if fillBoard() fills the board correctly
+   char str[BIGSTR];
+   //=============================================
+   // #Test if fillBoard() fills the board correctly
    crossword c;
    char *ip = ".........";
    int sz = 3;
    c.sz = sz;
    fillBoard(&c, ip);
    assert(validate_filled_board(&c, ip) == true);
-   ip = ".........";
+   ip = "X........";
    sz = 3;
    c.sz = sz;
    fillBoard(&c, ip);
-   ip = "X........";
-   assert(validate_filled_board(&c, ip) == false);
+   assert(validate_filled_board(&c, ip) == true);
+   ip = "XXXXXXXXX";
+   sz = 3;
+   c.sz = sz;
+   fillBoard(&c, ip);
+   assert(validate_filled_board(&c, ip) == true);
+   //=============================================
+
+   //=============================================
+   // #Test corner cases that were not covered
+
    //Not valid if there is no blank square
    assert(!str2crossword(5, "XXXXXXXXXXXXXXXXXXXXXXXXX", &c));
    //have across or down
@@ -200,12 +208,17 @@ void test(void)
    assert(str2crossword(5, "....X.XX.X.X......X.XX...", &c));
    //'X' and '*' are both valid,but using both at the same time is confusing
    assert(!str2crossword(5, "....*.**.X.X......X.XX...", &c));
+   assert(!str2crossword(5, "    *.**.X.X......X.XX...", &c));
    //same for ' ' and '.'
    assert(!str2crossword(5, ".... .  . . ...... .  ...", &c));
    assert(!str2crossword(5, "X* ...  . . ...... .  ...", &c));
-   assert(c.sz == 5);
-   //str2crossword() will fill the board
-   //0,0 is '.', should return true
+
+   //=============================================
+
+   //=============================================
+   // #Testing my own functions
+   //setup the board using example from handout
+   assert(str2crossword(5, "....X.XX.X.X......X.XX...", &c));
    assert(cur_is_blank(&c, 0, 0));
    //0,4 is 'X', should return false
    assert(!cur_is_blank(&c, 0, 4));
@@ -258,6 +271,59 @@ void test(void)
    check_down(&c, 0, 1, across, &count, &valid_across);
    assert(valid_across == false);
    assert(count == 0);
+   //=============================================
+
+   //=============================================
+   // #Repeat the same tests with '*' and ' '
+
+   assert(str2crossword(3, "         ", &c));
+   assert(c.sz == 3);
+   getcluestring(&c, str);
+   assert(strcmp("A-1-4-5|D-1-2-3", str) == 0);
+   assert(getchecked(c) == 100);
+
+   assert(str2crossword(5, "    * ** * *      * **   ", &c));
+   assert(c.sz == 5);
+   getcluestring(&c, str);
+   assert(strcmp("A-1-3-5-6|D-1-2-3-4", str) == 0);
+   assert(getchecked(c) == 53);
+
+   assert(str2crossword(5, "*   *               *   *", &c));
+   assert(c.sz == 5);
+   getcluestring(&c, str);
+   assert(strcmp("A-1-4-6-7-8|D-1-2-3-4-5", str) == 0);
+   assert(getchecked(c) == 100);
+
+   assert(str2crossword(7, "  *    * ** * * ** *      *  ** **         ** ** ", &c));
+   assert(c.sz == 7);
+   getcluestring(&c, str);
+   assert(strcmp("A-1-3-6-8|D-2-4-5-6-7", str) == 0);
+   assert(getchecked(c) == 32);
+
+   assert(str2crossword(7, "* *        * ** * * *       * * * *    * ** *    ", &c));
+   assert(c.sz == 7);
+   getcluestring(&c, str);
+   assert(strcmp("A-2-4-5-6-7|D-1-2-3", str) == 0);
+   assert(getchecked(c) == 33);
+
+   assert(str2crossword(7, "   *    *   *    *   * *** *   *    *   *    *   ", &c));
+   assert(c.sz == 7);
+   getcluestring(&c, str);
+   assert(strcmp("A-1-3-5-6-8-10-12-14-15-16|D-1-2-3-4-7-9-10-11-12-13", str) == 0);
+   assert(getchecked(c) == 67);
+
+   assert(str2crossword(7, "        * ***  *      * * *      *  *** *        ", &c));
+   assert(c.sz == 7);
+   getcluestring(&c, str);
+   assert(strcmp("A-1-4-6-7|D-1-2-3-5", str) == 0);
+   assert(getchecked(c) == 33);
+
+   assert(str2crossword(8, "     * ** * *          ** * *      * * **          * * ** *     ", &c));
+   assert(c.sz == 8);
+   getcluestring(&c, str);
+   assert(strcmp("A-1-5-6-7-8-11-12-13|D-2-3-4-5-9-10", str) == 0);
+   assert(getchecked(c) == 43);
+   //=============================================
 }
 void fillBoard(crossword *cw, char *ip)
 {
@@ -322,7 +388,7 @@ bool is_valid_across(const crossword *c, int y, int x)
    return left_is_solid(c, y, x) && cur_is_blank(c, y, x) && right_is_blank(c, y, x);
 }
 
-//most if not all crossword would have at least1
+//Most crossword would have at least 1 across or 1 down, the puzzle is hardly plyable if not
 bool minimum_requirement(const crossword *c)
 {
    int minium_across_or_down = 0;
