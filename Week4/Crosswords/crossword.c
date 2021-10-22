@@ -6,6 +6,7 @@
 #define BIGSTR 1000
 #define HUNDRED 100
 // valid_across: if a square is a valid_across it means (1)square on the left is black, (2) this square itself is blank,(3) square on the right is blank.
+// valid_down:similar concept as above but for down
 
 //fill the 2d array with value from char *ip
 void fillBoard(crossword *cw, char *ip);
@@ -13,9 +14,9 @@ void fillBoard(crossword *cw, char *ip);
 void check_across(const crossword *c, int y, int x, char across[MAX], int *count, bool *valid_across);
 //Check if a given position is valid down, used together with check_down() to keep track of the count
 void check_down(const crossword *c, int y, int x, char down[MAX], int *count, bool *valid_across);
-//Given a position, keep checking squares on the left until hitting the boundary, return true if one of the squares on the left is a valid across.
+//Given a position, keep checking squares on the left until hitting the boundary, return true if one of the squares on the left or itself is a valid across.
 bool left_has_across(const crossword *c, int y, int x);
-//Given a position, keep checking squares above, return true if one of the squares is a valid_down
+//Given a position, keep checking squares above, return true if one of the squares below or itself is a valid_down
 bool top_has_down(const crossword *c, int y, int x);
 //Given a position, determine if the square is blank
 bool cur_is_blank(const crossword *c, int y, int x);
@@ -57,7 +58,7 @@ bool str2crossword(int sz, char *ip, crossword *cw)
       return false;
    }
    int ip_length = (int)strlen(ip);
-   if (sz <= 0 || ip_length == 0 || ip_length % sz != 0)
+   if (sz <= 0 || ip_length == 0 || ip_length != sz * sz)
    {
       return false;
    }
@@ -127,14 +128,15 @@ int getchecked(crossword c)
       }
    }
    int ans = round((double)sum * HUNDRED / num_of_blank);
+ 
    return ans;
 }
 void getcluestring(const crossword *c, char *ans)
 {
    char across[MAX] = "";
    char down[MAX] = "";
-   across[0] = 'A';
-   down[0] = 'D';
+   strcpy(across, "A");
+   strcpy(down, "D");
    int count = 0;
    bool valid_across = false;
    for (int y = 0; y < c->sz; y++)
@@ -177,17 +179,20 @@ void test(void)
    //=============================================
    // #Test if fillBoard() fills the board correctly
    crossword c;
+
    char *ip = ".........";
    int sz = 3;
    c.sz = sz;
    fillBoard(&c, ip);
    assert(validate_filled_board(&c, ip) == true);
+
    ip = "X........";
    sz = 3;
    c.sz = sz;
    fillBoard(&c, ip);
    assert(validate_filled_board(&c, ip) == true);
-   ip = "XXXXXXXXX";
+
+   ip = "XXX...X.X";
    sz = 3;
    c.sz = sz;
    fillBoard(&c, ip);
@@ -199,16 +204,22 @@ void test(void)
 
    //Not valid if there is no blank square
    assert(!str2crossword(5, "XXXXXXXXXXXXXXXXXXXXXXXXX", &c));
+   assert(!str2crossword(5, "*************************", &c));
    //have across or down
    assert(str2crossword(5, "X..XXXXXXXXXXXXXXXXXXXXXX", &c));
    assert(str2crossword(5, "X..XXX.XXXXXXXXXXXXXXXXXX", &c));
    assert(str2crossword(5, "X..XXXX.XXXXXXXXXXXXXXXXX", &c));
+   assert(!str2crossword(5, "X..XXXX.XXXXXXXXXXXXXXXXXX..XXXX.XXXXXXXXXXXXXXXXXX..XXXX.XXXXXXXXXXXXXXXXX", &c));
+
    //Invalid characters
+   assert(!str2crossword(5, "&####^.^^^^^^^^^^())-^&!@X", &c));
    assert(!str2crossword(5, "X..X#X.XXXXXXXXXX())-^&!@X", &c));
    assert(str2crossword(5, "....X.XX.X.X......X.XX...", &c));
+
    //'X' and '*' are both valid,but using both at the same time is confusing
    assert(!str2crossword(5, "....*.**.X.X......X.XX...", &c));
    assert(!str2crossword(5, "    *.**.X.X......X.XX...", &c));
+
    //same for ' ' and '.'
    assert(!str2crossword(5, ".... .  . . ...... .  ...", &c));
    assert(!str2crossword(5, "X* ...  . . ...... .  ...", &c));
@@ -220,41 +231,66 @@ void test(void)
    //setup the board using example from handout
    assert(str2crossword(5, "....X.XX.X.X......X.XX...", &c));
    assert(cur_is_blank(&c, 0, 0));
+   assert(cur_is_blank(&c, 0, 3));
+
    //0,4 is 'X', should return false
    assert(!cur_is_blank(&c, 0, 4));
+   assert(!cur_is_blank(&c, 1, 1));
+
    //right of 0,0 is blank, should return true
    assert(right_is_blank(&c, 0, 0));
+   assert(right_is_blank(&c, 0, 2));
+   assert(right_is_blank(&c, 2, 3));
    // right of 0,3 is 'X' should return false
    assert(!right_is_blank(&c, 0, 3));
+   assert(!right_is_blank(&c, 1, 0));
+   assert(!right_is_blank(&c, 1, 3));
+   assert(!right_is_blank(&c, 2, 0));
+
    assert(top_is_solid(&c, 1, 4));
+   assert(top_is_solid(&c, 2, 1));
+   assert(top_is_solid(&c, 4, 3));
+   assert(top_is_solid(&c, 3, 1));
+
    assert(!top_is_solid(&c, 1, 0));
-   //area outside the boundary should be counted as solid
+   assert(!top_is_solid(&c, 1, 1));
+
+   //area outside the boundary is counted as solid
    assert(top_is_solid(&c, 0, 0));
    assert(down_is_blank(&c, 0, 0));
    assert(!down_is_blank(&c, 0, 1));
    assert(cur_is_solid(&c, 0, 4));
    assert(!cur_is_solid(&c, 0, 0));
+
    //is_valid_down = true if
    //(1)square above is solid
    //(2)current square is blank and
    //(3)square below is solid
    assert(is_valid_down(&c, 0, 0));
    assert(!is_valid_down(&c, 1, 0));
-   assert(is_valid_across(&c, 0, 0));
+   assert(!is_valid_down(&c, 0, 1));
+   assert(!is_valid_down(&c, 0, 2));
+   assert(is_valid_across(&c, 2, 2));
+   assert(is_valid_across(&c, 4, 2));
    assert(!is_valid_across(&c, 0, 1));
+   assert(!is_valid_across(&c, 2, 4));
+
    //has 1 across and 1 down
    fillBoard(&c, "X..XXX.XXXXXXXXXXXXXXXXXX");
    assert(minimum_requirement(&c));
+
    //This board only has 1 across, should not be a valid game
    fillBoard(&c, "X.XXXXXXXXXXXXXXXXXXXXXXX");
    assert(!minimum_requirement(&c));
+
    //setup the board
    assert(str2crossword(5, "....X.XX.X.X......X.XX...", &c));
+
    //Testing if check_across() works as expected
    char across[MAX] = "";
    char down[MAX] = "";
-   across[0] = 'A';
-   down[0] = 'D';
+   strcpy(across, "A");
+   strcpy(down, "D");
    int count = 0;
    bool valid_across = false;
    check_across(&c, 0, 0, across, &count, &valid_across);
@@ -263,14 +299,60 @@ void test(void)
    //reset array for testing
    memset(across, 0, sizeof(across));
    memset(down, 0, sizeof(down));
-   across[0] = 'A';
-   down[0] = 'D';
+
+   strcpy(across, "A");
+   strcpy(down, "D");
    count = 0;
    valid_across = false;
    //position 0,1 is not a valid across, thus 'valid_across'=false and count remains unchanged.
    check_down(&c, 0, 1, across, &count, &valid_across);
    assert(valid_across == false);
    assert(count == 0);
+   //=============================================
+
+   //=============================================
+   //Test top_has_down() and left_has_across()
+   assert(str2crossword(5, "....X.XX.X.X......X.XX...", &c));
+   getcluestring(&c, str);
+   assert(strcmp("A-1-3-5-6|D-1-2-3-4", str) == 0);
+   int num_of_blank = 0;
+   int sum = 0;
+
+   assert(top_has_down(&c, 0, 3));
+   assert(top_has_down(&c, 1, 3));
+   assert(top_has_down(&c, 2, 3));
+   assert(top_has_down(&c, 3, 4));
+   assert(top_has_down(&c, 2, 4));
+   assert(top_has_down(&c, 4, 4));
+   assert(top_has_down(&c, 0, 0));
+   assert(!top_has_down(&c, 3, 1));
+   assert(!top_has_down(&c, 4, 3));
+
+   assert(left_has_across(&c, 0, 0));
+   assert(left_has_across(&c, 0, 1));
+   assert(left_has_across(&c, 0, 2));
+   assert(left_has_across(&c, 4, 2));
+   assert(!left_has_across(&c, 2, 0));
+   assert(!left_has_across(&c, 1, 3));
+   assert(!left_has_across(&c, 3, 4));
+
+   for (int y = 0; y < c.sz; y++)
+   {
+      for (int x = 0; x < c.sz; x++)
+      {
+         if (cur_is_blank(&c, y, x))
+         {
+            num_of_blank += 1;
+            if (left_has_across(&c, y, x) && top_has_down(&c, y, x))
+            {
+               sum += 1;
+            }
+         }
+      }
+   }
+   assert(num_of_blank == 17);
+   assert(sum == 9);
+
    //=============================================
 
    //=============================================
@@ -286,6 +368,27 @@ void test(void)
    assert(c.sz == 5);
    getcluestring(&c, str);
    assert(strcmp("A-1-3-5-6|D-1-2-3-4", str) == 0);
+   assert(strcmp("A-1-3-5-6|D-1-2-3-4", str) == 0);
+   num_of_blank = 0;
+   sum = 0;
+   assert(top_has_down(&c, 0, 0));
+   assert(left_has_across(&c, 0, 0));
+   for (int y = 0; y < c.sz; y++)
+   {
+      for (int x = 0; x < c.sz; x++)
+      {
+         if (cur_is_blank(&c, y, x))
+         {
+            num_of_blank += 1;
+            if (left_has_across(&c, y, x) && top_has_down(&c, y, x))
+            {
+               sum += 1;
+            }
+         }
+      }
+   }
+   assert(num_of_blank == 17);
+   assert(sum == 9);
    assert(getchecked(c) == 53);
 
    assert(str2crossword(5, "*   *               *   *", &c));
@@ -323,6 +426,7 @@ void test(void)
    getcluestring(&c, str);
    assert(strcmp("A-1-5-6-7-8-11-12-13|D-2-3-4-5-9-10", str) == 0);
    assert(getchecked(c) == 43);
+
    //=============================================
 }
 void fillBoard(crossword *cw, char *ip)
