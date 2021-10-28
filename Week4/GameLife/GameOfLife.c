@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     //Assing to Temp array
     while (fgets(buffer, MAX_LEN - 1, fp))
     {
-        printf("c = %c\n", buffer[0]);
+        printf("c = %c\n", buffer[2]);
         if (buffer[0] == '#')
         {
             continue;
@@ -81,9 +81,9 @@ int main(int argc, char **argv)
         for (int c = 0; c < C; c++)
         {
             a[r][c] = init[r][c];
-            printf("%d", init[r][c]);
+           // printf("%d", init[r][c]);
         }
-        printf("\n");
+       // printf("\n");
     }
     printf("====NEW START======\n");
 
@@ -160,13 +160,13 @@ void simulate(int a[R][C])
                     b[r][c] = 0;
                 }
             }
-            printf("%d", b[r][c]);
+            //printf("%d", b[r][c]);
         }
 
-        printf("\n");
+        //printf("\n");
     }
 
-    printf("\n");
+   // printf("\n");
     for (int r = 0; r < R; r++)
     {
         for (int c = 0; c < C; c++)
