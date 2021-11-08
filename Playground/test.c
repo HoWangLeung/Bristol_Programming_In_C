@@ -1,38 +1,42 @@
-/* This program would sort the input strings in
- * an ascending order and would display the same
- */
+// C program to print all permutations with duplicates allowed
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
-void display(char **output);
-// void display(char *output)
-// {
-//    printf("%s\n", output);
-// }
-// void display(char **output)
-// {
-//    printf("%s\n", *output);
-//    *output="asdasd";
-
-// }
-
+ 
+/* Function to swap values at two pointers */
+void swap(char *x, char *y)
+{
+    char temp;
+    temp = *x;
+    *x = *y;
+    *y = temp;
+}
+ 
+/* Function to print permutations of string
+This function takes three parameters:
+1. String
+2. Starting index of the string
+3. Ending index of the string. */
+void permute(char *a, int l, int r)
+{
+int i;
+if (l == r)
+    printf("%s\n", a);
+else
+{
+    for (i = l; i <= r; i++)
+    {
+        swap((a+l), (a+i));
+        permute(a, l+1, r);
+        swap((a+l), (a+i)); //backtrack
+    }
+}
+}
+ 
+/* Driver program to test above functions */
 int main()
 {
-   int i, n;
-   printf("Enter the number of integers: ");
-   scanf("%d", &n);
-   int *ptr = (int *)malloc(n * sizeof(int));
-
-   for (i = 0; i < n; i++)
-   {
-      printf("Enter an integer:");
-      scanf("%d", ptr + i);
-   }
-
-   for (i = 0; i < n; i++)
-   {
-      printf("%d ", *(ptr + i));
-   }
-
-   return 0;
+    char str[] = "ABC";
+    int n = strlen(str);
+    permute(str, 0, n-1);
+    return 0;
 }

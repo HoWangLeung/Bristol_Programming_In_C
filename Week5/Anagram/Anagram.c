@@ -10,6 +10,50 @@ int check_anagram(char[], char[]);
 void sort_string(char *string);
 int binary_search(char **dictionary, int l, int r, char *str);
 void sort_dictionary(char **dictionary);
+bool is_a_larger_then_b(char *a, char *b);
+int getAsciiTotal(char *word);
+
+void swap(char *x, char *y)
+{
+  char temp;
+  temp = *x;
+  *x = *y;
+  *y = temp;
+}
+
+void permute(char *a, int l, int r, char **dictionary)
+{
+  int i;
+  if (l == r)
+  {
+    //printf("%s\n", a);
+    int res = binary_search(dictionary, 0, MAX, a);
+    if (res !=-1)
+    {
+      printf("anagram = %s\n", dictionary[res]);
+    }
+  }
+
+  else
+  {
+    for (i = l; i <= r; i++)
+    {
+      swap((a + l), (a + i));
+      permute(a, l + 1, r,dictionary);
+      swap((a + l), (a + i)); //backtrack
+    }
+  }
+}
+
+int getAsciiTotal(char *word)
+{
+  int sum = 0;
+  for (int i = 0; i < strlen(word); i++)
+  {
+    sum += word[i];
+  }
+  return sum;
+}
 
 int main()
 {
@@ -31,25 +75,33 @@ int main()
   int i = 0;
   while (fgets(input, sizeof(input), fp))
   {
+    int len = strlen(input);
+    if (input[len - 1] == '\n')
+      input[--len] = '\0';
     strcpy(dictionary[i++], input);
     // sort_string(input);
     // printf("%s\n", input);
   }
-
+  printf("user input = %s\n", user_input);
   //sort the dictionary
   sort_dictionary(dictionary);
-
-  // for (int i = 0; i < MAX; i++)
-  // {
-  //   printf("%s\n", dictionary[i]);
-  // }
-
-  // int l = 0;
-  // int r = 370119 - 1;
-  // int targetIndex = binary_search(user_input, l, r, dictionary);
+  int idx = binary_search(dictionary, 0, MAX, user_input);
+  printf("res = %s\n", dictionary[idx]);
+  permute(dictionary[idx], 0, strlen(dictionary[idx]) - 1, dictionary);
 
   free(dictionary);
   return 0;
+}
+bool is_a_larger_then_b(char *a, char *b)
+{
+  if (strcmp(a, b) > 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 void sort_dictionary(char **dictionary)
@@ -68,7 +120,7 @@ void sort_dictionary(char **dictionary)
   //     }
   //   }
   // }
-  //qsort(dictionary, MAX, sizeof(*dictionary), comp);
+  qsort(dictionary, MAX, sizeof(*dictionary), comp);
 
   // for (int i = 0; i < MAX; i++)
   // {
@@ -83,33 +135,40 @@ int comp(const void *a, const void *b)
   return strcmp(*pp1, *pp2);
 }
 
-// int binary_search(char **dictionary, int l, int r, char *str)
-// {
+/*directionary 2D array,  l is search from left,r is search from right, 
+user input string array*/
+int binary_search(char **dictionary, int l, int r, char *str)
+{
 
-//   if (r >= l)
-//   {
-//     int mid = l + (r - l) / 2;
+  if (r >= l)
+  {
+    int mid = l + (r - l) / 2;
+    // printf("is mid == str  = %d\n", strcmp(dictionary[mid], str));
+    // printf("target string = %s\n", str);
+    // printf("mid = %s\n", dictionary[mid]);
 
-//     // If the element is present at the middle
-//     // itself
-//     if (dictionary[mid] == str)
-//       return mid;
+    // If the element is present at the middle
+    // itself
 
-//     // If element is smaller than mid, then
-//     // it can only be present in left subarray
-//     if (arr[mid] > x)
-//       return binarySearch(arr, l, mid - 1, x);
+    if (strcmp(dictionary[mid], str) == 0)
+    {
+      printf("found the match -> ");
+      return mid;
+    }
 
-//     // Else the element can only be present
-//     // in right subarray
-//     return binarySearch(arr, mid + 1, r, x);
-//   }
+    // If element is smaller than mid, then
+    // it can only be present in left subarray is_a_larger_then_b
+    // if (dictionary[mid] < str)
+    if (strcmp(dictionary[mid], str) > 0)
+      return binary_search(dictionary, l, mid - 1, str);
 
-//   // We reach here when element is not
-//   // present in array
-//   return -1;
-//   return -1;
-// }
+    // Else the element can only be present
+    // in right subarray
+    return binary_search(dictionary, mid + 1, r, str);
+  }
+
+  return -1;
+}
 
 void sort_string(char *string)
 {
