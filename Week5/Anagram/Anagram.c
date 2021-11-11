@@ -12,7 +12,6 @@ int binary_search(char **dictionary, int l, int r, char *str);
 void sort_dictionary(char **dictionary);
 bool is_a_larger_then_b(char *a, char *b);
 int getAsciiTotal(char *word);
-
 void swap(char *x, char *y)
 {
   char temp;
@@ -20,31 +19,27 @@ void swap(char *x, char *y)
   *x = *y;
   *y = temp;
 }
-
 void permute(char *a, int l, int r, char **dictionary)
 {
   int i;
   if (l == r)
   {
-    //printf("%s\n", a);
     int res = binary_search(dictionary, 0, MAX, a);
     if (res !=-1)
     {
       printf("anagram = %s\n", dictionary[res]);
     }
   }
-
   else
   {
     for (i = l; i <= r; i++)
     {
       swap((a + l), (a + i));
       permute(a, l + 1, r,dictionary);
-      swap((a + l), (a + i)); //backtrack
+      swap((a + l), (a + i)); 
     }
   }
 }
-
 int getAsciiTotal(char *word)
 {
   int sum = 0;
@@ -54,7 +49,6 @@ int getAsciiTotal(char *word)
   }
   return sum;
 }
-
 int main()
 {
   char user_input[] = "angriest";
@@ -67,7 +61,6 @@ int main()
   int sz;
   char **dictionary;
   dictionary = (char **)malloc(100 * MAX * sizeof(char *));
-
   for (int i = 0; i < MAX; i++)
   {
     dictionary[i] = (char *)malloc(100 * sizeof(char));
@@ -79,16 +72,12 @@ int main()
     if (input[len - 1] == '\n')
       input[--len] = '\0';
     strcpy(dictionary[i++], input);
-    // sort_string(input);
-    // printf("%s\n", input);
   }
   printf("user input = %s\n", user_input);
-  //sort the dictionary
   sort_dictionary(dictionary);
   int idx = binary_search(dictionary, 0, MAX, user_input);
   printf("res = %s\n", dictionary[idx]);
   permute(dictionary[idx], 0, strlen(dictionary[idx]) - 1, dictionary);
-
   free(dictionary);
   return 0;
 }
@@ -103,73 +92,33 @@ bool is_a_larger_then_b(char *a, char *b)
     return false;
   }
 }
-
 void sort_dictionary(char **dictionary)
 {
   char temp[225];
-  // for (int i = 0; i <MAX; i++)
-  // {
-  //   for (int j = i + 1; j <MAX; j++)
-  //   {
-  //     if (strcmp(dictionary[i], dictionary[j]) > 0)
-  //     {
-  //      // printf(" i = %d j = %d\n", i, j);
-  //       strcpy(temp, dictionary[i]);
-  //       strcpy(dictionary[i], dictionary[j]);
-  //       strcpy(dictionary[j], temp);
-  //     }
-  //   }
-  // }
   qsort(dictionary, MAX, sizeof(*dictionary), comp);
-
-  // for (int i = 0; i < MAX; i++)
-  // {
-  //   printf("%s\n", dictionary[i]);
-  // }
 }
-
 int comp(const void *a, const void *b)
 {
   char *const *pp1 = a;
   char *const *pp2 = b;
   return strcmp(*pp1, *pp2);
 }
-
-/*directionary 2D array,  l is search from left,r is search from right, 
-user input string array*/
 int binary_search(char **dictionary, int l, int r, char *str)
 {
-
   if (r >= l)
   {
     int mid = l + (r - l) / 2;
-    // printf("is mid == str  = %d\n", strcmp(dictionary[mid], str));
-    // printf("target string = %s\n", str);
-    // printf("mid = %s\n", dictionary[mid]);
-
-    // If the element is present at the middle
-    // itself
-
     if (strcmp(dictionary[mid], str) == 0)
     {
       printf("found the match -> ");
       return mid;
     }
-
-    // If element is smaller than mid, then
-    // it can only be present in left subarray is_a_larger_then_b
-    // if (dictionary[mid] < str)
     if (strcmp(dictionary[mid], str) > 0)
       return binary_search(dictionary, l, mid - 1, str);
-
-    // Else the element can only be present
-    // in right subarray
     return binary_search(dictionary, mid + 1, r, str);
   }
-
   return -1;
 }
-
 void sort_string(char *string)
 {
   int n = strlen(string);
@@ -186,35 +135,3 @@ void sort_string(char *string)
     }
   }
 }
-
-// int check_anagram(char a[], char b[])
-// {
-//   int first[26] = {0}, second[26] = {0}, c=0;
-
-//   // Calculating frequency of characters of the first string
-
-//   while (a[c] != '\0') {
-//     printf("%d\n",a[c]-'a');
-//     first[a[c]-'a']+=1;
-
-//     c++;
-//   }
-// //   for(int i =0;i<26;i++){
-// //       printf("%d\n",first[i]);
-// //   }
-
-//   c = 0;
-
-//   while (b[c] != '\0') {
-//     second[b[c]-'a']++;
-//     c++;
-//   }
-
-//   // Comparing the frequency of characters
-
-//   for (c = 0; c < 26; c++)
-//     if (first[c] != second[c])
-//       return 0;
-
-//   // return 1;
-// }
