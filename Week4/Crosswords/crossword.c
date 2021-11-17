@@ -168,7 +168,7 @@ void check_down(const crossword *c, int y, int x, char down[MAX], int *count, bo
       {
          *count += 1;
       }
-      sprintf(&down[strlen(down)], "-%d", *count);
+       sprintf(&down[strlen(down)], "-%d", *count);
    }
    *valid_across = false;
 }

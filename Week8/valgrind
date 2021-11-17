@@ -1,0 +1,38 @@
+==2642== Memcheck, a memory error detector
+==2642== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==2642== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==2642== Command: ./rollarboard d.rbd
+==2642== Parent PID: 2641
+==2642== 
+==2642== 
+==2642== HEAP SUMMARY:
+==2642==     in use at exit: 213 bytes in 5 blocks
+==2642==   total heap usage: 26,640 allocs, 26,635 frees, 10,774,995 bytes allocated
+==2642== 
+==2642== 21 bytes in 3 blocks are still reachable in loss record 1 of 3
+==2642==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2642==    by 0x401583: moveUp (rollarboard.c:381)
+==2642==    by 0x400E40: BFS (rollarboard.c:189)
+==2642==    by 0x4009EA: main (rollarboard.c:66)
+==2642== 
+==2642== 48 bytes in 1 blocks are still reachable in loss record 2 of 3
+==2642==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2642==    by 0x400FB6: initialize_new_board (rollarboard.c:112)
+==2642==    by 0x400E51: BFS (rollarboard.c:191)
+==2642==    by 0x4009EA: main (rollarboard.c:66)
+==2642== 
+==2642== 144 bytes in 1 blocks are still reachable in loss record 3 of 3
+==2642==    at 0x4C2FB55: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==2642==    by 0x40154F: moveUp (rollarboard.c:378)
+==2642==    by 0x400E40: BFS (rollarboard.c:189)
+==2642==    by 0x4009EA: main (rollarboard.c:66)
+==2642== 
+==2642== LEAK SUMMARY:
+==2642==    definitely lost: 0 bytes in 0 blocks
+==2642==    indirectly lost: 0 bytes in 0 blocks
+==2642==      possibly lost: 0 bytes in 0 blocks
+==2642==    still reachable: 213 bytes in 5 blocks
+==2642==         suppressed: 0 bytes in 0 blocks
+==2642== 
+==2642== For counts of detected and suppressed errors, rerun with: -v
+==2642== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

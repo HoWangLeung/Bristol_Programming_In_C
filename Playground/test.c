@@ -1,42 +1,64 @@
-// C program to print all permutations with duplicates allowed
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
- 
-/* Function to swap values at two pointers */
-void swap(char *x, char *y)
-{
-    char temp;
-    temp = *x;
-    *x = *y;
-    *y = temp;
-}
- 
-/* Function to print permutations of string
-This function takes three parameters:
-1. String
-2. Starting index of the string
-3. Ending index of the string. */
-void permute(char *a, int l, int r)
-{
-int i;
-if (l == r)
-    printf("%s\n", a);
-else
-{
-    for (i = l; i <= r; i++)
-    {
-        swap((a+l), (a+i));
-        permute(a, l+1, r);
-        swap((a+l), (a+i)); //backtrack
-    }
-}
-}
- 
-/* Driver program to test above functions */
+#define SIZE 40
+#define MAX 36
+char **get_arr(char board[6][6]);
+void free_list(char **arr);
+
 int main()
 {
-    char str[] = "ABC";
-    int n = strlen(str);
-    permute(str, 0, n-1);
+    char board[6][6];
+    for (int y = 0; y < 6; y++)
+    {
+        for (int x = 0; x < 6; x++)
+        {
+            board[y][x] = '1';
+        }
+    }
+
+    char **arr = get_arr(board);
+
+    for (int y = 0; y < 6; y++)
+    {
+        for (int x = 0; x < 6; x++)
+        {
+            printf("%c", arr[y][x]);
+        }
+        printf("\n");
+    }
+
+    free_list(arr);
+
     return 0;
+}
+
+char **get_arr(char board[6][6])
+{
+
+    char **temp_arr = (char **)calloc(sizeof(char *), (MAX));
+    for (int i = 0; i < 6; i++)
+    {
+        temp_arr[i] = (char *)calloc(sizeof(char), 6 + 1);
+        memcpy(temp_arr[i], board[i], 6);
+    }
+    for (int y = 0; y < 6; y++)
+    {
+        for (int x = 0; x < 6; x++)
+        {
+            temp_arr[y][x] = '0';
+        }
+    }
+
+    return temp_arr;
+}
+
+void free_list(char **arr)
+{
+    int i = 0;
+    while (arr[i])
+    {
+        free(arr[i++]);
+    }
+    free(arr);
 }
