@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <assert.h>
 #define MAX 6
 
 struct rollarboard
@@ -23,7 +22,7 @@ void free_list(char **arr);
 void append_to_list(rollarboard *list, rollarboard newBoard, int *count, int my, int mx);
 bool isSeen(rollarboard *list, rollarboard *board, const int count, int my, int mx);
 bool isSameBoard(rollarboard *prev_board, rollarboard *new_board, int my, int mx);
-bool is_solution_found(rollarboard *board, int mx);
+bool is_solution_found(rollarboard *board, int my, int mx);
 void get_steps(rollarboard *list, int *count, int my, int mx, bool verbose);
 bool BFS(rollarboard *list, rollarboard *initial_board, int *f, int my, int mx, int *count);
 void copy_to_newboard(rollarboard *new_board, char temp_arr[MAX][MAX], int my, int mx);
@@ -34,11 +33,9 @@ void handle_new_board(rollarboard *list, int f, char temp_arr[MAX][MAX], int my,
 bool check_is_solved(rollarboard *list, int my, int mx, int *count);
 bool solve(rollarboard *list, int *f, char temp_arr[MAX][MAX], int my, int mx, int *count);
 void handleCommandLine(char *argv[], char *filename, bool *verbose);
-void print_test_board(rollarboard testboard, int my, int mx);
-void test();
+
 int main(int argc, char *argv[])
 {
-    test();
     (void)argc;
     int f = 0;
     int my = 0;
@@ -47,6 +44,7 @@ int main(int argc, char *argv[])
     char *filename = argv[1];
     bool verbose = false;
     handleCommandLine(argv, filename, &verbose);
+
     FILE *file_pointer = h_open(filename);
     rollarboard initial_board;
     read_file(file_pointer, &initial_board, &my, &mx);
@@ -65,90 +63,16 @@ int main(int argc, char *argv[])
     free(list);
     return 0;
 }
-void test()
-{
-    int my = 3;
-    int mx = 3;
-    printf("========> testing\n");
-    char initial_board_arr[6][6] = {{'0', '1', '0'},
-                                    {'0', '0', '1'},
-                                    {'0', '1', '0'}};
-    rollarboard initial_board;
-    for (int y = 0; y < my; y++)
-    {
-        for (int x = 0; x < mx; x++)
-        {
-            initial_board.arr[y][x] = initial_board_arr[y][x];
-        }
-    }
-    for (int y = 0; y < my; y++)
-    {
-        for (int x = 0; x < mx; x++)
-        {
-            printf("%c", initial_board.arr[y][x]);
-        }
-        printf("\n");
-    }
-
-    rollarboard *testlist = calloc(sizeof(initial_board_arr), 300000);
-    testlist[0] = initial_board;
-    printf("\n");
-    for (int y = 0; y < my; y++)
-    {
-        for (int x = 0; x < mx; x++)
-        {
-            printf("%c", testlist[0].arr[y][x]);
-        }
-        printf("\n");
-    }
-    char temp_arr[6][6];
-
-    moveRight(&testlist[0], 0, temp_arr, my, mx);
-    char expected_board[6][6] = {{'0', '0', '1'},
-                                 {'0', '0', '1'},
-                                 {'0', '1', '0'}};
-    printf("test 1=========<<<<<<<<<<\n");
-    for (int y = 0; y < my; y++)
-    {
-        for (int x = 0; x < mx; x++)
-        {
-
-            assert(temp_arr[y][x] = expected_board[y][x]);
-        }
-        printf("\n");
-    }
-
-    moveRight(&testlist[0], 1, temp_arr, my, mx);
-    printf("test 2=========<<<<<<<<<<\n");
-    for (int y = 0; y < my; y++)
-    {
-        for (int x = 0; x < mx; x++)
-        {
-            printf("%c", expected_board[y][x]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-
-    for (int y = 0; y < my; y++)
-    {
-        for (int x = 0; x < mx; x++)
-        {
-            printf("%c", temp_arr[y][x]);
-            assert(temp_arr[y][x] != expected_board[y][x]);
-        }
-        printf("\n");
-    }
-
-    free(testlist);
-    printf("========> finished testing\n");
-}
 void handleCommandLine(char *argv[], char *filename, bool *verbose)
 {
     if (strcmp(argv[1], "-v") == 0)
     {
         *verbose = true;
         strcpy(filename, argv[2]);
+    }
+    else
+    {
+        strcpy(filename, argv[1]);
     }
 }
 
@@ -211,7 +135,7 @@ rollarboard create_child_board(rollarboard *list, int f)
 }
 bool check_is_solved(rollarboard *list, int my, int mx, int *count)
 {
-    bool found_soultion = is_solution_found(&list[*count - 1], mx);
+    bool found_soultion = is_solution_found(&list[*count - 1], my, mx);
     if (found_soultion)
     {
 
@@ -293,7 +217,7 @@ void moveLeft(rollarboard *board, int y, char temp_arr[MAX][MAX], int my, int mx
     temp_arr[y][mx - 1] = temp;
 }
 
-bool is_solution_found(rollarboard *board, int mx)
+bool is_solution_found(rollarboard *board, int my, int mx)
 {
 
     char *first_row = board->arr[0];
@@ -439,7 +363,7 @@ FILE *h_open(char *filename)
 
 void read_file(FILE *file_pointer, rollarboard *board, int *my, int *mx)
 {
-    char buffer[MAX]; //changed from MAX+1 to MAX
+    char buffer[MAX ];
     int line = 0;
     // int temp_mx = 0;
     // int temp_my = 0;
@@ -502,16 +426,5 @@ void copy_to_temp_arr(rollarboard *new_board, char temp_arr[MAX][MAX], int my, i
         {
             temp_arr[y][x] = new_board->arr[y][x];
         }
-    }
-}
-void print_test_board(rollarboard testboard, int my, int mx)
-{
-    for (int y = 0; y < my; y++)
-    {
-        for (int x = 0; x < mx; x++)
-        {
-            printf("%c", testboard.arr[y][x]);
-        }
-        printf("\n");
     }
 }
