@@ -4,14 +4,14 @@
 #include <stdbool.h>
 #include <assert.h>
 #define MAX 6
-
+#define FILENAME 100
 struct rollarboard
 {
     char arr[MAX][MAX];
     int parent_index;
 };
 typedef struct rollarboard rollarboard;
-FILE *h_open(char filename[100]);
+FILE *f_open(char *filename);
 void read_file(FILE *file_pointer, rollarboard *board, int *my, int *mx);
 void print_board(rollarboard *board, int my, int mx);
 void print_temp_board(char temp_board[MAX][MAX], int my, int mx);
@@ -28,31 +28,39 @@ void get_steps(rollarboard *list, int *count, int my, int mx, bool verbose);
 bool BFS(rollarboard *list, rollarboard *initial_board, int *f, int my, int mx, int *count);
 void copy_to_newboard(rollarboard *new_board, char temp_arr[MAX][MAX], int my, int mx);
 void copy_to_temp_arr(rollarboard *new_board, char temp_arr[MAX][MAX], int my, int mx);
-void is_board_valid(rollarboard initial_board, int my, int mx);
+bool is_board_valid(rollarboard initial_board, int my, int mx);
 rollarboard create_child_board(rollarboard *list, int f);
 void handle_new_board(rollarboard *list, int f, char temp_arr[MAX][MAX], int my, int mx, int *count);
 bool check_is_solved(rollarboard *list, int my, int mx, int *count);
 bool solve(rollarboard *list, int *f, char temp_arr[MAX][MAX], int my, int mx, int *count);
-void handleCommandLine(char *argv[], char *filename, bool *verbose);
+void handle_command_line(int argc, char **argv, char **filename, bool *verbose);
 void print_test_board(rollarboard testboard, int my, int mx);
 void test();
+bool is_same_2d_array(char arr_1[MAX][MAX], char arr_2[MAX][MAX], int my, int mx);
+void create_test_board(rollarboard test_board, char test_board_arr[MAX][MAX], int my, int mx);
+
 int main(int argc, char *argv[])
 {
     test();
-    (void)argc;
     int f = 0;
     int my = 0;
     int mx = 0;
     int count = 0;
-    char *filename = argv[1];
+    char *filename = NULL;
     bool verbose = false;
-    handleCommandLine(argv, filename, &verbose);
-    FILE *file_pointer = h_open(filename);
+
+    handle_command_line(argc, argv, &filename, &verbose);
+ 
+    FILE *file_pointer = f_open(filename);
     rollarboard initial_board;
     read_file(file_pointer, &initial_board, &my, &mx);
-    is_board_valid(initial_board, my, mx);
-    rollarboard *list = calloc(sizeof(initial_board), 300000);
+    if (!is_board_valid(initial_board, my, mx))
+    {
+        printf("not valid board\n");
+        exit(EXIT_FAILURE);
+    }
 
+    rollarboard *list = calloc(sizeof(initial_board), 300000);
     if (BFS(list, &initial_board, &f, my, mx, &count))
     {
         get_steps(list, &count, my, mx, verbose);
@@ -61,26 +69,89 @@ int main(int argc, char *argv[])
     {
         printf("No Solution?");
     }
+
     fclose(file_pointer);
     free(list);
     return 0;
 }
 void test()
 {
+    int f = 0;
     int my = 3;
     int mx = 3;
     printf("========> testing\n");
-    char initial_board_arr[6][6] = {{'0', '1', '0'},
-                                    {'0', '0', '1'},
-                                    {'0', '1', '0'}};
+    //=============================================================
+    char initial_board_arr_1[MAX][MAX] = {{'0', '1', '0'},
+                                          {'0', '1', '0'},
+                                          {'0', '1', '0'}};
+
+    char expected_result_1[MAX][MAX] = {{'0', '0', '1'},
+                                        {'0', '1', '0'},
+                                        {'0', '1', '0'}};
+
+    char expected_result_2[MAX][MAX] = {{'0', '1', '0'},
+                                        {'0', '0', '1'},
+                                        {'0', '1', '0'}};
+
+    char expected_result_3[MAX][MAX] = {{'0', '1', '0'},
+                                        {'0', '1', '0'},
+                                        {'0', '0', '1'}};
+    char expected_result_4[MAX][MAX] = {{'1', '0', '0'},
+                                        {'0', '1', '0'},
+                                        {'0', '1', '0'}};
+    char expected_result_5[MAX][MAX] = {{'0', '1', '0'},
+                                        {'1', '0', '0'},
+                                        {'0', '1', '0'}};
+    char expected_result_6[MAX][MAX] = {{'0', '1', '0'},
+                                        {'0', '1', '0'},
+                                        {'1', '0', '0'}};
+    //=============================================================
+
+    char initial_board_arr_2[MAX][MAX] = {{'1', '0', '0', '0'},
+                                          {'0', '0', '1', '1'},
+                                          {'0', '1', '0', '0'}};
+
+    char expected_result_7[MAX][MAX] = {{'0', '0', '0', '1'},
+                                        {'0', '0', '1', '1'},
+                                        {'0', '1', '0', '0'}};
+
+    char expected_result_8[MAX][MAX] = {{'1', '0', '0', '0'},
+                                        {'1', '0', '0', '1'},
+                                        {'0', '1', '0', '0'}};
+
+    //=============================================================
+
+    char initial_board_arr_3[MAX][MAX] = {{'1', '0', '0', '1', '0'},
+                                          {'0', '0', '1', '1', '0'},
+                                          {'0', '1', '0', '0', '0'}};
+
+    char expected_result_9[MAX][MAX] = {{'1', '0', '0', '1', '0'},
+                                        {'0', '0', '1', '0', '0'},
+                                        {'0', '1', '0', '1', '0'}};
+
+    char expected_result_10[MAX][MAX] = {{'1', '1', '0', '1', '0'},
+                                         {'0', '0', '1', '1', '0'},
+                                         {'0', '0', '0', '0', '0'}};
+    char invalid_arr_1[MAX][MAX] = {{'1', '1', '1', '1', '1'},
+                                    {'1', '1', '1', '1', '1'},
+                                    {'1', '1', '1', '1', '1'}};
+
+    char invalid_arr_2[MAX][MAX] = {{'*', '*', 'X', '+', '@'},
+                                    {'1', '1', '1', '1', '@'},
+                                    {'0', '0', '0', '1', '@'}};
+    char invalid_arr_3[MAX][MAX] = {{'0', '0', '0', '0', '0'},
+                                    {'0', '0', '0', '0', '0'},
+                                    {'0', '0', '0', '0', '0'}};
+
     rollarboard initial_board;
     for (int y = 0; y < my; y++)
     {
         for (int x = 0; x < mx; x++)
         {
-            initial_board.arr[y][x] = initial_board_arr[y][x];
+            initial_board.arr[y][x] = initial_board_arr_1[y][x];
         }
     }
+
     for (int y = 0; y < my; y++)
     {
         for (int x = 0; x < mx; x++)
@@ -89,70 +160,183 @@ void test()
         }
         printf("\n");
     }
-
-    rollarboard *testlist = calloc(sizeof(initial_board_arr), 300000);
+    rollarboard *testlist = calloc(sizeof(initial_board_arr_1), 100000);
     testlist[0] = initial_board;
-    printf("\n");
+    char temp_arr[MAX][MAX];
+    rollarboard *board = &testlist[f];
+    //===========================
+    //=======TEST1 START=========
+    //===========================
+    rollarboard test_board_1;
     for (int y = 0; y < my; y++)
     {
         for (int x = 0; x < mx; x++)
         {
-            printf("%c", testlist[0].arr[y][x]);
+            test_board_1.arr[y][x] = initial_board_arr_1[y][x];
         }
-        printf("\n");
     }
-    char temp_arr[6][6];
+    //is_board_valid(test_board_1, my, mx);
 
-    moveRight(&testlist[0], 0, temp_arr, my, mx);
-    char expected_board[6][6] = {{'0', '0', '1'},
-                                 {'0', '0', '1'},
-                                 {'0', '1', '0'}};
-    printf("test 1=========<<<<<<<<<<\n");
+    //Test first row
+    moveRight(board, 0, temp_arr, my, mx);
+    print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_1, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_1, my, mx));
+
+    //Test second row
+    moveRight(board, 1, temp_arr, my, mx);
+    printf("======================> 1\n");
+    print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_2, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_1, my, mx));
+    //Test Third row
+    moveRight(board, 2, temp_arr, my, mx);
+    printf("======================> 2\n");
+    print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_3, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_1, my, mx));
+
+    //===========================
+    //=======TEST3 START=========
+    //===========================
+    printf("======================> 3\n");
+    moveLeft(board, 0, temp_arr, my, mx);
+    print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_4, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_1, my, mx));
+
+    moveLeft(board, 1, temp_arr, my, mx);
+    print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_5, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_1, my, mx));
+
+    moveLeft(board, 2, temp_arr, my, mx);
+    print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_6, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_1, my, mx));
+
+    //============================
+    //=======TEST 4 START=========
+    //============================
+    my = 4;
+    mx = 4;
+    printf("======================> 4\n");
+    // initialze initial_board_arr_2;
+    rollarboard test_board_2;
     for (int y = 0; y < my; y++)
     {
         for (int x = 0; x < mx; x++)
         {
-
-            assert(temp_arr[y][x] = expected_board[y][x]);
+            test_board_2.arr[y][x] = initial_board_arr_2[y][x];
         }
-        printf("\n");
     }
+    print_board(&test_board_2, my, mx);
+    moveLeft(&test_board_2, 0, temp_arr, my, mx);
+    print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_7, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_2, my, mx));
 
-    moveRight(&testlist[0], 1, temp_arr, my, mx);
-    printf("test 2=========<<<<<<<<<<\n");
+    moveRight(&test_board_2, 1, temp_arr, my, mx);
+    // print_temp_board(temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_8, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_2, my, mx));
+
+    //============================
+    //=======TEST BLOCK 5=========
+    //============================
+    my = 3;
+    mx = 5;
+    printf("======================> 5\n");
+    rollarboard test_board_3;
     for (int y = 0; y < my; y++)
     {
         for (int x = 0; x < mx; x++)
         {
-            printf("%c", expected_board[y][x]);
+            test_board_3.arr[y][x] = initial_board_arr_3[y][x];
         }
-        printf("\n");
     }
-    printf("\n");
+    //move the 4th column up
+    moveUp(&test_board_3, 3, temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_9, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_3, my, mx));
 
+    moveDown(&test_board_3, 1, temp_arr, my, mx);
+    assert(is_same_2d_array(temp_arr, expected_result_10, my, mx));
+    assert(!is_same_2d_array(temp_arr, initial_board_arr_3, my, mx));
+
+    //============================
+    //=======TEST BLOCK 5=========
+    //============================
+    // create_test_board(test_board_4, invalid_arr_1, my, mx);
+    mx = 5;
+    my = 3;
+    printf("======================> 6\n");
+    rollarboard test_board_4;
     for (int y = 0; y < my; y++)
     {
         for (int x = 0; x < mx; x++)
         {
-            printf("%c", temp_arr[y][x]);
-            assert(temp_arr[y][x] != expected_board[y][x]);
+            test_board_4.arr[y][x] = invalid_arr_1[y][x];
         }
-        printf("\n");
     }
+    bool is_valid = is_board_valid(test_board_4, my, mx);
+    assert(is_valid == false);
+
+    //============================
+    //=======TEST BLOCK 6=========
+    //============================
+    mx = 5;
+    my = 3;
+    printf("======================> 6\n");
+    rollarboard test_board_5;
+    for (int y = 0; y < my; y++)
+    {
+        for (int x = 0; x < mx; x++)
+        {
+            test_board_5.arr[y][x] = invalid_arr_2[y][x];
+        }
+    }
+    is_valid = is_board_valid(test_board_5, my, mx);
+    assert(is_valid == false);
+    //============================
+    //=======TEST BLOCK 6=========
+    //============================
+    mx = 5;
+    my = 3;
+    printf("======================> 6\n");
+    rollarboard test_board_6;
+    for (int y = 0; y < my; y++)
+    {
+        for (int x = 0; x < mx; x++)
+        {
+            test_board_6.arr[y][x] = invalid_arr_3[y][x];
+        }
+    }
+    is_valid = is_board_valid(test_board_6, my, mx);
+    assert(is_valid == false);
+
 
     free(testlist);
     printf("========> finished testing\n");
 }
-void handleCommandLine(char *argv[], char *filename, bool *verbose)
+void handle_command_line(int argc, char **argv, char **filename, bool *verbose)
 {
-    if (strcmp(argv[1], "-v") == 0)
+    if (argc > 3 || argc < 2)
     {
-        *verbose = true;
-        strcpy(filename, argv[2]);
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 1; i < argc; i++)
+    {
+        if (!strcmp(argv[i], "-v"))
+        {
+            *verbose = true;
+            i++;
+        }
+        *filename = argv[i];
     }
 }
 
-void is_board_valid(rollarboard initial_board, int my, int mx)
+bool is_board_valid(rollarboard initial_board, int my, int mx)
 {
     int num_of_one = 0;
     int num_of_zero = 0;
@@ -169,24 +353,26 @@ void is_board_valid(rollarboard initial_board, int my, int mx)
             {
                 num_of_zero++;
             }
-            else
+
+            else if (initial_board.arr[y][x] != '0')
             {
-                printf("Invalid characters found in the board");
-                exit(EXIT_FAILURE);
+                //Invalid characters found in the board;
+                return false;
             }
         }
     }
     if (num_of_one != mx)
     {
-        printf("No Solution?\n");
-        exit(EXIT_FAILURE);
+
+        return false;
     }
 
     if ((num_of_one + num_of_zero) != mx * my)
     {
-        printf("Sum of '1' and '0' does not equal width*height \n");
-        exit(EXIT_FAILURE);
+
+        return false;
     }
+    return true;
 }
 
 void copy_to_newboard(rollarboard *new_board, char temp_arr[MAX][MAX], int my, int mx)
@@ -203,7 +389,6 @@ void copy_to_newboard(rollarboard *new_board, char temp_arr[MAX][MAX], int my, i
 }
 rollarboard create_child_board(rollarboard *list, int f)
 {
-
     rollarboard newBoard;
     newBoard = list[f];
     newBoard.parent_index = f;
@@ -214,15 +399,17 @@ bool check_is_solved(rollarboard *list, int my, int mx, int *count)
     bool found_soultion = is_solution_found(&list[*count - 1], mx);
     if (found_soultion)
     {
-
-        printf("found solution\n");
         *count -= 1;
         //make sure the board is not modified unexpectedly
         //e.g. this should be invalid although first row has three '1'
         //     111
         //     110
         //     000
-        is_board_valid(list[*count], my, mx);
+        if (!is_board_valid(list[*count], my, mx))
+        {
+            printf("No Solution?\n");
+            exit(EXIT_FAILURE);
+        }
         return true;
     }
     return false;
@@ -427,7 +614,7 @@ void moveDown(rollarboard *board, int x, char temp_arr[MAX][MAX], int my, int mx
     temp_arr[0][x] = temp;
 }
 
-FILE *h_open(char *filename)
+FILE *f_open(char *filename)
 {
     FILE *file_pointer = fopen(filename, "r");
     if (!file_pointer)
@@ -514,4 +701,32 @@ void print_test_board(rollarboard testboard, int my, int mx)
         }
         printf("\n");
     }
+}
+
+bool is_same_2d_array(char arr_1[MAX][MAX], char arr_2[MAX][MAX], int my, int mx)
+{
+
+    for (int y = 0; y < my; y++)
+    {
+        for (int x = 0; x < mx; x++)
+        {
+            if (arr_1[y][x] != arr_2[y][x])
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+void create_test_board(rollarboard test_board, char test_board_arr[MAX][MAX], int my, int mx)
+{
+    for (int y = 0; y < my; y++)
+    {
+        for (int x = 0; x < mx; x++)
+        {
+            test_board.arr[y][x] = test_board_arr[y][x];
+        }
+    }
+    // return test_board;
 }
