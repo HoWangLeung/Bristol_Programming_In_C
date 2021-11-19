@@ -1,25 +1,23 @@
 The extension.c is for the implementation of a faster search technique.
 The main idea is to make sure that each column has only a single '1', then we can simply move up or move down depending on the shortest distance to the top.
-
 Similar to the standard exercise, there is a big list to store the steps and there is the index f to keep track of the big list
 
 Here are the main steps:
-1. if there are '1' already  in the first row, then just proceed because they are already in the correct place
-2. locate the first '1' in the board , check if top and bottom has another '1' in the same column
+1. look in the board, if there are '1' already in the 1st row, then just proceed because they are already in the correct location
+2. start searching from the 2nd row,locate the first '1' in the board  , check if top and bottom has another '1' in the same column
 3. if yes:
-        check if the first row has more '1' on the left hand side or right hand side
-        move to the left if there are more '1' on the right hand side in the first row and vice versa
+        check if the 1st row has more '1' on the left hand side or right hand side
+        move to the left if there are more '1' on the right hand side in the 1st row and vice versa
         add the move to the big list
    if no:
         this implies that there is only a single '1' in the column
-        determine if the shortest path to reach the first row is going up or going down and move with the faster direction
+        determine if the shortest path to reach the 1st row is going up or going down and move with the faster direction
         add the move to the big list
 4. add 1 to f , if there are more boards in the list, go to step 2 and consider the board at the front of the list (index f).
 
 The main advantage of adopting this approach is reducing the amount of execution time from minutes to less then a second
 
-Example solution 1
-
+################# Example output 1 #################
 0:
 111110
 000000
@@ -52,7 +50,8 @@ Example solution 1
 000000
 000000
 
-Example solution 2
+
+################# Example output 2 #################
 0:
 0000
 1100

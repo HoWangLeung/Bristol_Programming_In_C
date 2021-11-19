@@ -19,7 +19,7 @@ e: ${EXT}
 ${EXT}: ${EXT}.c
 	$(CC) ${EXT}.c -o ${EXT} ${CFLAGS}  ${LDLIBS}
 re:${EXT}
-	./${EXT} -v ${TXT}
+	./${EXT} ${TXT}
 val2: ${FILE}
 	valgrind --leak-check=full --track-origins=yes  --show-leak-kinds=all  ./${EXT} ${TXT}
 

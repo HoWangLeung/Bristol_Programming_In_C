@@ -337,7 +337,6 @@ void get_steps(rollarboard *list, int *count, int my, int mx, bool verbose)
                 printf("%d:\n", step_count++);
                 print_board(&list[steps[i]], my, mx);
             }
-            printf("\n");
         }
         printf("%d:\n", step_count);
         print_board(&list[*count], my, mx);
@@ -452,6 +451,7 @@ void print_board(rollarboard *board, int my, int mx)
         }
         printf("\n");
     }
+        printf("\n");
 }
 void print_temp_board(char temp_arr[MAX][MAX], int my, int mx)
 {
