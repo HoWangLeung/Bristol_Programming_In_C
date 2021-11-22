@@ -1,15 +1,15 @@
-CC=gcc
+CC=clang
 CFLAGS=-Wall -Wextra  -pedantic -std=c99  -g3  
 SANITIZE= -fsanitize=undefined -fsanitize=address 
 LDLIBS=-lm
-FILE=test
+FILE=AssignString
 
 
 all: ${FILE}
 ${FILE}: ${FILE}.c
-	$(CC) ${FILE}.c -o ${FILE} -I/usr/local/include/SDL2 -lSDL2 ${CFLAGS}  ${LDLIBS} 
+	$(CC) ${FILE}.c -o ${FILE} ${CFLAGS}  ${LDLIBS} 
 val: ${FILE}
-	valgrind --leak-check=full --track-origins=yes  --show-leak-kinds=all  ./${FILE} ${TXT}
+	valgrind --leak-check=full --track-origins=yes  --show-leak-kinds=all  ./${FILE}
 r: ${FILE}
 	./${FILE}
 

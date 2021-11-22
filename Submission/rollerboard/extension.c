@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
-
 #define MAX 6
 #define FILESIZE 150
 #define ZERO_BUFFER 10
