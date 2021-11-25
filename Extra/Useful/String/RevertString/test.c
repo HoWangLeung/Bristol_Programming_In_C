@@ -7,11 +7,11 @@
 #include <stdbool.h>
 // #include "driver.c"
 
-void check(const char *s1, const char *s2);
+void check(const char *s);
 
 int main(void)
 {
-    check("Hello","Hello");
+    check("Hello");
 
     return 0;
 }

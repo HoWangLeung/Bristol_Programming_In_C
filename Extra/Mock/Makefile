@@ -2,8 +2,8 @@ CC=clang
 CFLAGS=-Wall -Wextra  -pedantic -std=c99  -O3  
 SANITIZE= -fsanitize=undefined -fsanitize=address 
 LDLIBS=-lm
-FILE=func_b1
-FILE2=main_b1
+FILE=func_a2
+FILE2=main_a2
 
 
 all: ${FILE} 

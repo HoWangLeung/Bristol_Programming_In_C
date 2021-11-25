@@ -7,11 +7,13 @@
 #include <stdbool.h>
 // #include "driver.c"
 
-void check(const char *s1, const char *s2);
+bool check(const char *s);
 
 int main(void)
 {
-    check("Hello","Hello");
 
+    assert(check("A man, a plan, a canal: Panama"));
+    assert(check("racecar"));
+    assert(!check("racecard"));
     return 0;
 }

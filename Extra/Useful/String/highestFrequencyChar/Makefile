@@ -8,7 +8,7 @@ FILE2=driver
 
 all: ${FILE} 
 ${FILE}: ${FILE}.c ${FILE2}.c
-	$(CC) ${FILE}.c ${FILE2}.c -o ${FILE} ${CFLAGS}  ${LDLIBS} 
+	$(CC) ${FILE}.c ${FILE2}.c -o ${FILE} ${CFLAGS} ${SANITIZE} ${LDLIBS} 
 val: ${FILE}
 	valgrind --leak-check=full --track-origins=yes  --show-leak-kinds=all  ./${FILE}
 r: ${FILE}

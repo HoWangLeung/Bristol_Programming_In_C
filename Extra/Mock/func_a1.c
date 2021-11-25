@@ -1,10 +1,31 @@
 #include "common.h"
 #include <stdbool.h>
 void sortString(char string[50]);
+//version strchr
+// bool struses(const char *s1, const char *s2)
+// {
+//     int n = strlen(s1);
+//     bool istrue = true;
+//     for (int i = 0; i < n; i++)
+//     {
+//         if (strchr(s2, s1[i]) == NULL)
+//         {
+//             printf("invalid found %c character \n", s1[i]);
+//             return false;
+//         }
+//         else
+//         {
+//             printf("found at %d\n", strchr(s2, s1[i]) - s2);
+//         }
+//     }
+
+//     return true;
+// }
 
 bool struses(const char *s1, const char *s2)
 {
     int n = strlen(s1);
+
     for (int i = 0; i < n; i++)
     {
         if (strchr(s2, s1[i]) == NULL)
