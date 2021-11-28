@@ -1,0 +1,341 @@
+\section{D: Flow Control}
+
+\begin{frame}[fragile]
+\frametitle{Comparisons}
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+\begin{center}
+\begin{tabular}{|l|l|} \hline
+\verb^<^    & less than             \\ \hline
+\verb^>^    & greater than          \\ \hline
+\verb^<=^   & less than or equal to     \\ \hline
+\verb^>=^   & greater than or equal to  \\ \hline
+\verb^==^   & {\bf equal to}        \\ \hline
+\verb^!=^   & not equal to          \\ \hline
+\verb^!^    & not               \\ \hline
+\verb^&&^   & logical AND           \\ \hline
+\verb^||^   & logical OR            \\ \hline
+\end{tabular}
+\end{center}
+\end{column}
+
+\pause
+\begin{column}{0.5\textwidth}
+\begin{itemize}[<+->]
+\item Any relation is either {\it true} or {\it false}.
+\item Any non-zero value is {\it true}.
+\item \verb^(a < b)^ returns the value {\it 0} or {\it 1}.
+\item \verb^(i == 5)^ is a {\bf test} not an {\bf assignment}.
+\item \verb^(!a)^ is either {\it true (1)} or {\it false (0)}.
+\item \verb^(a && b)^ is {\it true} if both \verb^a^ and \verb^b^ are {\it true}.
+\item Single \verb^&^ and \verb^|^ are {\it bitwise} operators not comparisons - more on this later.
+\end{itemize}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Short-Circuit Evaluation}
+
+\begin{lstlisting}[style=basicc,numbers=none]
+if(x >= 0.0 && sqrt(x) < 10.0){
+
+..... /* Do Something */
+
+}
+\end{lstlisting}
+
+It's not possible to take the \verb^sqrt()^ of a negative number.
+Here, the \verb^sqrt()^ statement is never reached if the first test is {\it false}.
+In a logical AND, once any expression is {\it false}, the whole must
+be {\it false}.
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{The {\tt if()} Statement}
+
+\begin{columns}
+
+\begin{column}{0.45\textwidth}
+Strictly, you don't need braces if there is only one statement as part of the {\tt if}~:
+\begin{lstlisting}[style=basicc,numbers=none]
+if (expr)
+   statement
+\end{lstlisting}
+
+If more than one statement is required~:
+\begin{lstlisting}[style=basicc,numbers=none]
+if (expr) {
+   statement-1
+       .
+       .
+       .
+   statement-n
+}
+\end{lstlisting}
+However, we will {\bf always} brace them, even if it's not necessary.
+\end{column}
+
+\pause
+\begin{column}{0.45\textwidth}
+Adding an \verb^else^ statement~:
+
+\begin{lstlisting}[style=basicc,numbers=none]
+if (expr) {
+   statement-1
+       .
+       .
+       .
+   statement-n
+}
+else{
+   statement-a
+       .
+       .
+       .
+   statement-e
+}
+\end{lstlisting}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{A Practical Example of {\tt if}:}
+\begin{columns}
+
+\begin{column}{0.5\textwidth}
+\lstinputlisting[style=basicc]{../Code/ChapD/min.c}
+\end{column}
+
+\begin{column}{0.40\textwidth}
+\outputlisting{../Code/ChapD/min.manout}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The {\tt while()} Statement}
+\begin{columns}
+
+\begin{column}{0.45\textwidth}
+\begin{lstlisting}[style=basicc,numbers=none]
+while(expr)
+   statement
+\end{lstlisting}
+
+This, as with the {\tt for} loop, may execute compound statements~:
+
+\begin{lstlisting}[style=basicc,numbers=none]
+while(expr){
+   statement-1
+       .
+       .
+       .
+   statement-n
+}
+\end{lstlisting}
+However, we will {\bf always} brace them, even if it's not necessary.
+\end{column}
+
+\pause
+\begin{column}{0.45\textwidth}
+\lstinputlisting[style=basicc]{../Code/ChapD/while.c}
+\outputlisting{../Code/ChapD/while.autoout}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The {\tt for()} Loop}
+\begin{columns}
+
+\begin{column}{0.45\textwidth}
+This is one of the more complex and heavily used means
+for controlling execution flow.
+
+\begin{lstlisting}[style=basicc,numbers=none]
+for( init ; test; loop){
+   statement-1
+       .
+       .
+       .
+   statement-n
+}
+\end{lstlisting}
+
+and may be thought of as~:
+\begin{lstlisting}[style=basicc,numbers=none]
+init;
+while(test){
+   statement-1
+       .
+       .
+       .
+   statement-n
+   loop;
+}
+\end{lstlisting}
+\end{column}
+
+\pause
+\begin{column}{0.45\textwidth}
+In the \verb^for()^ loop, note~:
+\begin{itemize}[<+->]
+\item Semi-colons separate the three parts.
+\item Any (or all) of the three parts could be empty.
+\item If the test part is empty, it evaluates to {\it true}.
+\item \verb^for(;;){ a+=1; }^  is an infinite loop.
+\end{itemize}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{A Triply-Nested Loop}
+
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\lstinputlisting[style=basicc]{../Code/ChapD/triple.c}
+\end{column}
+
+\begin{column}{0.40\textwidth}
+{\scriptsize Output~:}
+\lstinputlisting[style=basicterm,linerange={1-8}]{../Code/ChapD/triple.autoout}
+{\scriptsize etc.}
+\lstinputlisting[style=basicterm,linerange={30-38}]{../Code/ChapD/triple.autoout}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The Comma Operator}
+
+This has the lowest precedence of all the operators in C
+and associates left-to-right.
+
+\begin{lstlisting}[style=basicc,numbers=none]
+a = 0 , b = 1;
+\end{lstlisting}
+
+Hence, the {\tt for} loop may become quite complex~:
+
+\begin{lstlisting}[style=basicc,numbers=none]
+for(sum = 0, i = 1; i <= n; ++i){
+   sum += i;
+}
+\end{lstlisting}
+
+An equivalent, but more difficult to read expression~:
+\begin{lstlisting}[style=basicc,numbers=none]
+for(sum = 0 , i = 1; i <= n; ++i, sum += i);
+\end{lstlisting}
+
+Notice the loop has an empty body, hence the semicolon.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The {\tt do-while()} Loop}
+
+\begin{columns}
+\begin{column}{0.35\textwidth}
+\begin{lstlisting}[style=basicc,numbers=none]
+do {
+   statement-1
+       .
+       .
+       .
+   statement-n
+} while ( test );
+\end{lstlisting}
+
+Unlike the \verb^while()^ loop, the \verb^do-while()^ will always
+be executed at least once.
+\end{column}
+
+\pause
+\begin{column}{0.60\textwidth}
+\lstinputlisting[style=basicc]{../Code/ChapD/dowhile.c}
+\outputlisting{../Code/ChapD/dowhile.autoout}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The {\tt switch()} Statement}
+\begin{columns}
+
+\begin{column}{0.45\textwidth}
+\begin{lstlisting}[style=basicc,numbers=none]
+switch (val) {
+   case 1 :
+      a++;
+      break;
+   case 2 :
+   case 3 :
+      b++;
+      break;
+   default :
+      c++;
+}
+\end{lstlisting}
+\end{column}
+
+\begin{column}{0.45\textwidth}
+\begin{itemize}[<+->]
+\item The \verb^val^ must be an integer.
+\item The \verb^break^ statement causes execution to jump out
+of the loop. No \verb^break^ statement causes execution to
+`fall through' to the next line.
+\item The \verb^default^ label is a catch-all.
+\end{itemize}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The {\tt switch()} Statement}
+\begin{columns}
+
+\begin{column}{0.55\textwidth}
+\lstinputlisting[style=basicc]{../Code/ChapD/switch.c}
+\end{column}
+
+\begin{column}{0.40\textwidth}
+\outputlisting{../Code/ChapD/switch.manout}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{The Conditional {\tt (?)} Operator}
+\begin{columns}
+
+\begin{column}{0.40\textwidth}
+As we have seen, C programers have a range of techniques available to reduce the amount of typing~:
+\begin{lstlisting}[style=basicc,numbers=none]
+expr1 ? expr2 : expr3
+\end{lstlisting}
+
+If {\tt expr1} is {\it true} then {\tt expr2} is executed, else
+{\tt expr3} is evaluated.
+\end{column}
+
+\pause
+\begin{column}{0.55\textwidth}
+\lstinputlisting[style=basicc]{../Code/ChapD/minq.c}
+\end{column}
+
+\end{columns}
+\end{frame}
