@@ -1,8 +1,7 @@
 #include "stack.h"
 #include "specific.h"
 
-int main(void)
-{
+int main(void){
 
    printf("Test Stack (%s) Start ... ", STACKTYPE);
    char str[100];
