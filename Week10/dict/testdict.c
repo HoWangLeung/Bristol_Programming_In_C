@@ -4,7 +4,6 @@ Should work for the any Dictionary implementation
 */
 #include "dict.h"
 
-
 #define BIGSTR 1000
 
 int main(void)
@@ -15,8 +14,9 @@ int main(void)
    assert(!dict_spelling(NULL, "one"));
 
    dict *d = dict_init(50);
-   // printf("test dict\n");
+
    assert(dict_add(d, "one"));
+
    assert(dict_add(d, "aga"));
    assert(dict_add(d, "abcde"));
    assert(dict_add(d, "Abcde"));

@@ -9,7 +9,6 @@ Should work for the any Dictionary implementation
 
 #define BIGSTR 1000
 
-
 int main(int argc, char *argv[])
 {
    int count = 0;
@@ -23,6 +22,8 @@ int main(int argc, char *argv[])
    FILE *fp = nfopen(argv[1], "rt");
    printf("FILE POINTER\n");
    bool done = false;
+
+   
    do
    {
       if (fscanf(fp, "%s", str) != 1)
@@ -40,8 +41,8 @@ int main(int argc, char *argv[])
 
    fp = nfopen(argv[2], "rt");
    done = false;
-   printf("finished adding dictionary\n");
-   mysprinter(x);
+   // printf("finished adding dictionary\n");
+   //mysprinter(x);
 
    do
    {
@@ -59,7 +60,7 @@ int main(int argc, char *argv[])
          count += 1;
       }
    } while (!done);
-   printf("Misspelt count = %d\n", count);
+   //printf("Misspelt count = %d\n", count);
 
    dict_free(x);
    return EXIT_SUCCESS;

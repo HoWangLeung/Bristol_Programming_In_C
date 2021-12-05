@@ -1,13 +1,5 @@
 #include"../dict.h"
 
-#define FORMATSTR "%i"
-#define ELEMSIZE 20
-
-#define STACKTYPE "FIXED"
-
-#define FIXEDSIZE 16
-#define SCALEFACTOR 2
-#define SIZE 400000
 struct node
 {
 	// int key;

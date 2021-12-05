@@ -5,39 +5,31 @@
 
 int hashcode(dict *x, const char *s);
 
-
 bool dict_add(dict *x, const char *s)
 {
     if (x == NULL)
     {
         return false;
     }
-    // char *str = NULL;
-    // str = (char *)ncalloc(strlen(s) + 1, sizeof(char));
-    // strcpy(str, s);
-    // printf("str = %s\n", str);
 
     int hash_value = hashcode(x, s);
-    node *new_word = (node *)ncalloc(1, sizeof(node));
-    new_word->value = (char *)ncalloc(strlen(s) + 1, sizeof(char));
-    strcpy(new_word->value, s);
-    new_word->next = NULL;
-    //printf("v = %s\n",x->arr[hash_value]);
+    node *new_node = (node *)ncalloc(1, sizeof(node));
+    new_node->value = (char *)ncalloc(strlen(s) + 1, sizeof(char));
+    strcpy(new_node->value, s);
+    new_node->next = NULL;
+
     if (x->arr[hash_value] == NULL)
     {
-        x->arr[hash_value] = new_word;
+        x->arr[hash_value] = new_node;
     }
     else
     {
-        //printf("already occupied\n");
         node *temp = x->arr[hash_value];
         while (temp->next)
         {
             temp = temp->next;
         }
-
-        temp->next = new_word;
-        // free(temp);
+        temp->next = new_node;
     }
 
     return true;
@@ -101,7 +93,7 @@ dict *dict_init(unsigned int maxwords)
 
 void dict_free(dict *x)
 {
-    printf("freeing\n");
+    //printf("freeing\n");
     int i;
     for (i = 0; i < x->max_size; i++)
     {
@@ -110,13 +102,13 @@ void dict_free(dict *x)
         {
             node *temp = start;
             start = start->next;
-             free(temp->value);
+            free(temp->value);
             free(temp);
         }
         free(start);
     }
     free(x->arr);
-   
+
     free(x);
 }
 
@@ -125,29 +117,12 @@ int hashcode(dict *x, const char *s)
 
     unsigned long hash = 5381;
     int c;
-    while ((c=(*s++)))
+    while ((c = (*s++)))
     {
-        hash=33*hash^c;
+        hash = 33 * hash ^ c;
     }
-    return (int)(hash%x->max_size);
-
-   // int length = strlen(name);
-    // unsigned int hash_value = 0;
-
-    // for (int i = 0; i < (int)strlen(name); i++)
-    // {
-    //     hash_value += name[i];
-    //     hash_value = hash_value * name[i] % x->max_size;
-    // }
-
-    // // printf("hash_values for %s = %d\n", name, hash_value);
-
-    // return hash_value;
+    return (int)(hash % x->max_size);
 }
-// int hashcode(int key)
-// {
-// 	return (key % max);
-// }
 
 void mysprinter(dict *x)
 {
