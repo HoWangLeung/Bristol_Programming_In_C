@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 
    do
    {
-
+      
       if (fscanf(fp, "%s", str) != 1)
       {
          done = true;
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
          count += 1;
       }
    } while (!done);
-   //printf("Misspelt count = %d\n", count);
+    printf("Misspelt count = %d\n", count);
 
    dict_free(x);
    return EXIT_SUCCESS;

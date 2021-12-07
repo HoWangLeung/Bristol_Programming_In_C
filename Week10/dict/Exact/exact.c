@@ -24,10 +24,19 @@ bool dict_add(dict *x, const char *s)
     }
     else
     {
+
         node *temp = x->arr[hash_value];
+        if (strcmp(temp->value, s) == 0)
+        {
+            return true;
+        }
         while (temp->next)
         {
             temp = temp->next;
+            if (strcmp(temp->value, s) == 0)
+            {
+                return true;
+            }
         }
         temp->next = new_node;
     }
@@ -37,40 +46,30 @@ bool dict_add(dict *x, const char *s)
 
 bool dict_spelling(dict *x, const char *s)
 {
-    // printf("\nBEGIN------------>\n");
-    // printf("in spell check \n");
-    // printf("in spell check , checking < %s > -> \n", s);
     if (x == NULL)
     {
         return false;
     }
 
     int hash_value = hashcode(x, s);
-    //printf("hashcode = %d\n", hash_value);
-    //  printf(" proceed 2 %s , hashcode = %d\n", x->arr[hash_value]->value, hash_value);
     node *temp = x->arr[hash_value];
-    // printf("temp value = %d\n", temp);
 
     if (temp != 0 && strcmp(x->arr[hash_value]->value, s) == 0)
     {
-        //printf("<<=========true============>>\n");
         return true;
     }
-    // printf("need to check next in the chain ----->>\n");
 
     while (temp != 0 && temp->next)
     {
         temp = temp->next;
         if (strcmp(temp->value, s) == 0)
         {
-            // printf("<<=========true 2nd============>>\n");
+
             return true;
         }
     }
-    //printf("<<=====================>>\n");
-    return false;
 
-    //return true;
+    return false;
 }
 
 dict *dict_init(unsigned int maxwords)

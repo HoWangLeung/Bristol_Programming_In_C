@@ -221,7 +221,6 @@ bool BFS(rollarboard *list, rollarboard *initial_board, int *f, int my, int mx, 
                 return true;
             }
         }
-       
 
         *f += 1;
     }
@@ -372,7 +371,7 @@ void moveDown(rollarboard *board, int x, char temp_arr[MAX][MAX], int my, int mx
 
     copy_to_temp_arr(board, temp_arr, my, mx);
 
-    char temp = temp_arr[my - 1][x]; 
+    char temp = temp_arr[my - 1][x];
 
     for (int y = my - 1; y > 0; y--)
     {
@@ -602,7 +601,7 @@ void test()
     assert(is_same_2d_array(temp_arr, expected_result_1, my, mx));
     assert(!is_same_2d_array(temp_arr, initial_board_arr_1, my, mx));
 
-   //test if the board changes correctly after moveRight()
+    //test if the board changes correctly after moveRight()
     char temp_arr_2[MAX][MAX];
     moveRight(board, 1, temp_arr_2, my, mx);
     assert(is_same_2d_array(temp_arr_2, expected_result_2, my, mx));
@@ -632,12 +631,12 @@ void test()
     moveLeft(board, 0, temp_arr_4, my, mx);
     assert(is_same_2d_array(temp_arr_4, expected_result_4, my, mx));
     assert(!is_same_2d_array(temp_arr_4, initial_board_arr_1, my, mx));
-     //test if the board changes correctly after moveLeft()
+    //test if the board changes correctly after moveLeft()
     char temp_arr_6[MAX][MAX];
     moveLeft(board, 1, temp_arr_6, my, mx);
     assert(is_same_2d_array(temp_arr_6, expected_result_5, my, mx));
     assert(!is_same_2d_array(temp_arr_6, initial_board_arr_1, my, mx));
-     //test if the board changes correctly after moveLeft()
+    //test if the board changes correctly after moveLeft()
     char temp_arr_7[MAX][MAX];
     moveLeft(board, 2, temp_arr_7, my, mx);
     assert(is_same_2d_array(temp_arr_7, expected_result_6, my, mx));
@@ -647,7 +646,7 @@ void test()
     copy_to_temp_arr(board, temp_arr, my, mx);
     assert(is_same_2d_array(board->arr, temp_arr, my, mx));
     assert(!is_same_2d_array(initial_board_arr_2, temp_arr, my, mx));
-   //test if copy_to_newboard works
+    //test if copy_to_newboard works
     copy_to_newboard(board, temp_arr, my, mx);
     assert(is_same_2d_array(board->arr, temp_arr, my, mx));
     assert(!is_same_2d_array(initial_board_arr_2, temp_arr, my, mx));
@@ -707,7 +706,7 @@ void test()
     // //============================
     // //=======TEST BOARD 4=========
     // //============================
-   
+
     mx = 5;
     my = 3;
     rollarboard test_board_4;

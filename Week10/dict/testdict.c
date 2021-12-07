@@ -16,6 +16,8 @@ int main(void)
    dict *d = dict_init(50);
 
    assert(dict_add(d, "one"));
+    assert(dict_add(d, "one"));
+     assert(dict_add(d, "one"));
 
    assert(dict_add(d, "aga"));
    assert(dict_add(d, "abcde"));
@@ -37,7 +39,7 @@ int main(void)
    assert(dict_spelling(d, "Abcde"));
    assert(dict_spelling(d, "Abcde."));
    //print(d);
-
+   mysprinter(d);
    dict_free(d);
    printf("END OF TESTING !\n");
 
