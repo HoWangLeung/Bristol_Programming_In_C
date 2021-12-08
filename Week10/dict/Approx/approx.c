@@ -3,6 +3,13 @@
 
 unsigned long *_hashes(const char *s, int max_size);
 int hashcode(const char *s);
+void test();
+
+void test()
+{
+
+    printf("END OF OWN TESTING\n");
+}
 
 bool dict_add(dict *x, const char *s)
 {
@@ -32,9 +39,9 @@ bool dict_spelling(dict *x, const char *s)
     {
         return false;
     }
-   //("==================\n");
+    //("==================\n");
     int max_size = x->max_size;
-   // printf("max size = %d\n", max_size);
+    // printf("max size = %d\n", max_size);
     unsigned long *hash_value = _hashes(s, max_size);
     for (int j = 0; j < KHASHES; j++)
     {
@@ -50,7 +57,7 @@ bool dict_spelling(dict *x, const char *s)
 
 dict *dict_init(unsigned int maxwords)
 {
-    //printf("initing\n");
+    test();
     dict *d = (dict *)ncalloc(1, sizeof(dict));
     d->arr = (bool *)ncalloc(maxwords * 22, sizeof(bool));
     d->max_size = maxwords * 22;
@@ -75,7 +82,7 @@ unsigned long *_hashes(const char *s, int max_size)
     {
         h2 = 33 * h2 ^ rand();
         hashes[i] = (unsigned long)(h2 % max_size);
-      //  printf("hashes[%d] = %lu \n", i, hashes[i]);
+        //  printf("hashes[%d] = %lu \n", i, hashes[i]);
     }
 
     return hashes;

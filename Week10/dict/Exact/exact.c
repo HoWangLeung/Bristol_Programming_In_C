@@ -4,6 +4,38 @@
 // #include <string.h>
 
 int hashcode(dict *x, const char *s);
+void test();
+
+dict *allocateData(int maxwords);
+
+dict *allocateData(int maxwords)
+{
+    
+
+    dict *t = (dict *)ncalloc(1, sizeof(dict));
+    t->arr = (node **)ncalloc(maxwords * 2, sizeof(node *));
+    int m = maxwords * 2;
+    for (int i = 0; i < m; i++)
+    {
+        t->arr[i] = NULL;
+    }
+    t->max_size = maxwords * 2;
+
+    return t;
+}
+
+void test()
+{
+    dict *t1 = allocateData(50);
+    assert(t1->max_size == 100);
+
+    dict *t2 = allocateData(150);
+    assert(t2->max_size == 300);
+
+
+
+    printf("END OF OWN TESTING --> EXACT \n");
+}
 
 bool dict_add(dict *x, const char *s)
 {
@@ -74,18 +106,18 @@ bool dict_spelling(dict *x, const char *s)
 
 dict *dict_init(unsigned int maxwords)
 {
-    dict *d = (dict *)ncalloc(1, sizeof(dict));
-    d->arr = (node **)ncalloc(maxwords * 2, sizeof(node *));
+    test();
+    dict *d = allocateData(maxwords);
+    // dict *d = (dict *)ncalloc(1, sizeof(dict));
+    // d->arr = (node **)ncalloc(maxwords * 2, sizeof(node *));
 
-    int m = maxwords * 2;
+    // int m = maxwords * 2;
 
-    for (int i = 0; i < m; i++)
-    {
-        d->arr[i] = NULL;
-    }
-
-    d->size = maxwords;
-    d->max_size = maxwords * 2;
+    // for (int i = 0; i < m; i++)
+    // {
+    //     d->arr[i] = NULL;
+    // }
+    // d->max_size = maxwords * 2;
 
     return d;
 }

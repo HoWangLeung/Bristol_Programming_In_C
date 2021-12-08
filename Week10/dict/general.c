@@ -40,7 +40,6 @@ void** n2drecalloc(void** p, int oh, int nh, int ow, int nw, size_t szelem)
 
 void** n2dcalloc(int h, int w, size_t szelem)
 {
-
    int i;
    void** p;
    p = calloc(h, sizeof(void*));
