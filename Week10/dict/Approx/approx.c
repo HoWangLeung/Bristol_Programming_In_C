@@ -1,14 +1,47 @@
 #include "specific.h"
+#include <assert.h>
 #define KHASHES 11
+#define MAG_HASH_1 5381
+#define MAG_HASH_2 33
+#define MAX_FACTOR 22
 
 unsigned long *_hashes(const char *s, int max_size);
 int hashcode(const char *s);
+
 void test();
+dict *create_new_dict(int maxwords);
+
+dict *create_new_dict(int maxwords)
+{
+    dict *d = (dict *)ncalloc(1, sizeof(dict));
+    d->max_size = maxwords * MAX_FACTOR;
+    d->arr = (bool *)ncalloc(d->max_size, sizeof(bool));
+    return d;
+}
 
 void test()
 {
+    //====================================================================
+    //========= Test create_new_dict() ===================================
+    //====================================================================
+    dict *t0 = create_new_dict(20);
+    assert(t0->max_size == 440);
 
-    printf("END OF OWN TESTING\n");
+    dict *t1 = create_new_dict(100);
+    assert(t1->max_size == 2200);
+    //====================================================================
+    //========= Test hashcode() ==========================================
+    //====================================================================
+    unsigned long *hash_value = _hashes("Hello", t0->max_size);
+    for (int i = 0; i < KHASHES; i++)
+    {
+        assert(hash_value[i] >= 0);
+        assert((int)hash_value[i] <= t0->max_size);
+    }
+    free(hash_value);
+    dict_free(t0);
+    dict_free(t1);
+    printf("END OF OWN TESTINGs\n");
 }
 
 bool dict_add(dict *x, const char *s)
@@ -19,17 +52,14 @@ bool dict_add(dict *x, const char *s)
     }
     int max_size = x->max_size;
     unsigned long *hash_value = _hashes(s, max_size);
-
     if (!dict_spelling(x, s))
     {
         for (int i = 0; i < KHASHES; i++)
         {
-            x->arr[hash_value[i]] = 1;
+            x->arr[hash_value[i]] = true;
         }
     }
-
     free(hash_value);
-
     return true;
 }
 
@@ -39,9 +69,7 @@ bool dict_spelling(dict *x, const char *s)
     {
         return false;
     }
-    //("==================\n");
     int max_size = x->max_size;
-    // printf("max size = %d\n", max_size);
     unsigned long *hash_value = _hashes(s, max_size);
     for (int j = 0; j < KHASHES; j++)
     {
@@ -58,9 +86,7 @@ bool dict_spelling(dict *x, const char *s)
 dict *dict_init(unsigned int maxwords)
 {
     test();
-    dict *d = (dict *)ncalloc(1, sizeof(dict));
-    d->arr = (bool *)ncalloc(maxwords * 22, sizeof(bool));
-    d->max_size = maxwords * 22;
+    dict *d = create_new_dict(maxwords);
     return d;
 }
 
@@ -73,7 +99,6 @@ void dict_free(dict *x)
 unsigned long *_hashes(const char *s, int max_size)
 {
     unsigned long *hashes = ncalloc(KHASHES, sizeof(unsigned long));
-
     unsigned long bh = hashcode(s);
     int ln = strlen(s);
     srand(bh * (ln * s[0] + s[ln - 1]));
@@ -82,20 +107,17 @@ unsigned long *_hashes(const char *s, int max_size)
     {
         h2 = 33 * h2 ^ rand();
         hashes[i] = (unsigned long)(h2 % max_size);
-        //  printf("hashes[%d] = %lu \n", i, hashes[i]);
     }
-
     return hashes;
 }
 
 int hashcode(const char *s)
 {
-
-    unsigned long hash = 5381;
+    unsigned long hash = MAG_HASH_1;
     int c;
     while ((c = (*s++)))
     {
-        hash = 33 * hash ^ c;
+        hash = MAG_HASH_2 * hash ^ c;
     }
     return (hash);
 }

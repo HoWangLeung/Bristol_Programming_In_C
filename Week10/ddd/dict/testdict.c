@@ -22,10 +22,7 @@ int main(void)
    assert(dict_spelling(d, "two"));
    assert(!dict_spelling(d, "Two"));
    assert(!dict_spelling(d, "One"));
- 
+
    dict_free(d);
-   printf("END OF TEST\n");
    return EXIT_SUCCESS;
 }
-
-

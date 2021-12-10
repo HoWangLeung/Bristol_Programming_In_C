@@ -2,7 +2,7 @@
 CC := clang
 
 # The house-style flags
-CWARNS := -Wall -Wextra -Wpedantic -Wfloat-equal -Wvla -std=c99 
+CWARNS := -Wall -Wextra -Wpedantic -Wfloat-equal -Wvla -std=c99 -Werror
 
 # Optimized version
 PRODUCTION := $(CWARNS) -O2
@@ -48,13 +48,3 @@ spellapprox_s: Approx/approx.c spelling.c general.c
 # 'make clean' removes all executables
 clean: 
 	rm -f spellapprox spellexact spellapprox_s spellexact_s testapprox testexact testapprox_s testexact_s
-
-ve: testexact
-	valgrind --leak-check=full --track-origins=yes  ./testexact
-vspell_exact: spellexact
-	valgrind --leak-check=full --track-origins=yes  ./spellexact dictionary.txt test.txt
-
-va: testapprox
-	valgrind --leak-check=full --track-origins=yes  ./testapprox
-vspell_approx: spellapprox
-	valgrind --leak-check=full --track-origins=yes  ./spellapprox dictionary.txt test.txt

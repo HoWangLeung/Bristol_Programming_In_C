@@ -9,50 +9,40 @@ Should work for the any Dictionary implementation
 
 #define BIGSTR 1000
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-   int count = 0;
-   if (argc != 3)
-   {
+   if(argc != 3){
       fprintf(stderr, "Usage : %s <dictionary.txt> <test.txt>\n", argv[0]);
       exit(EXIT_FAILURE);
    }
    char str[BIGSTR];
-   dict *x = dict_init(400000);
-   FILE *fp = nfopen(argv[1], "rt");
+   dict* x = dict_init(400000);
+   FILE* fp = nfopen(argv[1], "rt");
    bool done = false;
-   do
-   {
-      if (fscanf(fp, "%s", str) != 1)
-      {
+   do{
+      if(fscanf(fp, "%s", str) != 1){
          done = true;
       }
-      else
-      {
+      else{
          assert(dict_add(x, str));
       }
-   } while (!done);
+   }while(!done);
    fclose(fp);
 
    fp = nfopen(argv[2], "rt");
    done = false;
-   do
-   {
-      if (fscanf(fp, "%s", str) != 1)
-      {
+   do{
+      if(fscanf(fp, "%s", str) != 1){
          done = true;
       }
-      if (dict_spelling(x, str) == false)
-      {
-        // printf("Misspelt : %s\n", str);
-         count++;
+      if(dict_spelling(x, str)==false){
+         printf("Misspelt : %s\n", str);
          // This is a new word, don't want to see it again
          assert(dict_add(x, str));
       }
-   } while (!done);
-   printf("Misspelt count : %d\n", count);
+   }while(!done);
    fclose(fp);
-   // mysprinter(x);
+
    dict_free(x);
    return EXIT_SUCCESS;
 }
