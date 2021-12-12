@@ -105,7 +105,7 @@ unsigned long *_hashes(const char *s, int max_size)
     unsigned long h2 = bh;
     for (int i = 0; i < KHASHES; i++)
     {
-        h2 = 33 * h2 ^ rand();
+        h2 = MAG_HASH_2 * h2 ^ rand();
         hashes[i] = (unsigned long)(h2 % max_size);
     }
     return hashes;
