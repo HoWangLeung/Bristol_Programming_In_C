@@ -2,7 +2,6 @@
 
 struct node
 {
-	// int key;
 	 char *value;
 	struct node *next;
 };

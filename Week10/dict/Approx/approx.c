@@ -41,7 +41,7 @@ void test()
     free(hash_value);
     dict_free(t0);
     dict_free(t1);
-    printf("END OF OWN TESTINGs\n");
+    
 }
 
 bool dict_add(dict *x, const char *s)

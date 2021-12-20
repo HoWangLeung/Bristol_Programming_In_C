@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+
 void on_error(const char* s);
 void* ncalloc(int n, size_t size);
 void** n2dcalloc(int h, int w, size_t size);

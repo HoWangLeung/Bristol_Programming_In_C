@@ -1,6 +1,4 @@
 #include "specific.h"
-// #include "../dict.h"
-// #include <stdio.h>
 #include <assert.h>
 #define MAG_HASH_1 5381
 #define MAG_HASH_2 33
@@ -90,21 +88,7 @@ int hashcode(dict *x, const char *s)
     return (int)(hash % x->max_size);
 }
 
-void mysprinter(dict *x)
-{
-    int i;
-    for (i = 0; i < x->max_size; i++)
-    {
-        node *temp = x->arr[i];
-        printf("dict[%d]-->", i);
-        while (temp)
-        {
-            printf("%s -->", temp->value);
-            temp = temp->next;
-        }
-        printf("NULL\n");
-    }
-}
+
 
 bool search(node **temp, const char *s)
 {
@@ -255,7 +239,6 @@ void test()
     dict_free(t1);
     dict_free(t2);
 
-    printf("END OF OWN TESTING --> EXACT \n");
 }
 
 void free_node(node *n)

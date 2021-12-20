@@ -3,7 +3,6 @@ Trivial testing file for Dictionary; notice it is case-sensitive.
 Should work for the any Dictionary implementation
 */
 #include "dict.h"
-
 #define BIGSTR 1000
 
 int main(void)
@@ -24,8 +23,7 @@ int main(void)
    assert(!dict_spelling(d, "One"));
  
    dict_free(d);
-   printf("END OF TEST\n");
+   // printf("END OF TEST\n");
    return EXIT_SUCCESS;
 }
-
 
