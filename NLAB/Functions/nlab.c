@@ -3,7 +3,7 @@
 
 bool PROG(Program *p)
 {
-
+    bool is_BEGIN = false;
     if (!strsame(p->wds[p->cw], "BEGIN"))
     {
         ERROR("No BEGIN statement ?");
@@ -23,19 +23,19 @@ bool INSTRCLIST(Program *p)
 {
     if (strsame(p->wds[p->cw], "}"))
     {
-       
+
         return true;
     }
-    if (!INSTRC(p))
+    if (!INSTRC(p) )
     {
+        printf("MISSING } \n");
         ERROR("INSTRC ERROR\n");
     }
+
     p->cw = p->cw + 1;
-    if (INSTRCLIST(p))
-    {
-        return true;
-    }
-    return false;
+    INSTRCLIST(p);
+
+    return true;
 }
 
 bool INSTRC(Program *p)
@@ -50,6 +50,8 @@ bool INSTRC(Program *p)
     {
         if (SET(p))
         {
+            printf("SET OK\n");
+            printCur(p,__LINE__);
             return true;
         }
     }
@@ -70,7 +72,7 @@ bool INSTRC(Program *p)
         }
     }
     printCur(p, __LINE__);
-    ERROR("Expecting a PRINT or SET or CREATE or LOOP ?");
+    ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR } ?");
     return false;
 }
 
@@ -96,25 +98,12 @@ bool PRINT(Program *p)
 bool SET(Program *p)
 {
     printf("======== parsing SET ========\n");
-    // p->cw = p->cw + 1;
-    //     printCur(p, __LINE__);
-    // if (p->wds[p->cw][0] != '$')
-    // {
-    //     ERROR("Expected a $ but received other symbol \n");
-    // }
 
-    // if (!p->wds[p->cw][1] || (p->wds[p->cw][1] < 'A' && p->wds[p->cw][1] > 'Z'))
-    // {
-    //     ERROR("Expected Variable A-Z \n");
-    // }
     if (!VARNAME(p))
     {
         return false;
     }
-
-    //===============
-    //======For := ==
-    //===============
+    
 
     p->cw = p->cw + 1;
     if (!p->wds[p->cw][0] || p->wds[p->cw][0] != ':')
@@ -126,10 +115,19 @@ bool SET(Program *p)
     {
         ERROR("Expected symbol = \n");
     }
+    printf("VARNAME AND COLON-EQUAL ok\n");
     p->cw = p->cw + 1;
-    POLISHLIST(p);
-
-    return true;
+    if (!POLISHLIST(p))
+    {
+        printf("NOT POLISH LIST, RETURN FALSE\n");
+        return false;
+    }
+    else
+    {
+        printf("POLISHLIST IS GOOD\n");
+    }
+    printf("SET RETURN TRUE\n");
+    return true; // changed from true to false
 }
 bool CREATE(Program *p)
 {
@@ -137,7 +135,7 @@ bool CREATE(Program *p)
     printCur(p, __LINE__);
     if (ROWS(p) && COLS(p) && VARNAME(p))
     {
-        printf("returning....\n");
+        printf("returning true ....\n");
         return true;
     }
 
@@ -194,16 +192,36 @@ bool POLISHLIST(Program *p)
 {
 
     printf("======== LEVEL3:POLISHLIST ========\n");
+    printCur(p, __LINE__);
     if (p->wds[p->cw][0] == ';')
     {
+        printf("YES ;\n");
         return true;
     }
+    if (p->wds[p->cw][0] == 0)
+    {
+        printf("emp null\n");
+        ERROR("EMPTY NULL");
+    }
+
     printCur(p, __LINE__);
 
-    POLISH(p);
+    if (!POLISH(p))
+    {
+        printf("REAL POLISH ERROR\n");
+        ERROR("POLISH ERROR:\n");
+        return false;
+    }
+
     p->cw = p->cw + 1;
     POLISHLIST(p);
+    if (p->wds[p->cw][0] != ';')
+    {
+        printf("AT THE END NO ;, false\n");
+        return false;
+    }
 
+    printf("POLISHLIST return true at the end\n");
     return true;
 }
 
@@ -228,8 +246,9 @@ bool POLISH(Program *p)
     }
     else
     {
+
         printCur(p, __LINE__);
-        ERROR("EXPECT PUSHDOWN | UNARYOP | BINARYOP ")
+        ERROR("POLISH ERROR:EXPECT PUSHDOWN | UNARYOP | BINARYOP ");
     }
 }
 
@@ -321,13 +340,13 @@ bool ROWS(Program *p)
         //ERROR("NOT DIGIT ONLY\n");
         return true;
     }
-
+    ERROR("Eexpect ROWS");
     return false;
 }
 
 bool COLS(Program *p)
 {
-    printf("handling ROWS\n");
+    printf("handling ROWS");
 
     p->cw = p->cw + 1;
     printCur(p, __LINE__);
@@ -336,7 +355,7 @@ bool COLS(Program *p)
         // ERROR("NOT DIGIT ONLY\n");
         return true;
     }
-
+    ERROR("Eexpect COLS\n");
     return false;
 }
 
@@ -344,6 +363,7 @@ bool VARNAME(Program *p)
 {
     printf("check if VARNAME\n");
     p->cw = p->cw + 1;
+
     printCur(p, __LINE__);
     if (is_variable(p->wds[p->cw]))
     {

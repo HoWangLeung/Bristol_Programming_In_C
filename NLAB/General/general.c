@@ -112,14 +112,10 @@ bool digits_only(const char *s)
 int is_variable(const char *s)
 {
    printf("*s = %c\n", s[0]);
-   // if (s[0] != '$')
-   // {
-   //    return 0;
-   // }
-   // else
-   // {
-   //    *s++;
-   // }
+   if (s[0] == 0)
+   {
+      return 0;
+   }
 
    while (*s)
    {

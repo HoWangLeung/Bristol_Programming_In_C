@@ -10,20 +10,32 @@
 #include "../General/general.h"
 
 #ifdef TESTMODE
-#define ERROR(PHRASE) { return false;}  
+#define ERROR(PHRASE) \
+   {                  \
+      return false;   \
+   }
 #else
-#define ERROR(PHRASE) { fprintf(stderr, \
-          "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
-          __FILE__, __LINE__); \
-          exit(EXIT_FAILURE); } 
-#endif                                     
+#define ERROR(PHRASE)                                             \
+   {                                                              \
+      fprintf(stderr,                                             \
+              "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
+              __FILE__, __LINE__);                                \
+      exit(EXIT_FAILURE);                                         \
+   }
+#endif
 #define strsame(A, B) (strcmp(A, B) == 0)
+
+struct stack {
+   /* Underlying array */
+   // dataframe* start;
+   int size;
+};
+typedef struct stack stack;
 struct prog
 {
    char wds[MAXNUMTOKENS][MAXTOKENSIZE];
    int cw; // Current Word
-   char var[26];
-   
+   stack variables[26];
 };
 typedef struct prog Program;
 
@@ -48,18 +60,18 @@ bool FILENAME(Program *p);
 bool ROWS(Program *p);
 bool COLS(Program *p);
 bool INTEGER(Program *p);
- 
+
 //LEVEL4
 bool PUSHDOWN(Program *p);
 bool UNARYOP(Program *p);
 bool BINARYOP(Program *p);
-void printCur(Program *p,int line);
+void printCur(Program *p, int line);
 
 //other
 bool LEFTBRACKET(Program *p);
 
-
 void read_file(FILE *file_pointer, Program *p);
-bool testmode(char * PHRASE);
+bool testmode(char *PHRASE);
 
-
+//A-Z
+//2d-array | INTEGER |

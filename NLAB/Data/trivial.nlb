@@ -1,3 +1,4 @@
 BEGIN {
-   SET $A := 2 
+   SET $F := 2 ;
+   PRINT $F
 }
