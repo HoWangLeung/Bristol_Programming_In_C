@@ -1,4 +1,5 @@
 BEGIN {
-   SET $F := 2 ;
-   PRINT $F
+
+   SET $A := 5 
+   
 }

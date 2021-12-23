@@ -9,22 +9,22 @@ int main(void)
 {
     // RUN_TEST("PROG");
 
-    RUN_TEST("INSTRCLIST");
+    //RUN_TEST("INSTRCLIST");
     // RUN_TEST("INSTRC");
     // RUN_TEST("SET");
     // RUN_TEST("PRINT");
     // RUN_TEST("CREATE");
     // RUN_TEST("LOOP");
     // RUN_TEST("POLISHLIST");
-    // RUN_TEST("VARNAME");
-    // RUN_TEST("INTEGER");
+    RUN_TEST("VARNAME");
+    RUN_TEST("INTEGER");
     // RUN_TEST("POLISH");
     // RUN_TEST("PUSHDOWN");
     // RUN_TEST("UNARYOP");
     // RUN_TEST("BINARYOP");
     // RUN_TEST("STRING");
-    // RUN_TEST("ROW");
-    // RUN_TEST("COL");
+    RUN_TEST("ROWS");
+    RUN_TEST("COLS");
     // RUN_TEST("FILENAME");
 
     return 0;
@@ -261,6 +261,7 @@ void RUN_TEST(char *testcase_name)
 
         set_up_testdata(p, 2, "ROWS");
         assert(!ROWS(p));
+       
     }
 
     if (strcmp(testcase_name, "COLS") == 0)
@@ -303,14 +304,14 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
     if (strcmp(func_name, "VARNAME") == 0)
     {
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
-            {"PRINT $A"}, //0: valid
-            {"PRINT $M"}, //1: valid
-            {"PRINT $1"}, //2: invalid: not A-Z
-            {"PRINT $@"}, //3: invalid: not A-Z
-            {"PRINT $!"}, //4: invalid: not A-Z
-            {"PRINT *1"}, //5: invalid: expected '$' but received '*'
-            {"PRINT *@"}, //6: invalid: expected '$' but received '*'
-            {"PRINT 1"},  //7: invalid: missing '$'
+            {"$A"}, //0: valid
+            {"$M"}, //1: valid
+            {"$1"}, //2: invalid: not A-Z
+            {"$@"}, //3: invalid: not A-Z
+            {"$!"}, //4: invalid: not A-Z
+            {"*1"}, //5: invalid: expected '$' but received '*'
+            {"*@"}, //6: invalid: expected '$' but received '*'
+            {"1"},  //7: invalid: missing '$'
         };
 
         char *pch = strtok(test_instructions[test_number], " ");
@@ -325,11 +326,11 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
     if (strcmp(func_name, "INTEGER") == 0)
     {
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
-            {"ROW 1"},   //0: valid 1 digit
-            {"ROW 12"},  //1: valid 2 digits
-            {"ROW 123"}, //2: valid 3 digits
-            {"ROW abc"}, //2: invalid, not [0-9]+
-            {"ROW !@#"}, //2: invalid. not [0-9]+
+            {"1"},   //0: valid 1 digit
+            {"12"},  //1: valid 2 digits
+            {"123"}, //2: valid 3 digits
+            {"abc"}, //2: invalid, not [0-9]+
+            {"!@#"}, //2: invalid. not [0-9]+
         };
 
         char *pch = strtok(test_instructions[test_number], " ");

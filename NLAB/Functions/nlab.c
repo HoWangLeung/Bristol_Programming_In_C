@@ -26,7 +26,7 @@ bool INSTRCLIST(Program *p)
 
         return true;
     }
-    if (!INSTRC(p) )
+    if (!INSTRC(p))
     {
         printf("MISSING } \n");
         ERROR("INSTRC ERROR\n");
@@ -51,7 +51,7 @@ bool INSTRC(Program *p)
         if (SET(p))
         {
             printf("SET OK\n");
-            printCur(p,__LINE__);
+            printCur(p, __LINE__);
             return true;
         }
     }
@@ -72,7 +72,7 @@ bool INSTRC(Program *p)
         }
     }
     printCur(p, __LINE__);
-    ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR } ?");
+    ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR '}' ?");
     return false;
 }
 
@@ -98,12 +98,11 @@ bool PRINT(Program *p)
 bool SET(Program *p)
 {
     printf("======== parsing SET ========\n");
-
+    p->cw = p->cw + 1;
     if (!VARNAME(p))
     {
         return false;
     }
-    
 
     p->cw = p->cw + 1;
     if (!p->wds[p->cw][0] || p->wds[p->cw][0] != ':')
@@ -127,22 +126,36 @@ bool SET(Program *p)
         printf("POLISHLIST IS GOOD\n");
     }
     printf("SET RETURN TRUE\n");
-    return true; // changed from true to false
+    return true;
 }
 bool CREATE(Program *p)
 {
     printf("======== parsing CREATE ========\n");
     printCur(p, __LINE__);
-    if (ROWS(p) && COLS(p) && VARNAME(p))
+    p->cw = p->cw + 1;
+    if (ROWS(p))
     {
-        printf("returning true ....\n");
-        return true;
+        p->cw = p->cw + 1;
+        if (COLS(p))
+        {
+            printf("COLS OK\n");
+            p->cw = p->cw + 1;
+            if (VARNAME(p))
+            {
+                printf("returning true ....\n");
+                return true;
+            }
+        }
     }
 
     printf("COUNTINUE TO CHECK FILENAME & VARNAME\n");
-    if (FILENAME(p) && VARNAME(p))
+    if (FILENAME(p))
     {
-        return true;
+        p->cw = p->cw + 1;
+        if (VARNAME(p))
+        {
+            return true;
+        }
     }
 
     return false;
@@ -151,21 +164,51 @@ bool LOOP(Program *p)
 {
     if (p)
         printf("loop something \n");
+    printCur(p, __LINE__);
 
-    if (VARNAME(p) && INTEGER(p) && LEFTBRACKET(p))
+    p->cw = p->cw + 1;
+    printCur(p, __LINE__);
+    if (!VARNAME(p))
     {
-        printf("valid loop........\n");
-        p->cw = p->cw + 1;
-        INSTRCLIST(p);
-        return true;
+        printf("VAR NOT OK\n");
+        ERROR("INVALID VARNAME");
     }
 
-    return false;
+    p->cw = p->cw + 1;
+    if (!INTEGER(p))
+    {
+        printf("INTEGER NOT OK\n");
+        ERROR("INVALID INTEGER");
+    }
+    p->cw = p->cw + 1;
+    if (!LEFTBRACKET(p))
+    {
+        printf("LEFT BRACKET NOT OK\n");
+        ERROR("INVALID INTEGER");
+
+        // if (INTEGER(p))
+        // {
+        //     p->cw = p->cw + 1;
+        //     if (LEFTBRACKET(p))
+        //     {
+        //         printf("valid loop........\n");
+        //         p->cw = p->cw + 1;
+        //         INSTRCLIST(p);
+        //         return true;
+        //     }
+        // }
+    }
+    p->cw = p->cw + 1;
+    printCur(p, __LINE__);
+    INSTRCLIST(p);
+    
+    printf("LOOP returns true\n");
+    return true;
 }
 
 bool LEFTBRACKET(Program *p)
 {
-    p->cw = p->cw + 1;
+    // p->cw = p->cw + 1;
     if (strsame(p->wds[p->cw], "{"))
     {
         return true;
@@ -176,7 +219,7 @@ bool LEFTBRACKET(Program *p)
 
 bool INTEGER(Program *p)
 {
-    p->cw = p->cw + 1;
+    // p->cw = p->cw + 1;
     printCur(p, __LINE__);
     if (digits_only(p->wds[p->cw]))
     {
@@ -228,7 +271,6 @@ bool POLISHLIST(Program *p)
 bool POLISH(Program *p)
 {
     printf("======== LEVEL3:POLISH ========\n");
-
     if (PUSHDOWN(p) == true)
     {
         printf(" => IS PUSHDOWN\n");
@@ -246,7 +288,6 @@ bool POLISH(Program *p)
     }
     else
     {
-
         printCur(p, __LINE__);
         ERROR("POLISH ERROR:EXPECT PUSHDOWN | UNARYOP | BINARYOP ");
     }
@@ -333,14 +374,14 @@ bool ROWS(Program *p)
 {
     printf("handling ROWS\n");
 
-    p->cw = p->cw + 1;
+    // p->cw = p->cw + 1;
     printCur(p, __LINE__);
     if (digits_only(p->wds[p->cw]))
     {
         //ERROR("NOT DIGIT ONLY\n");
         return true;
     }
-    ERROR("Eexpect ROWS");
+    // ERROR("Eexpect ROWS");
     return false;
 }
 
@@ -348,7 +389,7 @@ bool COLS(Program *p)
 {
     printf("handling ROWS");
 
-    p->cw = p->cw + 1;
+    // p->cw = p->cw + 1;
     printCur(p, __LINE__);
     if (digits_only(p->wds[p->cw]))
     {
@@ -361,8 +402,7 @@ bool COLS(Program *p)
 
 bool VARNAME(Program *p)
 {
-    printf("check if VARNAME\n");
-    p->cw = p->cw + 1;
+    // printf("check if VARNAME\n");
 
     printCur(p, __LINE__);
     if (is_variable(p->wds[p->cw]))

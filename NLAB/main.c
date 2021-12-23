@@ -29,5 +29,4 @@ int main(int argc, char *argv[])
 //A-Z
 //INTEGER | A-Z
 // 250 2d int array
-
 //SET A
