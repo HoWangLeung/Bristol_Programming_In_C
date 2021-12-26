@@ -25,17 +25,17 @@
 #endif
 #define strsame(A, B) (strcmp(A, B) == 0)
 
-struct stack {
-   /* Underlying array */
-   // dataframe* start;
-   int size;
+struct var {
+   int ** num;
+   int height;
+   int width;
 };
-typedef struct stack stack;
+typedef struct var var;
 struct prog
 {
    char wds[MAXNUMTOKENS][MAXTOKENSIZE];
    int cw; // Current Word
-   stack variables[26];
+   var variables[26];
 };
 typedef struct prog Program;
 

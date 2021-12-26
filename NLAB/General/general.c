@@ -158,7 +158,7 @@ bool is_string(const char *s)
    int numDouble = 0;
    int i;
    for (i = 0; s[i] != 0; i++)
-   { // Don't call strlen() every time, it's N**2
+   { 
 
       if (s[i] == '"')
       {

@@ -7,25 +7,25 @@ void RUN_TEST(char *testcase_name);
 
 int main(void)
 {
-    // RUN_TEST("PROG");
+    RUN_TEST("PROG");
 
-    //RUN_TEST("INSTRCLIST");
-    // RUN_TEST("INSTRC");
-    // RUN_TEST("SET");
-    // RUN_TEST("PRINT");
-    // RUN_TEST("CREATE");
-    // RUN_TEST("LOOP");
-    // RUN_TEST("POLISHLIST");
+    RUN_TEST("INSTRCLIST");
+    RUN_TEST("INSTRC");
+    RUN_TEST("SET");
+    RUN_TEST("PRINT");
+    RUN_TEST("CREATE");
+    RUN_TEST("LOOP");
+    RUN_TEST("POLISHLIST");
     RUN_TEST("VARNAME");
     RUN_TEST("INTEGER");
-    // RUN_TEST("POLISH");
-    // RUN_TEST("PUSHDOWN");
-    // RUN_TEST("UNARYOP");
-    // RUN_TEST("BINARYOP");
-    // RUN_TEST("STRING");
+    RUN_TEST("POLISH");
+    RUN_TEST("PUSHDOWN");
+    RUN_TEST("UNARYOP");
+    RUN_TEST("BINARYOP");
+    RUN_TEST("STRING");
     RUN_TEST("ROWS");
     RUN_TEST("COLS");
-    // RUN_TEST("FILENAME");
+    RUN_TEST("FILENAME");
 
     return 0;
 }
