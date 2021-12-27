@@ -7,8 +7,11 @@ RESULTS :=$(NLBS:.nlb=.result)
 
 all: parse parse_s parse_v interp interp_s interp_v
 
-interp: nlab.c nlab.h General/general.h
-		gcc nlab.c $(CFLAGS) -O2 -DINTERP -o interp -lm
+# interp: nlab.c nlab.h General/general.h
+# 		gcc nlab.c $(CFLAGS) -O2 -DINTERP -o interp -lm
+
+interp: Functions/nlab.c Functions/nlab.h General/general.h main.c General/general.c
+		gcc main.c Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -g3 -o interp -lm
 
 interp_s: nlab.c nlab.h General/general.h
 		gcc nlab.c $(CFLAGS) $(SANI) -g3 -DINTERP -o interp_s -lm
@@ -32,8 +35,12 @@ runall: $(RESULTS)
 clean:
 	rm -f parse parse_s parse_v interp interp_s interp_v $(RESULTS)
 
-test: test.c Functions/nlab.c Functions/nlab.h General/general.h
-	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -DTESTMODE -o test -lm
+test: test.c Functions/nlab.c Functions/nlab.h General/general.h 
+	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o test -lm
+
+test_interp: test.c Functions/nlab.c Functions/nlab.h General/general.h 
+	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o test_interp -lm
+
 
 test_v: test.c Functions/nlab.c Functions/nlab.h General/general.h
 	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) -DTESTMODE -o test_v -lm

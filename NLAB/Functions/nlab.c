@@ -1,5 +1,6 @@
 #include "nlab.h"
 #define FILESIZE 100
+// #define INTERP
 
 bool PROG(Program *p)
 {
@@ -91,6 +92,7 @@ bool PRINT(Program *p)
         printf("%s\n", p->wds[p->cw]);
         return true;
     }
+
     ERROR("PRINT failure -> :");
     return false;
 }
@@ -98,11 +100,16 @@ bool PRINT(Program *p)
 bool SET(Program *p)
 {
     printf("======== parsing SET ========\n");
+
     p->cw = p->cw + 1;
     if (!VARNAME(p))
     {
         return false;
     }
+
+    allocate_space(p);
+
+    printf("hi = %c\n", p->wds[p->cw][1]);
 
     p->cw = p->cw + 1;
     if (!p->wds[p->cw][0] || p->wds[p->cw][0] != ':')
@@ -125,6 +132,7 @@ bool SET(Program *p)
     {
         printf("POLISHLIST IS GOOD\n");
     }
+
     printf("SET RETURN TRUE\n");
     return true;
 }
@@ -201,7 +209,7 @@ bool LOOP(Program *p)
     p->cw = p->cw + 1;
     printCur(p, __LINE__);
     INSTRCLIST(p);
-    
+
     printf("LOOP returns true\n");
     return true;
 }
@@ -233,7 +241,6 @@ bool INTEGER(Program *p)
 //==========================
 bool POLISHLIST(Program *p)
 {
-
     printf("======== LEVEL3:POLISHLIST ========\n");
     printCur(p, __LINE__);
     if (p->wds[p->cw][0] == ';')
@@ -316,17 +323,37 @@ bool FILENAME(Program *p)
 
 bool PUSHDOWN(Program *p)
 {
-
     if (digits_only(p->wds[p->cw]))
     {
         printf("is integer\n");
 
+        printCur(p, __LINE__);
+#ifdef INTERP
+        printf("INTERP triggered");
+        set_value(p);
+#endif
+
         return true;
     }
+
     printCur(p, __LINE__);
+
     if (is_variable(p->wds[p->cw]))
     {
         printf("is variable\n");
+        printCur(p, __LINE__);
+
+#ifdef INTERP
+        var *v = get_value(p);
+        print_variable(v);
+        for (int y = 0; y < v->y; y++)
+        {
+            for (int x = 0; x < v->x; x++)
+            {
+                p->variables[p->pos]->num[y][x] = v->num[y][x];
+            }
+        }
+#endif
         return true;
     }
 
@@ -429,4 +456,71 @@ bool testmode(char *PHRASE)
 {
     printf("test mode called\n");
     return false;
+}
+void allocate_space(Program *p)
+{
+    printf("%c\n", p->wds[p->cw][1]);
+    int pos = get_pos(p);
+    printf("POS = %d\n", pos);
+    p->pos = pos;
+    p->variables[pos] = ncalloc(1, sizeof(var));
+    p->variables[pos]->y = 1;
+    p->variables[pos]->x = 1;
+    p->variables[pos]->num = (int **)n2dcalloc(1, 1, sizeof(int *));
+}
+
+bool set_value(Program *p)
+{
+    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    {
+        for (int x = 0; x < p->variables[p->pos]->x; x++)
+        {
+            p->variables[p->pos]->num[y][x] = atoi(p->wds[p->cw]);
+        }
+    }
+
+    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    {
+        for (int x = 0; x < p->variables[p->pos]->x; x++)
+        {
+            printf("%d", p->variables[p->pos]->num[y][x]);
+        }
+        printf("\n");
+    }
+}
+
+var *get_value(Program *p)
+{
+    printCur(p, __LINE__);
+    int pos = get_pos(p);
+    printf("pos =%d\n", pos);
+    if (p->variables[pos] != NULL)
+    {
+        printCur(p, __LINE__);
+
+        return p->variables[pos];
+    }
+
+    return NULL;
+}
+
+int get_pos(Program *p)
+{
+    return p->wds[p->cw][1] - 'A';
+}
+
+void print_variable(var *v)
+{
+    printf("printing variable:\n");
+    if (v)
+    {
+        for (int y = 0; y < v->y; y++)
+        {
+            for (int x = 0; x < v->x; x++)
+            {
+                printf("%d", v->num[y][x]);
+            }
+            printf("\n");
+        }
+    }
 }

@@ -1,5 +1,4 @@
 BEGIN {
-
-   SET $A := 5 
-   
+   SET $I := 5 ;
+   PRINT $I
 }

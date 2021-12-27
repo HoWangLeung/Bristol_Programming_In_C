@@ -27,15 +27,16 @@
 
 struct var {
    int ** num;
-   int height;
-   int width;
+   int y;
+   int x;
 };
 typedef struct var var;
 struct prog
 {
    char wds[MAXNUMTOKENS][MAXTOKENSIZE];
    int cw; // Current Word
-   var variables[26];
+   var* variables[26];
+   int pos;
 };
 typedef struct prog Program;
 
@@ -72,6 +73,16 @@ bool LEFTBRACKET(Program *p);
 
 void read_file(FILE *file_pointer, Program *p);
 bool testmode(char *PHRASE);
+
+void allocate_space(Program *p);
+bool set_value(Program *p);
+
+
+var* get_value(Program *p);
+
+int get_pos(Program *p);
+
+void print_variable(var * v);
 
 //A-Z
 //2d-array | INTEGER |

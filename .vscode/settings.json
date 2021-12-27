@@ -4,6 +4,7 @@
         "assert.h": "c",
         "__locale": "c",
         "nlab.h": "c",
-        "general.h": "c"
+        "general.h": "c",
+        "ratio": "c"
     }
 }

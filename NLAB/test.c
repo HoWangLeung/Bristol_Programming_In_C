@@ -7,8 +7,8 @@ void RUN_TEST(char *testcase_name);
 
 int main(void)
 {
+#ifdef PARSER
     RUN_TEST("PROG");
-
     RUN_TEST("INSTRCLIST");
     RUN_TEST("INSTRC");
     RUN_TEST("SET");
@@ -26,6 +26,13 @@ int main(void)
     RUN_TEST("ROWS");
     RUN_TEST("COLS");
     RUN_TEST("FILENAME");
+
+    printf("TESTED PARSER\n");
+#endif
+
+#ifdef INTERP
+    printf("TESTING INTERP\n");
+#endif
 
     return 0;
 }
@@ -104,6 +111,9 @@ void RUN_TEST(char *testcase_name)
         assert(INSTRCLIST(p));
 
         set_up_testdata(p, 3, "INSTRCLIST");
+        assert(INSTRCLIST(p));
+
+        set_up_testdata(p, 4, "INSTRCLIST");
         assert(INSTRCLIST(p));
     }
     if (strcmp(testcase_name, "INSTRC") == 0)
@@ -261,7 +271,6 @@ void RUN_TEST(char *testcase_name)
 
         set_up_testdata(p, 2, "ROWS");
         assert(!ROWS(p));
-       
     }
 
     if (strcmp(testcase_name, "COLS") == 0)
@@ -366,6 +375,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"PRINT $A PRINT $B }"},
             {"SET $A := 5 ; }"},
             {"ONES 6 5 $A"},
+            {"}"},
         };
         char *pch = strtok(test_instructions[test_number], " ");
         int i = 0;
@@ -398,7 +408,6 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"SET $A := 1 ;"},
             {"SET $A := 3"},
             {"SET $B := $A U-EIGHTCOUNT ;"},
-
         };
 
         char *pch = strtok(test_instructions[test_number], " ");
