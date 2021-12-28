@@ -4,6 +4,13 @@
 
 void set_up_testdata(Program *p, int test_number, char *func_name);
 void RUN_TEST(char *testcase_name);
+void copy_test_data(Program *p, char test_instructions[ARR_RANGE][ARR_RANGE], int test_number);
+void RUN_INTERP_TEST(char *testcase_name);
+
+void get_parser_data(Program *p, int test_number, char *func_name);
+void get_interp_data(Program *p, int test_number, char *func_name);
+
+void clear_previous_data(Program *p);
 
 int main(void)
 {
@@ -26,14 +33,13 @@ int main(void)
     RUN_TEST("ROWS");
     RUN_TEST("COLS");
     RUN_TEST("FILENAME");
-
     printf("TESTED PARSER\n");
 #endif
 
 #ifdef INTERP
-    printf("TESTING INTERP\n");
+    RUN_INTERP_TEST("PROG");
 #endif
-
+    printf("END OF TESTING\n");
     return 0;
 }
 
@@ -52,6 +58,42 @@ void RUN_TEST(char *testcase_name)
 
         set_up_testdata(p, 2, "PROG");
         assert(!PROG(p));
+
+        set_up_testdata(p, 3, "PROG");
+        assert(PROG(p));
+
+        printf("TESTING PROG\n");
+    }
+
+    if (strcmp(testcase_name, "INSTRCLIST") == 0)
+    {
+        set_up_testdata(p, 0, "INSTRCLIST");
+        assert(INSTRCLIST(p));
+
+        set_up_testdata(p, 1, "INSTRCLIST");
+        assert(INSTRCLIST(p));
+
+        set_up_testdata(p, 2, "INSTRCLIST");
+        assert(INSTRCLIST(p));
+
+        set_up_testdata(p, 3, "INSTRCLIST");
+        assert(INSTRCLIST(p));
+
+        set_up_testdata(p, 4, "INSTRCLIST");
+        assert(INSTRCLIST(p));
+    }
+    if (strcmp(testcase_name, "INSTRC") == 0)
+    {
+        set_up_testdata(p, 0, "INSTRC");
+        assert(!INSTRC(p));
+
+        set_up_testdata(p, 1, "INSTRC");
+        assert(!INSTRC(p));
+
+        set_up_testdata(p, 2, "INSTRC");
+        assert(!INSTRC(p));
+
+        printf("TESTED INSTRC\n");
     }
 
     if (strcmp(testcase_name, "VARNAME") == 0)
@@ -99,31 +141,6 @@ void RUN_TEST(char *testcase_name)
         assert(!INTEGER(p));
     }
 
-    if (strcmp(testcase_name, "INSTRCLIST") == 0)
-    {
-        set_up_testdata(p, 0, "INSTRCLIST");
-        assert(INSTRCLIST(p));
-
-        set_up_testdata(p, 1, "INSTRCLIST");
-        assert(INSTRCLIST(p));
-
-        set_up_testdata(p, 2, "INSTRCLIST");
-        assert(INSTRCLIST(p));
-
-        set_up_testdata(p, 3, "INSTRCLIST");
-        assert(INSTRCLIST(p));
-
-        set_up_testdata(p, 4, "INSTRCLIST");
-        assert(INSTRCLIST(p));
-    }
-    if (strcmp(testcase_name, "INSTRC") == 0)
-    {
-        // printf("START\n");
-
-        set_up_testdata(p, 0, "INSTRC");
-        assert(INSTRC(p));
-    }
-
     if (strcmp(testcase_name, "SET") == 0)
     {
         // printf("START\n");
@@ -160,6 +177,18 @@ void RUN_TEST(char *testcase_name)
         assert(!CREATE(p));
 
         set_up_testdata(p, 2, "CREATE");
+        assert(!CREATE(p));
+
+        set_up_testdata(p, 3, "CREATE");
+        assert(CREATE(p));
+
+        set_up_testdata(p, 4, "CREATE");
+        assert(!CREATE(p));
+
+        set_up_testdata(p, 5, "CREATE");
+        assert(!CREATE(p));
+
+        set_up_testdata(p, 6, "CREATE");
         assert(!CREATE(p));
     }
     if (strcmp(testcase_name, "LOOP") == 0)
@@ -296,20 +325,96 @@ void RUN_TEST(char *testcase_name)
         set_up_testdata(p, 2, "FILENAME");
         assert(!FILENAME(p));
     }
+    // free(p->variables);
+
+    free(p);
+}
+
+void RUN_INTERP_TEST(char *testcase_name)
+{
+    Program *p = calloc(1, sizeof(Program));
+
+    if (strcmp(testcase_name, "PROG") == 0)
+    {
+        printf("ASSERTIN*\n");
+        // set_up_testdata(p, 0, "PROG");
+        // assert(PROG(p));
+
+        // set_up_testdata(p, 1, "PROG");
+        // assert(!PROG(p));
+
+        // set_up_testdata(p, 2, "PROG");
+        // assert(!PROG(p));
+
+        // set_up_testdata(p, 3, "PROG");
+        // assert(PROG(p));
+
+        set_up_testdata(p, 4, "PROG");
+        assert(!PROG(p));
+
+        set_up_testdata(p, 5, "PROG");
+        assert(!PROG(p));
+
+        set_up_testdata(p, 6, "PROG");
+        assert(PROG(p));
+
+        printf("RUN_INTERP_TEST PROG\n");
+    }
 
     free(p);
 }
 
 void set_up_testdata(Program *p, int test_number, char *func_name)
 {
-    // printf("cw = %d\n",p->cw);
-    // for (int i = 0; i < p->cw; ++i)
-    // {
-    //     p->wds[0][0] = '\0';
-    // }
-    memset(p->wds, 0, sizeof(p->wds));
-    p->cw = 0;
+    clear_previous_data(p);
+#ifdef PARSER
+    get_parser_data(p, test_number, func_name);
+#elif INTERP
+    get_interp_data(p, test_number, func_name);
+    printf("INTERP TESTING\n");
 
+#else
+    printf("Need to add -DPARSER or -DINTERP in makefile\n");
+#endif
+}
+
+void copy_test_data(Program *p, char test_instructions[ARR_RANGE][ARR_RANGE], int test_number)
+{
+    char *pch = strtok(test_instructions[test_number], " ");
+    int i = 0;
+    while (pch != NULL)
+    {
+        strcpy(p->wds[i++], pch);
+        pch = strtok(NULL, " ");
+    }
+}
+
+void get_parser_data(Program *p, int test_number, char *func_name)
+{
+    if (strcmp(func_name, "PROG") == 0)
+    {
+
+        char test_instructions[ARR_RANGE][ARR_RANGE] = {
+            {"BEGIN { }"},               //0: valid
+            {"BEGIN { PRINT $A }"},      //0: valid
+            {"BEGIN }"},                 //0: invalid 1 digit
+            {"BEGIN { SET $Z := 9 ; }"}, //0: valid
+        };
+
+        copy_test_data(p, test_instructions, test_number);
+    }
+
+    if (strcmp(func_name, "INSTRCLIST") == 0)
+    {
+        char test_instructions[ARR_RANGE][ARR_RANGE] = {
+            {"PRINT $A }"},
+            {"PRINT $A PRINT $B }"},
+            {"SET $A := 5 ; }"},
+            {"ONES 6 5 $A }"},
+            {"}"},
+        };
+        copy_test_data(p, test_instructions, test_number);
+    }
     if (strcmp(func_name, "VARNAME") == 0)
     {
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
@@ -322,14 +427,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"*@"}, //6: invalid: expected '$' but received '*'
             {"1"},  //7: invalid: missing '$'
         };
-
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "INTEGER") == 0)
@@ -342,63 +440,19 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"!@#"}, //2: invalid. not [0-9]+
         };
 
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
-    }
-
-    if (strcmp(func_name, "PROG") == 0)
-    {
-        char test_instructions[ARR_RANGE][ARR_RANGE] = {
-            {"BEGIN { }"},          //0: valid
-            {"BEGIN { PRINT $A }"}, //0: valid
-            {"BEGIN }"},            //0: invalid 1 digit
-        };
-
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
-    }
-
-    if (strcmp(func_name, "INSTRCLIST") == 0)
-    {
-        char test_instructions[ARR_RANGE][ARR_RANGE] = {
-            {"PRINT $A }"},
-            {"PRINT $A PRINT $B }"},
-            {"SET $A := 5 ; }"},
-            {"ONES 6 5 $A"},
-            {"}"},
-        };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "INSTRC") == 0)
     {
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
-            {"PRINT $A"},
+            {"SET $X = $Y"}, //invalid missing :
+            {"SET $A = 5"},  //invalid, missing :
+            {"SET $A := 5"}, //invalid, missing :
+
         };
 
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "SET") == 0)
@@ -409,15 +463,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"SET $A := 3"},
             {"SET $B := $A U-EIGHTCOUNT ;"},
         };
-
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "PRINT") == 0)
@@ -428,36 +474,25 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"PRINT \"WORD\""},
             {"PRINT \"WORD"}, //invalid
             {"PRINT $@"},     //invalid
-
         };
 
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "CREATE") == 0)
     {
 
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
-            {"ONES 6 5 $A"},
-            {"ONES 6 5"},   //invalid
-            {"ONES 6 $A "}, //invalid
+            {"ONES 6 5 $A"},             //0: valid
+            {"ONES 6 5"},                //1: invalid, missing varname
+            {"ONES 6 $A "},              //2: invalid, missing col or row
+            {"READ \"lglider.arr\" $A"}, //3: valid
+            {"READ \"lglider.arr\""},    //4: invalid, missing varname
+            {"READ  $A"},                //5: invalid, missing filename
+            {"PRINT \"lglider.arr"},     //6: invalid,missing a double quote on the right
         };
 
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "LOOP") == 0)
@@ -468,14 +503,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"LOOP $I 10 { } "},                                   //valid
             {" LOOP $I 5 { LOOP $J 5 {  SET $A := $I $J B-TIMES ; PRINT $A } }"}};
 
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "POLISHLIST") == 0)
@@ -487,14 +515,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"5 ;"},  //valid
 
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "POLISH") == 0)
@@ -506,14 +527,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"@"},  //invalid
 
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "PUSHDOWN") == 0)
@@ -524,14 +538,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"$A"}, //valid
             {"@"},  //invalid
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "UNARYOP") == 0)
@@ -542,14 +549,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"U-EIGHTCOUNT"}, //valid
             {"TEXT"},         //invalid
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "STRING") == 0)
@@ -560,14 +560,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {" \"WORD\""}, //invalid
             {"NOQUOTES"},  //invalid
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "BINARYOP") == 0)
@@ -583,14 +576,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"B-EQUALS"},  //valid
             {"TEXT"},      //invalid
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "ROWS") == 0)
@@ -601,14 +587,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"12"},   //invalid
             {"@123"}, //invalid
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "COLS") == 0)
@@ -619,14 +598,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {"12"},   //invalid
             {"@123"}, //invalid
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
 
     if (strcmp(func_name, "FILENAME") == 0)
@@ -637,13 +609,31 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
             {" \"WORD\""}, //invalid
             {"NOQUOTES"},  //invalid
         };
-        char *pch = strtok(test_instructions[test_number], " ");
-        int i = 0;
-        while (pch != NULL)
-        {
-            printf("pch = %s\n", pch);
-            strcpy(p->wds[i++], pch);
-            pch = strtok(NULL, " ");
-        }
+        copy_test_data(p, test_instructions, test_number);
     }
+}
+
+void get_interp_data(Program *p, int test_number, char *func_name)
+{
+    if (strcmp(func_name, "PROG") == 0)
+    {
+        char test_instructions[ARR_RANGE][ARR_RANGE] = {
+            {"BEGIN { SET $A := 5 ; PRINT $A }"},                      //0: valid
+            {"BEGIN { PRINT $A }"},                                    //1: invalid, $A is undefined
+            {"BEGIN }"},                                               //2: invalid , missing {
+            {"BEGIN { SET $Z := 9 ; }"},                               //3: valid
+            {"BEGIN { SET $A := 5 ; PRINT $B }"},                      //4: invalid, $A is set but $B is undefined
+            {"BEGIN {  PRINT $C SET $C := 5 ; }"},                     //5: invalid, print $C before $C is set
+            {"BEGIN {  ONES 3 5 $A   PRINT \"ARRAY:\"  PRINT $A  } "}, //6: valid
+
+        };
+        copy_test_data(p, test_instructions, test_number);
+    }
+}
+
+void clear_previous_data(Program *p)
+{
+    memset(p->wds, 0, sizeof(p->wds));
+    memset(p->variables, 0, sizeof(p->variables));
+    p->cw = 0;
 }

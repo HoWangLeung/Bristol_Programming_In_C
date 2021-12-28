@@ -11,7 +11,10 @@
 
 #ifdef TESTMODE
 #define ERROR(PHRASE) \
-   {                  \
+   {                                                              \
+     fprintf(stderr,                                             \
+              "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
+              __FILE__, __LINE__);                                \
       return false;   \
    }
 #else
@@ -82,7 +85,7 @@ var* get_value(Program *p);
 
 int get_pos(Program *p);
 
-void print_variable(var * v);
+bool print_variable(var * v);
 
 //A-Z
 //2d-array | INTEGER |

@@ -16,12 +16,20 @@ bool PROG(Program *p)
         ERROR("Expected {");
     }
     p->cw = p->cw + 1;
-    INSTRCLIST(p);
+    if (!INSTRCLIST(p))
+    {
+        printf("SOMETHING WORONG IN INSTRCLIST\n");
+        return false;
+    }
+    printf("PROG RETURNS TRUE\n");
     return true;
 }
 
 bool INSTRCLIST(Program *p)
 {
+    printf("======== parsing INSTRCLIST ========\n");
+    printCur(p, __LINE__);
+
     if (strsame(p->wds[p->cw], "}"))
     {
 
@@ -29,12 +37,22 @@ bool INSTRCLIST(Program *p)
     }
     if (!INSTRC(p))
     {
-        printf("MISSING } \n");
-        ERROR("INSTRC ERROR\n");
+        printf("INSTRCLIST(): INSTRC error  \n");
+
+        ERROR("INSTRCLIST return false ....\n");
+
+        return false;
     }
 
     p->cw = p->cw + 1;
-    INSTRCLIST(p);
+    if (!INSTRCLIST(p))
+    {
+        return false;
+    }
+    // printf("INSTRCLIST returns true\n");
+    // #ifdef TESTMODE
+    //     printf("IN TEST...\n");
+    // #endif
 
     return true;
 }
@@ -42,10 +60,14 @@ bool INSTRCLIST(Program *p)
 bool INSTRC(Program *p)
 {
     printf("======== parsing INSTRC ========\n");
-    if (strsame(p->wds[p->cw], "PRINT") && PRINT(p))
+    if (strsame(p->wds[p->cw], "PRINT"))
     {
-        printf("PRINTING\n");
-        return true;
+
+        if (PRINT(p))
+        {
+
+            return true;
+        }
     }
     if (strsame(p->wds[p->cw], "SET"))
     {
@@ -61,6 +83,9 @@ bool INSTRC(Program *p)
     {
         if (CREATE(p))
         {
+            printCur(p, __LINE__);
+
+            printf("CREATE() returns true\n");
             return true;
         }
     }
@@ -73,27 +98,45 @@ bool INSTRC(Program *p)
         }
     }
     printCur(p, __LINE__);
-    ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR '}' ?");
+    ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR '}' OR ';' ?");
     return false;
 }
 
 bool PRINT(Program *p)
 {
     p->cw = p->cw + 1;
+    printf("======== parsing PRINT ========\n");
     if (is_variable(p->wds[p->cw]))
     {
-        printf("print variable \n ");
+
+#ifdef INTERP
+        var *v = get_value(p);
+        printf("PRINTING VARIABLE\n");
+        if (!print_variable(v))
+        {
+            ERROR("undefined varialbe ?\n");
+            return false;
+        }
+#endif
+        printf("is variable  return true\n");
         return true;
     }
-
+    printf("check if string\n");
     if (is_string(p->wds[p->cw]))
     {
-        printf("print string \n ");
-        printf("%s\n", p->wds[p->cw]);
+        printf("is string\n");
+        char *word = p->wds[p->cw];
+        word++;                     // remove first double quote
+        word[strlen(word) - 1] = 0; // remove last double quote
+
+#ifdef INTERP
+        printf("%s\n", word);
+#endif
+
         return true;
     }
 
-    ERROR("PRINT failure -> :");
+    ERROR("PRINT failure: Check the format ");
     return false;
 }
 
@@ -151,6 +194,32 @@ bool CREATE(Program *p)
             if (VARNAME(p))
             {
                 printf("returning true ....\n");
+
+                int y = atoi(p->wds[p->cw - 2]);
+                printf("y = %d\n", y);
+                int x = atoi(p->wds[p->cw - 1]);
+                printf("x = %d\n", x);
+#ifdef INTERP
+                int pos = get_pos(p);
+                printf("create pos = %d\n", pos);
+
+                p->pos = pos;
+                p->variables[pos] = ncalloc(1, sizeof(var));
+
+                printf("create pos y = %d\n", p->variables[pos]->y);
+                printf("create pos x = %d\n", p->variables[pos]->x);
+                p->variables[pos]->y = y;
+                p->variables[pos]->x = x;
+                p->variables[pos]->num = (int **)n2dcalloc(p->variables[pos]->y, p->variables[pos]->x, sizeof(int *));
+                for (int y = 0; y < p->variables[pos]->y; y++)
+                {
+                    for (int x = 0; x < p->variables[pos]->x; x++)
+                    {
+                        p->variables[pos]->num[y][x] = 1;
+                    }
+                }
+#endif
+
                 return true;
             }
         }
@@ -162,11 +231,59 @@ bool CREATE(Program *p)
         p->cw = p->cw + 1;
         if (VARNAME(p))
         {
+            printf("VALID READ FILE\n");
+            printCur(p, __LINE__);
+#ifdef INTERP
+            int pos = get_pos(p);
+            printf("create pos = %d\n", pos);
+            p->pos = pos;
+            char *filename = p->wds[p->cw - 1];
+            filename++;                         // remove first double quote
+            filename[strlen(filename) - 1] = 0; // remove last double quote
+            printf("filename = %s\n", filename);
+            FILE *file_pointer = h_open(filename);
+
+            char buffer[FILESIZE];
+            int count = 0;
+
+            p->variables[pos] = ncalloc(1, sizeof(var));
+            while (fscanf(file_pointer, "%s", buffer) != EOF)
+            {
+                if (count == 0)
+                {
+                    printf("yy = %s\n", buffer);
+                    p->variables[pos]->y = atoi(buffer);
+                }
+                else if (count == 1)
+                {
+                    printf("xx = %s\n", buffer);
+                    p->variables[pos]->x = atoi(buffer);
+                }
+                else
+                {
+                    printf("count = %d\n",count);
+                    //strcpy(p->variables[pos]->num[count - 2], atoi(buffer));
+                   // printf("%s\n", buffer);
+                    // for (int y = 0; y < p->variables[p->pos]->y; y++)
+                    // {
+                    //     for (int x = 0; x < p->variables[p->pos]->x; x++)
+                    //     {
+                    //         p->variables[p->pos]->num[y][x] = atoi(buffer);
+                    //     }
+                    // }
+                }
+
+                count++;
+            }
+            // free(p->variables);
+            fclose(file_pointer);
+#endif
+
             return true;
         }
     }
 
-    return false;
+    ERROR("INVALID CREATE");
 }
 bool LOOP(Program *p)
 {
@@ -193,18 +310,6 @@ bool LOOP(Program *p)
     {
         printf("LEFT BRACKET NOT OK\n");
         ERROR("INVALID INTEGER");
-
-        // if (INTEGER(p))
-        // {
-        //     p->cw = p->cw + 1;
-        //     if (LEFTBRACKET(p))
-        //     {
-        //         printf("valid loop........\n");
-        //         p->cw = p->cw + 1;
-        //         INSTRCLIST(p);
-        //         return true;
-        //     }
-        // }
     }
     p->cw = p->cw + 1;
     printCur(p, __LINE__);
@@ -248,10 +353,12 @@ bool POLISHLIST(Program *p)
         printf("YES ;\n");
         return true;
     }
-    if (p->wds[p->cw][0] == 0)
+    // printf("p->wds[p->cw][0] = %d\n", p->wds[p->cw]);
+
+    if (p->wds[p->cw] && !p->wds[p->cw][0])
     {
         printf("emp null\n");
-        ERROR("EMPTY NULL");
+        ERROR("EMPTY STRING, RETURN FALSE");
     }
 
     printCur(p, __LINE__);
@@ -306,7 +413,7 @@ bool STRING(Program *p)
     {
         return true;
     }
-    return false;
+    ERROR("INVALID STRING");
 }
 
 bool FILENAME(Program *p)
@@ -318,7 +425,7 @@ bool FILENAME(Program *p)
         return true;
     }
 
-    return false;
+    ERROR("MISSING FILENAME ");
 }
 
 bool PUSHDOWN(Program *p)
@@ -459,6 +566,7 @@ bool testmode(char *PHRASE)
 }
 void allocate_space(Program *p)
 {
+    printf("allocate_space()\n");
     printf("%c\n", p->wds[p->cw][1]);
     int pos = get_pos(p);
     printf("POS = %d\n", pos);
@@ -487,6 +595,7 @@ bool set_value(Program *p)
         }
         printf("\n");
     }
+    return true;
 }
 
 var *get_value(Program *p)
@@ -509,7 +618,7 @@ int get_pos(Program *p)
     return p->wds[p->cw][1] - 'A';
 }
 
-void print_variable(var *v)
+bool print_variable(var *v)
 {
     printf("printing variable:\n");
     if (v)
@@ -522,5 +631,12 @@ void print_variable(var *v)
             }
             printf("\n");
         }
+        return true;
     }
+    else
+    {
+        printf("NOT PRINGING ANYTHING !!! \n");
+        ERROR("Undefined Variable ");
+    };
+    return false;
 }

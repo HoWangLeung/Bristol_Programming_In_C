@@ -109,12 +109,16 @@ bool digits_only(const char *s)
    return 1;
 }
 
-int is_variable(const char *s)
+bool is_variable(const char *s)
 {
    printf("*s = %c\n", s[0]);
    if (s[0] == 0)
    {
-      return 0;
+      return false;
+   }
+   if (s[0] != '$')
+   {
+      return false;
    }
 
    while (*s)
@@ -122,7 +126,7 @@ int is_variable(const char *s)
       // printf("*s = %c\n", *s);
       if (*s != '$' && (*s < 'A' || *s > 'Z'))
       {
-         return 0;
+         return false;
       }
       else
       {
@@ -130,7 +134,7 @@ int is_variable(const char *s)
       }
    }
 
-   return 1;
+   return true;
 }
 
 FILE *h_open(char *filename)
@@ -155,20 +159,26 @@ FILE *h_open(char *filename)
 
 bool is_string(const char *s)
 {
-   int numDouble = 0;
-   int i;
-   for (i = 0; s[i] != 0; i++)
-   { 
 
-      if (s[i] == '"')
-      {
-         numDouble++;
-      }
-   }
-   if (numDouble == 2)
+   if (s[0] == '"' && s[strlen(s) - 1] == '"')
    {
+      printf("yes valid\n");
       return true;
    }
+   // int numDouble = 0;
+   // int i;
+   // for (i = 0; s[i] != 0; i++)
+   // {
+
+   //    if (s[i] == '"')
+   //    {
+   //       numDouble++;
+   //    }
+   // }
+   // if (numDouble == 2)
+   // {
+   //    return true;
+   // }
 
    return false;
 }

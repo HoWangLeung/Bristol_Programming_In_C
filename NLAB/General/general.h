@@ -16,7 +16,7 @@ void* nfopen(char* fname, char* mode);
 
 bool digits_only(const char *s);
 
-int is_variable(const char *s);
+bool is_variable(const char *s);
 FILE *h_open(char *filename);
 bool is_string(const char *s);
 

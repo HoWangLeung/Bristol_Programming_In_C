@@ -5,6 +5,16 @@
         "__locale": "c",
         "nlab.h": "c",
         "general.h": "c",
-        "ratio": "c"
+        "ratio": "c",
+        "filesystem": "c",
+        "__bit_reference": "c",
+        "algorithm": "c",
+        "bitset": "c",
+        "chrono": "c",
+        "hash_map": "c",
+        "map": "c",
+        "set": "c",
+        "unordered_map": "c",
+        "unordered_set": "c"
     }
 }
