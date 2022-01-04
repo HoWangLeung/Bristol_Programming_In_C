@@ -4,7 +4,6 @@
 
 bool PROG(Program *p)
 {
-    bool is_BEGIN = false;
     if (!strsame(p->wds[p->cw], "BEGIN"))
     {
         ERROR("No BEGIN statement ?");
@@ -32,7 +31,7 @@ bool INSTRCLIST(Program *p)
 
     if (strsame(p->wds[p->cw], "}"))
     {
-
+        printf("RETURN TRUE FROM INSTRCLIST }}} \n");
         return true;
     }
     if (!INSTRC(p))
@@ -150,9 +149,9 @@ bool SET(Program *p)
         return false;
     }
 
-    allocate_space(p);
-
-    printf("hi = %c\n", p->wds[p->cw][1]);
+#ifdef INTERP
+    // allocate_space(p);
+#endif
 
     p->cw = p->cw + 1;
     if (!p->wds[p->cw][0] || p->wds[p->cw][0] != ':')
@@ -176,7 +175,6 @@ bool SET(Program *p)
         printf("POLISHLIST IS GOOD\n");
     }
 
-    printf("SET RETURN TRUE\n");
     return true;
 }
 bool CREATE(Program *p)
@@ -193,7 +191,7 @@ bool CREATE(Program *p)
             p->cw = p->cw + 1;
             if (VARNAME(p))
             {
-                printf("returning true ....\n");
+                printf("create valname true ....\n");
 
                 int y = atoi(p->wds[p->cw - 2]);
                 printf("y = %d\n", y);
@@ -218,6 +216,7 @@ bool CREATE(Program *p)
                         p->variables[pos]->num[y][x] = 1;
                     }
                 }
+                // free(p->variables[pos]);
 #endif
 
                 return true;
@@ -235,46 +234,41 @@ bool CREATE(Program *p)
             printCur(p, __LINE__);
 #ifdef INTERP
             int pos = get_pos(p);
-            printf("create pos = %d\n", pos);
+            printf("filename create pos = %d\n", pos);
             p->pos = pos;
             char *filename = p->wds[p->cw - 1];
             filename++;                         // remove first double quote
             filename[strlen(filename) - 1] = 0; // remove last double quote
             printf("filename = %s\n", filename);
             FILE *file_pointer = h_open(filename);
-
-            char buffer[FILESIZE];
-            int count = 0;
-
             p->variables[pos] = ncalloc(1, sizeof(var));
-            while (fscanf(file_pointer, "%s", buffer) != EOF)
-            {
-                if (count == 0)
-                {
-                    printf("yy = %s\n", buffer);
-                    p->variables[pos]->y = atoi(buffer);
-                }
-                else if (count == 1)
-                {
-                    printf("xx = %s\n", buffer);
-                    p->variables[pos]->x = atoi(buffer);
-                }
-                else
-                {
-                    printf("count = %d\n",count);
-                    //strcpy(p->variables[pos]->num[count - 2], atoi(buffer));
-                   // printf("%s\n", buffer);
-                    // for (int y = 0; y < p->variables[p->pos]->y; y++)
-                    // {
-                    //     for (int x = 0; x < p->variables[p->pos]->x; x++)
-                    //     {
-                    //         p->variables[p->pos]->num[y][x] = atoi(buffer);
-                    //     }
-                    // }
-                }
 
-                count++;
+            // char buffer[FILESIZE];
+            int array[6][6];
+            int height, width;
+            if (fscanf(file_pointer, "%d%d", &height, &width) != 2)
+                exit(1);
+            p->variables[pos]->y = height;
+            p->variables[pos]->x = width;
+            p->variables[pos]->num = (int **)n2dcalloc(p->variables[pos]->y, p->variables[pos]->x, sizeof(int *));
+
+            for (int jj = 0; jj < 5; jj++)
+                for (int ii = 0; ii < 5; ii++)
+                    if (fscanf(file_pointer, "%d", &array[jj][ii]) != 1)
+                        exit(1);
+
+            // printf("Test print\n");
+
+            for (int jj = 0; jj < 5; jj++)
+            {
+                for (int ii = 0; ii < 5; ii++)
+                {
+                    p->variables[pos]->num[jj][ii] = array[jj][ii];
+                    //printf("%d", p->variables[pos]->num[jj][ii]);
+                }
+                printf("\n");
             }
+
             // free(p->variables);
             fclose(file_pointer);
 #endif
@@ -299,12 +293,42 @@ bool LOOP(Program *p)
         ERROR("INVALID VARNAME");
     }
 
+#ifdef INTERP
+
+    // int count = 1;
+    allocate_space(p);
+    p->variables[p->pos]->y = 1;
+    p->variables[p->pos]->x = 1;
+    printf("p->count =%d\n", p->variables[p->pos]->count);
+    p->variables[p->pos]->count += 1;
+    int count = p->variables[p->pos]->count;
+    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    {
+        for (int x = 0; x < p->variables[p->pos]->x; x++)
+        {
+            p->variables[p->pos]->num[y][x] = count;
+        }
+    }
+    printf("TEST VALUE !!! :\n");
+    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    {
+        for (int x = 0; x < p->variables[p->pos]->x; x++)
+        {
+            printf("%d", p->variables[p->pos]->num[y][x]);
+        }
+        printf("\n");
+    }
+#endif
+
     p->cw = p->cw + 1;
     if (!INTEGER(p))
     {
         printf("INTEGER NOT OK\n");
         ERROR("INVALID INTEGER");
     }
+    int max_loop = atoi(p->wds[p->cw]);
+    printf("MAX LOOP = %d\n", max_loop);
+
     p->cw = p->cw + 1;
     if (!LEFTBRACKET(p))
     {
@@ -313,7 +337,11 @@ bool LOOP(Program *p)
     }
     p->cw = p->cw + 1;
     printCur(p, __LINE__);
-    INSTRCLIST(p);
+
+    for (int i = 0; i < max_loop; i++)
+    {
+        INSTRCLIST(p);
+    }
 
     printf("LOOP returns true\n");
     return true;
@@ -436,8 +464,12 @@ bool PUSHDOWN(Program *p)
 
         printCur(p, __LINE__);
 #ifdef INTERP
-        printf("INTERP triggered");
-        set_value(p);
+        // printf("INTERP triggered");
+        // p->variables[p->pos]->y = 1;
+        // p->variables[p->pos]->x = 1;
+        // set_value(p);
+        // //stack operations
+        // //  push(p->stack, p->variables[p->pos]->num);
 #endif
 
         return true;
@@ -451,16 +483,18 @@ bool PUSHDOWN(Program *p)
         printCur(p, __LINE__);
 
 #ifdef INTERP
-        var *v = get_value(p);
-        print_variable(v);
-        for (int y = 0; y < v->y; y++)
-        {
-            for (int x = 0; x < v->x; x++)
-            {
-                p->variables[p->pos]->num[y][x] = v->num[y][x];
-            }
-        }
+        // var *v = get_value(p);
+        // print_variable(v);
+        // for (int y = 0; y < v->y; y++)
+        // {
+        //     for (int x = 0; x < v->x; x++)
+        //     {
+        //         p->variables[p->pos]->num[y][x] = v->num[y][x];
+        //     }
+        // }
+        //push(p->stack, v->num);
 #endif
+
         return true;
     }
 
@@ -561,7 +595,7 @@ void read_file(FILE *file_pointer, Program *p)
 
 bool testmode(char *PHRASE)
 {
-    printf("test mode called\n");
+    printf("test mode called , %s\n", PHRASE);
     return false;
 }
 void allocate_space(Program *p)
@@ -572,9 +606,8 @@ void allocate_space(Program *p)
     printf("POS = %d\n", pos);
     p->pos = pos;
     p->variables[pos] = ncalloc(1, sizeof(var));
-    p->variables[pos]->y = 1;
-    p->variables[pos]->x = 1;
-    p->variables[pos]->num = (int **)n2dcalloc(1, 1, sizeof(int *));
+
+    p->variables[pos]->num = (int **)n2dcalloc(p->variables[pos]->y, p->variables[pos]->x, sizeof(int *));
 }
 
 bool set_value(Program *p)
@@ -639,4 +672,53 @@ bool print_variable(var *v)
         ERROR("Undefined Variable ");
     };
     return false;
+}
+
+//STACK
+Stack *createStack(int capacity)
+{
+    // malloc(sizeof(struct Stack));
+    Stack *stack = (struct Stack *)ncalloc(1, sizeof(Stack));
+    stack->capacity = capacity;
+    stack->top = -1;
+    // stack->array = (int **)n2dcalloc(1000, 1000, sizeof(int *));
+    return stack;
+}
+
+// Stack is full when top is equal to the last index
+int isFull(struct Stack *stack)
+{
+    return stack->top == stack->capacity - 1;
+}
+
+// Stack is empty when top is equal to -1
+int isEmpty(struct Stack *stack)
+{
+    return stack->top == -1;
+}
+
+// Function to add an item to stack.  It increases top by 1
+void push(Program *p, int **item)
+{
+    if (isFull(p->stack))
+        return;
+
+    // stack->array[++stack->top] = *item;
+    // printf("%d pushed to stack\n", item);
+}
+
+// Function to remove an item from stack.  It decreases top by 1
+int **pop(struct Stack *stack)
+{
+    if (isEmpty(stack))
+        return NULL;
+    return NULL;
+}
+
+// Function to return the top from stack without removing it
+int **peek(struct Stack *stack)
+{
+    if (isEmpty(stack))
+        return NULL;
+    return NULL;
 }

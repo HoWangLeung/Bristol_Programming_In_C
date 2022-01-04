@@ -1,10 +1,5 @@
-
-
 #include "Functions/nlab.h"
-// #include "General/general.c"
 #define BIGSTR 1000
-
-// bool Prog(Program *p);
 
 int main(int argc, char *argv[])
 {
@@ -15,18 +10,29 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    Program *prog = ncalloc(1, sizeof(Program));
+    Program *p = ncalloc(1, sizeof(Program));
     printf("argv [1] = %s\n", argv[1]);
     FILE *file_pointer = h_open(argv[1]);
-    read_file(file_pointer, prog);
-    PROG(prog);
+    read_file(file_pointer, p);
+    p->stack=createStack(100);
+    
+    PROG(p);
     printf("<<<<<<<>>>>>>>>> PARSED OK !\n");
     fclose(file_pointer);
-    free(prog);
+   
+    for (int i = 0; i < 26; i++)
+    {
+        if (p->variables[i] != 0)
+        {
+            for (int j = 0; j < p->variables[i]->y; j++)
+            {
+                free(p->variables[i]->num[j]);
+            }
+            free(p->variables[i]->num);
+            free(p->variables[i]);
+        }
+    }
 
+    free(p);
     return 0;
 }
-//A-Z
-//INTEGER | A-Z
-// 250 2d int array
-//SET A

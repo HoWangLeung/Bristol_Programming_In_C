@@ -11,6 +11,7 @@ void get_parser_data(Program *p, int test_number, char *func_name);
 void get_interp_data(Program *p, int test_number, char *func_name);
 
 void clear_previous_data(Program *p);
+void free_struct(Program *p);
 
 int main(void)
 {
@@ -337,30 +338,38 @@ void RUN_INTERP_TEST(char *testcase_name)
     if (strcmp(testcase_name, "PROG") == 0)
     {
         printf("ASSERTIN*\n");
-        // set_up_testdata(p, 0, "PROG");
-        // assert(PROG(p));
+        set_up_testdata(p, 0, "PROG");
+        assert(PROG(p));
+        free_struct(p);
 
-        // set_up_testdata(p, 1, "PROG");
-        // assert(!PROG(p));
+        set_up_testdata(p, 1, "PROG");
+        assert(!PROG(p));
 
-        // set_up_testdata(p, 2, "PROG");
-        // assert(!PROG(p));
+        set_up_testdata(p, 2, "PROG");
+        assert(!PROG(p));
 
-        // set_up_testdata(p, 3, "PROG");
-        // assert(PROG(p));
+        set_up_testdata(p, 3, "PROG");
+        assert(PROG(p));
+        free_struct(p);
 
         set_up_testdata(p, 4, "PROG");
         assert(!PROG(p));
+        free_struct(p);
 
         set_up_testdata(p, 5, "PROG");
         assert(!PROG(p));
 
         set_up_testdata(p, 6, "PROG");
         assert(PROG(p));
+        free_struct(p);
+
+        set_up_testdata(p, 7, "PROG");
+        assert(PROG(p));
 
         printf("RUN_INTERP_TEST PROG\n");
     }
 
+    free_struct(p);
     free(p);
 }
 
@@ -625,6 +634,7 @@ void get_interp_data(Program *p, int test_number, char *func_name)
             {"BEGIN { SET $A := 5 ; PRINT $B }"},                      //4: invalid, $A is set but $B is undefined
             {"BEGIN {  PRINT $C SET $C := 5 ; }"},                     //5: invalid, print $C before $C is set
             {"BEGIN {  ONES 3 5 $A   PRINT \"ARRAY:\"  PRINT $A  } "}, //6: valid
+            {"BEGIN {  READ \"lglider.arr\" $A  PRINT $A  } "},        //7: valid
 
         };
         copy_test_data(p, test_instructions, test_number);
@@ -636,4 +646,20 @@ void clear_previous_data(Program *p)
     memset(p->wds, 0, sizeof(p->wds));
     memset(p->variables, 0, sizeof(p->variables));
     p->cw = 0;
+}
+
+void free_struct(Program *p)
+{
+    for (int i = 0; i < 26; i++)
+    {
+        if (p->variables[i] != 0)
+        {
+            for (int j = 0; j < p->variables[i]->y; j++)
+            {
+                free(p->variables[i]->num[j]);
+            }
+            free(p->variables[i]->num);
+            free(p->variables[i]);
+        }
+    }
 }

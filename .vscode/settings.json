@@ -15,6 +15,13 @@
         "map": "c",
         "set": "c",
         "unordered_map": "c",
-        "unordered_set": "c"
+        "unordered_set": "c",
+        "__tuple": "c",
+        "array": "c",
+        "ios": "c",
+        "__split_buffer": "c",
+        "vector": "c",
+        "string": "c",
+        "stack": "c"
     }
 }

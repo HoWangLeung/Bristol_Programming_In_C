@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <ctype.h>
+#include <limits.h>
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
 #include "../General/general.h"
@@ -28,10 +29,17 @@
 #endif
 #define strsame(A, B) (strcmp(A, B) == 0)
 
+struct Stack {
+    int top;
+    int capacity;
+    int array[10000][10000];
+};
+typedef struct Stack Stack;
 struct var {
    int ** num;
    int y;
    int x;
+   int count;
 };
 typedef struct var var;
 struct prog
@@ -40,6 +48,7 @@ struct prog
    int cw; // Current Word
    var* variables[26];
    int pos;
+   Stack* stack;
 };
 typedef struct prog Program;
 
@@ -86,6 +95,14 @@ var* get_value(Program *p);
 int get_pos(Program *p);
 
 bool print_variable(var * v);
-
 //A-Z
 //2d-array | INTEGER |
+
+//STACK
+Stack* createStack(int capacity);
+int isFull(struct Stack* stack);
+int isEmpty(struct Stack* stack);
+void push(Program* stack, int** item);
+int** pop(struct Stack* stack);
+int** peek(struct Stack* stack);
+

@@ -1,3 +1,4 @@
 BEGIN {
-   READ "lglider.arr" $C
+   ONES 6 5 $A
+   SET $A := $A 2 B-ADD ;
 }

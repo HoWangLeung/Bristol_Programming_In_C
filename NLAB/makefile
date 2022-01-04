@@ -45,8 +45,14 @@ test_interp: test.c Functions/nlab.c Functions/nlab.h General/general.h
 test_v: test.c Functions/nlab.c Functions/nlab.h General/general.h 
 	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
 
-tv: test_v
+test_interp_v: test.c Functions/nlab.c Functions/nlab.h General/general.h 
+	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
+
+tpv: test_v
 	valgrind --leak-check=full --track-origins=yes ./test_v
+
+tiv: test_interp_v
+	valgrind --leak-check=full --track-origins=yes ./test_interp_v
 
 pv: parse_v
 	valgrind --leak-check=full --track-origins=yes ./parse_v trivial.nlb
