@@ -22,6 +22,8 @@
         "__split_buffer": "c",
         "vector": "c",
         "string": "c",
-        "stack": "c"
+        "stack": "c",
+        "stdio.h": "c",
+        "__tree": "c"
     }
 }

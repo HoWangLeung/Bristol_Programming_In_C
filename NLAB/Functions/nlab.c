@@ -9,7 +9,7 @@ bool PROG(Program *p)
         ERROR("No BEGIN statement ?");
     }
     p->cw = p->cw + 1;
-    printCur(p, __LINE__);
+
     if (!strsame(p->wds[p->cw], "{"))
     {
         ERROR("Expected {");
@@ -27,7 +27,6 @@ bool PROG(Program *p)
 bool INSTRCLIST(Program *p)
 {
     printf("======== parsing INSTRCLIST ========\n");
-    printCur(p, __LINE__);
 
     if (strsame(p->wds[p->cw], "}"))
     {
@@ -59,6 +58,7 @@ bool INSTRCLIST(Program *p)
 bool INSTRC(Program *p)
 {
     printf("======== parsing INSTRC ========\n");
+
     if (strsame(p->wds[p->cw], "PRINT"))
     {
 
@@ -73,7 +73,7 @@ bool INSTRC(Program *p)
         if (SET(p))
         {
             printf("SET OK\n");
-            printCur(p, __LINE__);
+
             return true;
         }
     }
@@ -82,7 +82,6 @@ bool INSTRC(Program *p)
     {
         if (CREATE(p))
         {
-            printCur(p, __LINE__);
 
             printf("CREATE() returns true\n");
             return true;
@@ -96,7 +95,7 @@ bool INSTRC(Program *p)
             return true;
         }
     }
-    printCur(p, __LINE__);
+
     ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR '}' OR ';' ?");
     return false;
 }
@@ -109,7 +108,7 @@ bool PRINT(Program *p)
     {
 
 #ifdef INTERP
-        var *v = get_value(p);
+        var v = get_value(p);
         printf("PRINTING VARIABLE\n");
         if (!print_variable(v))
         {
@@ -148,10 +147,10 @@ bool SET(Program *p)
     {
         return false;
     }
-
-#ifdef INTERP
-    // allocate_space(p);
-#endif
+    printCur(p, __LINE__);
+    int pos = get_pos(p);
+    printf("NOW POS = %d\n", pos);
+    p->pos = pos;
 
     p->cw = p->cw + 1;
     if (!p->wds[p->cw][0] || p->wds[p->cw][0] != ':')
@@ -180,7 +179,7 @@ bool SET(Program *p)
 bool CREATE(Program *p)
 {
     printf("======== parsing CREATE ========\n");
-    printCur(p, __LINE__);
+
     p->cw = p->cw + 1;
     if (ROWS(p))
     {
@@ -197,27 +196,25 @@ bool CREATE(Program *p)
                 printf("y = %d\n", y);
                 int x = atoi(p->wds[p->cw - 1]);
                 printf("x = %d\n", x);
-#ifdef INTERP
+                // #ifdef INTERP
                 int pos = get_pos(p);
                 printf("create pos = %d\n", pos);
 
                 p->pos = pos;
-                p->variables[pos] = ncalloc(1, sizeof(var));
-
-                printf("create pos y = %d\n", p->variables[pos]->y);
-                printf("create pos x = %d\n", p->variables[pos]->x);
-                p->variables[pos]->y = y;
-                p->variables[pos]->x = x;
-                p->variables[pos]->num = (int **)n2dcalloc(p->variables[pos]->y, p->variables[pos]->x, sizeof(int *));
-                for (int y = 0; y < p->variables[pos]->y; y++)
+                printf("create pos y = %d\n", p->variables[pos].y);
+                printf("create pos x = %d\n", p->variables[pos].x);
+                p->variables[pos].y = y;
+                p->variables[pos].x = x;
+                p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
+                for (int y = 0; y < p->variables[pos].y; y++)
                 {
-                    for (int x = 0; x < p->variables[pos]->x; x++)
+                    for (int x = 0; x < p->variables[pos].x; x++)
                     {
-                        p->variables[pos]->num[y][x] = 1;
+                        p->variables[pos].num[y][x] = 1;
                     }
                 }
                 // free(p->variables[pos]);
-#endif
+                // #endif
 
                 return true;
             }
@@ -231,7 +228,7 @@ bool CREATE(Program *p)
         if (VARNAME(p))
         {
             printf("VALID READ FILE\n");
-            printCur(p, __LINE__);
+
 #ifdef INTERP
             int pos = get_pos(p);
             printf("filename create pos = %d\n", pos);
@@ -241,16 +238,16 @@ bool CREATE(Program *p)
             filename[strlen(filename) - 1] = 0; // remove last double quote
             printf("filename = %s\n", filename);
             FILE *file_pointer = h_open(filename);
-            p->variables[pos] = ncalloc(1, sizeof(var));
+            // p->variables[pos] = ncalloc(1, sizeof(var));
 
             // char buffer[FILESIZE];
             int array[6][6];
             int height, width;
             if (fscanf(file_pointer, "%d%d", &height, &width) != 2)
                 exit(1);
-            p->variables[pos]->y = height;
-            p->variables[pos]->x = width;
-            p->variables[pos]->num = (int **)n2dcalloc(p->variables[pos]->y, p->variables[pos]->x, sizeof(int *));
+            p->variables[pos].y = height;
+            p->variables[pos].x = width;
+            p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
 
             for (int jj = 0; jj < 5; jj++)
                 for (int ii = 0; ii < 5; ii++)
@@ -263,7 +260,7 @@ bool CREATE(Program *p)
             {
                 for (int ii = 0; ii < 5; ii++)
                 {
-                    p->variables[pos]->num[jj][ii] = array[jj][ii];
+                    p->variables[pos].num[jj][ii] = array[jj][ii];
                     //printf("%d", p->variables[pos]->num[jj][ii]);
                 }
                 printf("\n");
@@ -283,10 +280,9 @@ bool LOOP(Program *p)
 {
     if (p)
         printf("loop something \n");
-    printCur(p, __LINE__);
 
     p->cw = p->cw + 1;
-    printCur(p, __LINE__);
+
     if (!VARNAME(p))
     {
         printf("VAR NOT OK\n");
@@ -297,24 +293,24 @@ bool LOOP(Program *p)
 
     // int count = 1;
     allocate_space(p);
-    p->variables[p->pos]->y = 1;
-    p->variables[p->pos]->x = 1;
-    printf("p->count =%d\n", p->variables[p->pos]->count);
-    p->variables[p->pos]->count += 1;
-    int count = p->variables[p->pos]->count;
-    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    p->variables[p->pos].y = 1;
+    p->variables[p->pos].x = 1;
+    printf("p->count =%d\n", p->variables[p->pos].count);
+    p->variables[p->pos].count += 1;
+    int count = p->variables[p->pos].count;
+    for (int y = 0; y < p->variables[p->pos].y; y++)
     {
-        for (int x = 0; x < p->variables[p->pos]->x; x++)
+        for (int x = 0; x < p->variables[p->pos].x; x++)
         {
-            p->variables[p->pos]->num[y][x] = count;
+            p->variables[p->pos].num[y][x] = count;
         }
     }
     printf("TEST VALUE !!! :\n");
-    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    for (int y = 0; y < p->variables[p->pos].y; y++)
     {
-        for (int x = 0; x < p->variables[p->pos]->x; x++)
+        for (int x = 0; x < p->variables[p->pos].x; x++)
         {
-            printf("%d", p->variables[p->pos]->num[y][x]);
+            printf("%d", p->variables[p->pos].num[y][x]);
         }
         printf("\n");
     }
@@ -336,7 +332,6 @@ bool LOOP(Program *p)
         ERROR("INVALID INTEGER");
     }
     p->cw = p->cw + 1;
-    printCur(p, __LINE__);
 
     for (int i = 0; i < max_loop; i++)
     {
@@ -361,7 +356,7 @@ bool LEFTBRACKET(Program *p)
 bool INTEGER(Program *p)
 {
     // p->cw = p->cw + 1;
-    printCur(p, __LINE__);
+
     if (digits_only(p->wds[p->cw]))
     {
         return true;
@@ -375,10 +370,29 @@ bool INTEGER(Program *p)
 bool POLISHLIST(Program *p)
 {
     printf("======== LEVEL3:POLISHLIST ========\n");
-    printCur(p, __LINE__);
+
     if (p->wds[p->cw][0] == ';')
     {
+        // #ifdef INTERP
         printf("YES ;\n");
+        printf("set pos = %d\n", p->pos);
+        var *v = pop(p);
+        printf("popped success\n");
+
+        if (v)
+        {
+            printf("is there value = %d\n", v->num[0][0]);
+            set_value(p, v);
+        }
+        // printf("value inside = %d\n", p->variables[0].num[0][0]);
+        clear_stack(p);
+
+        // for (int i = 0; i < 1; i++)
+        // {
+        //     free(p->tmp.num[i]);
+        // }
+        // free(p->tmp.num);
+
         return true;
     }
     // printf("p->wds[p->cw][0] = %d\n", p->wds[p->cw]);
@@ -388,8 +402,6 @@ bool POLISHLIST(Program *p)
         printf("emp null\n");
         ERROR("EMPTY STRING, RETURN FALSE");
     }
-
-    printCur(p, __LINE__);
 
     if (!POLISH(p))
     {
@@ -416,13 +428,14 @@ bool POLISH(Program *p)
     if (PUSHDOWN(p) == true)
     {
         printf(" => IS PUSHDOWN\n");
+        printCur(p, __LINE__);
         return true;
     }
-    else if (UNARYOP(p))
-    {
-        printf(" => IS UNARYOP\n");
-        return true;
-    }
+    // else if (UNARYOP(p))
+    // {
+    //     printf(" => IS UNARYOP\n");
+    //     return true;
+    // }
     else if (BINARYOP(p))
     {
         printf(" => IS BINARYOP\n");
@@ -430,7 +443,7 @@ bool POLISH(Program *p)
     }
     else
     {
-        printCur(p, __LINE__);
+
         ERROR("POLISH ERROR:EXPECT PUSHDOWN | UNARYOP | BINARYOP ");
     }
 }
@@ -458,42 +471,54 @@ bool FILENAME(Program *p)
 
 bool PUSHDOWN(Program *p)
 {
+
+    // allocate_space(p);
+
     if (digits_only(p->wds[p->cw]))
     {
-        printf("is integer\n");
+        // #ifdef INTERP
+        printf("INTERPs triggered, is digit only\n");
+        // var *v = ncalloc(1, sizeof(var));
+        p->variables[p->pos].y = 1;
+        p->variables[p->pos].x = 1;
+        printf("ALLOCATING NUM!!!!\n");
+        printf("pos = %d\n", p->pos);
+        printf("my = %d\n", p->variables[p->pos].y);
+        printf("mx = %d\n", p->variables[p->pos].x);
 
-        printCur(p, __LINE__);
-#ifdef INTERP
-        // printf("INTERP triggered");
-        // p->variables[p->pos]->y = 1;
-        // p->variables[p->pos]->x = 1;
-        // set_value(p);
-        // //stack operations
-        // //  push(p->stack, p->variables[p->pos]->num);
-#endif
+        printf("IS EMPTY = %d\n", p->variables[p->pos].num);
 
+        p->tmp.num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
+        p->tmp.y = 1;
+        p->tmp.x = 1;
+        for (int y = 0; y < p->tmp.y; y++)
+        {
+            for (int x = 0; x < p->tmp.x; x++)
+            {
+                p->tmp.num[y][x] = atoi(p->wds[p->cw]);
+            }
+        }
+
+        push(p);
+        // #endif
         return true;
     }
 
-    printCur(p, __LINE__);
-
     if (is_variable(p->wds[p->cw]))
     {
+
         printf("is variable\n");
         printCur(p, __LINE__);
 
-#ifdef INTERP
-        // var *v = get_value(p);
-        // print_variable(v);
-        // for (int y = 0; y < v->y; y++)
-        // {
-        //     for (int x = 0; x < v->x; x++)
-        //     {
-        //         p->variables[p->pos]->num[y][x] = v->num[y][x];
-        //     }
-        // }
-        //push(p->stack, v->num);
-#endif
+        var v = get_value(p);
+        p->tmp = v;
+        // printf("v-val = %d\n", v.num);
+        if (!v.num)
+        {
+            ERROR("VARIABLE UNDEFINED????\n");
+        }
+
+        push(p);
 
         return true;
     }
@@ -502,7 +527,7 @@ bool PUSHDOWN(Program *p)
 }
 bool UNARYOP(Program *p)
 {
-    printCur(p, __LINE__);
+
     if (strsame(p->wds[p->cw], "U-NOT"))
     {
         return true;
@@ -518,12 +543,89 @@ bool UNARYOP(Program *p)
 
 bool BINARYOP(Program *p)
 {
+
+    if (strsame(p->wds[p->cw], "B-ADD"))
+    {
+        printf("IN B-ADD\n");
+        // #ifdef INTERP
+        printf("p->pos = : %d\n", p->pos);
+        var *v1 = pop(p);
+        var *v2 = pop(p);
+
+        printf("v1  y:%d , x:%d\n", v1->y, v1->x);
+        printf("v2 (LEFT-MOST) y:%d , x:%d\n", v2->y, v2->x);
+
+        // var *v3 = ncalloc(1, sizeof(var));
+        p->tmp.num = (int **)n2dcalloc(v2->y, v2->x, sizeof(int *));
+
+        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        {
+            printf("COND 1\n");
+            p->tmp.y = 1;
+            p->tmp.x = 1;
+            for (int y = 0; y < 1; y++)
+            {
+                for (int x = 0; x < 1; x++)
+                {
+                    p->tmp.num[y][x] = v2->num[y][x] + v1->num[y][x];
+                }
+            }
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
+        {
+            printf("COND 2\n");
+            p->tmp.y = v2->y;
+            p->tmp.x = v2->x;
+            int final_value = v1->num[0][0] + v2->num[0][0];
+
+            printf("final_value: %d\n", final_value);
+
+            for (int y = 0; y < p->tmp.y; y++)
+            {
+                for (int x = 0; x < p->tmp.x; x++)
+                {
+                    p->tmp.num[y][x] = final_value;
+                    // printf("%d", p->tmp.num[y][x]);
+                }
+            }
+            printf("assigned success\n");
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        {
+            if (v2->y == v1->y && v2->x == v1->x)
+            {
+                printf("COND 3\n");
+                p->tmp.y = v2->y;
+                p->tmp.x = v2->x;
+
+                int final_value = v1->num[0][0] + v2->num[0][0];
+
+                printf("final_value: %d\n", final_value);
+
+                for (int y = 0; y < p->tmp.y; y++)
+                {
+                    for (int x = 0; x < p->tmp.x; x++)
+                    {
+                        p->tmp.num[y][x] = final_value;
+                    }
+                }
+            }
+        }
+
+        push(p);
+
+        // free(v3);
+        // #endif
+        return true;
+    }
+
     if (
         strsame(p->wds[p->cw], "B-AND") ||
         strsame(p->wds[p->cw], "B-OR") ||
         strsame(p->wds[p->cw], "B-GREATER") ||
         strsame(p->wds[p->cw], "B-LESS") ||
-        strsame(p->wds[p->cw], "B-ADD") ||
         strsame(p->wds[p->cw], "B-TIMES") ||
         strsame(p->wds[p->cw], "B-EQUALS"))
     {
@@ -543,7 +645,7 @@ bool ROWS(Program *p)
     printf("handling ROWS\n");
 
     // p->cw = p->cw + 1;
-    printCur(p, __LINE__);
+
     if (digits_only(p->wds[p->cw]))
     {
         //ERROR("NOT DIGIT ONLY\n");
@@ -558,7 +660,7 @@ bool COLS(Program *p)
     printf("handling ROWS");
 
     // p->cw = p->cw + 1;
-    printCur(p, __LINE__);
+
     if (digits_only(p->wds[p->cw]))
     {
         // ERROR("NOT DIGIT ONLY\n");
@@ -572,7 +674,6 @@ bool VARNAME(Program *p)
 {
     // printf("check if VARNAME\n");
 
-    printCur(p, __LINE__);
     if (is_variable(p->wds[p->cw]))
     {
         return true;
@@ -601,49 +702,57 @@ bool testmode(char *PHRASE)
 void allocate_space(Program *p)
 {
     printf("allocate_space()\n");
-    printf("%c\n", p->wds[p->cw][1]);
-    int pos = get_pos(p);
-    printf("POS = %d\n", pos);
-    p->pos = pos;
-    p->variables[pos] = ncalloc(1, sizeof(var));
 
-    p->variables[pos]->num = (int **)n2dcalloc(p->variables[pos]->y, p->variables[pos]->x, sizeof(int *));
+    p->variables[p->pos].y = 1;
+    p->variables[p->pos].x = 1;
+    p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
 }
 
-bool set_value(Program *p)
+bool set_value(Program *p, var *v)
 {
-    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    printf("y:%d,x:%d\n", v->y, v->x);
+    printf("py:%d,px:%d\n", p->variables[p->pos].y, p->variables[p->pos].x);
+    p->variables[p->pos].y = v->y;
+    p->variables[p->pos].x = v->x;
+    if (!p->variables[p->pos].num)
     {
-        for (int x = 0; x < p->variables[p->pos]->x; x++)
-        {
-            p->variables[p->pos]->num[y][x] = atoi(p->wds[p->cw]);
-        }
+        p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
     }
 
-    for (int y = 0; y < p->variables[p->pos]->y; y++)
+    printf("OK?\n");
+    for (int y = 0; y < v->y; y++)
     {
-        for (int x = 0; x < p->variables[p->pos]->x; x++)
+        for (int x = 0; x < v->x; x++)
         {
-            printf("%d", p->variables[p->pos]->num[y][x]);
+
+            p->variables[p->pos].num[y][x] = v->num[y][x];
+        }
+    }
+    printf("VALUE SET\n");
+
+    for (int y = 0; y < p->variables[p->pos].y; y++)
+    {
+        for (int x = 0; x < p->variables[p->pos].x; x++)
+        {
+            printf("%d", p->variables[p->pos].num[y][x]);
         }
         printf("\n");
     }
+
     return true;
 }
 
-var *get_value(Program *p)
+var get_value(Program *p)
 {
-    printCur(p, __LINE__);
+
     int pos = get_pos(p);
     printf("pos =%d\n", pos);
-    if (p->variables[pos] != NULL)
-    {
-        printCur(p, __LINE__);
+    printf("FINAL?\n");
+    // printf("val =%d\n", p->variables[pos].num[0][0]);
 
-        return p->variables[pos];
-    }
+    return p->variables[pos];
 
-    return NULL;
+    // return NULL;
 }
 
 int get_pos(Program *p)
@@ -651,16 +760,17 @@ int get_pos(Program *p)
     return p->wds[p->cw][1] - 'A';
 }
 
-bool print_variable(var *v)
+bool print_variable(var v)
 {
     printf("printing variable:\n");
-    if (v)
+    printf("y=%d , x=%d\n", v.y, v.x);
+    if (v.num != 0)
     {
-        for (int y = 0; y < v->y; y++)
+        for (int y = 0; y < v.y; y++)
         {
-            for (int x = 0; x < v->x; x++)
+            for (int x = 0; x < v.x; x++)
             {
-                printf("%d", v->num[y][x]);
+                printf("%d", v.num[y][x]);
             }
             printf("\n");
         }
@@ -668,7 +778,7 @@ bool print_variable(var *v)
     }
     else
     {
-        printf("NOT PRINGING ANYTHING !!! \n");
+        printf("NOT PRINTING ANYTHING !!! \n");
         ERROR("Undefined Variable ");
     };
     return false;
@@ -681,7 +791,9 @@ Stack *createStack(int capacity)
     Stack *stack = (struct Stack *)ncalloc(1, sizeof(Stack));
     stack->capacity = capacity;
     stack->top = -1;
-    // stack->array = (int **)n2dcalloc(1000, 1000, sizeof(int *));
+    // stack->arr = (var *)n2dcalloc(100, 100, sizeof(var));
+    stack->arr = (var *)calloc(capacity, sizeof(var));
+
     return stack;
 }
 
@@ -698,21 +810,40 @@ int isEmpty(struct Stack *stack)
 }
 
 // Function to add an item to stack.  It increases top by 1
-void push(Program *p, int **item)
+void push(Program *p)
 {
+    printf("pushing to stack : %d \n", p->stack->top);
     if (isFull(p->stack))
         return;
+    printf("pushing...\n");
+    p->stack->arr[++p->stack->top] = p->tmp;
 
-    // stack->array[++stack->top] = *item;
-    // printf("%d pushed to stack\n", item);
+    printf("pushed to stack : %d, with value: %d \n", p->stack->top, p->stack->arr[p->stack->top].num[0][0]);
 }
 
 // Function to remove an item from stack.  It decreases top by 1
-int **pop(struct Stack *stack)
+var *pop(Program *p)
 {
-    if (isEmpty(stack))
+    if (isEmpty(p->stack))
         return NULL;
-    return NULL;
+
+    printf("popping, top = %d\n", p->stack->top);
+    // printf("HI %d\n",stack->arr[stack->top]);
+
+    // printf("pstack inside pop: %d\n", stack->arr[0].num[0][0]);
+
+    for (int y = 0; y < 1; y++)
+    {
+        for (int x = 0; x < 1; x++)
+        {
+            printf("%d", p->stack->arr[p->stack->top].num[y][x]);
+        }
+        printf("\n");
+    }
+    var *variable = &p->stack->arr[p->stack->top];
+    p->stack->top--;
+
+    return variable;
 }
 
 // Function to return the top from stack without removing it
@@ -721,4 +852,20 @@ int **peek(struct Stack *stack)
     if (isEmpty(stack))
         return NULL;
     return NULL;
+}
+
+void clear_stack(Program *p)
+{
+    printf("CLEARING STACK and free, now top = %d\n", p->stack->top);
+
+  
+
+    p->stack->top = -1;
+    // printf("val = %d\n", p->tmp.num[0][0]);
+    free(p->tmp.num[0]);
+    free(p->tmp.num);
+
+    // free(p->variables[p->pos].num[0]);
+    // free(p->variables[p->pos].num);
+    printf("freed ...........\n");
 }

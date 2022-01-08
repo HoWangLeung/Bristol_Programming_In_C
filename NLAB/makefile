@@ -17,7 +17,7 @@ interp_s: nlab.c nlab.h General/general.h
 		gcc nlab.c $(CFLAGS) $(SANI) -g3 -DINTERP -o interp_s -lm
 
 interp_v: Functions/nlab.c Functions/nlab.h General/general.h main.c General/general.c
-		gcc main.c Functions/nlab.c General/general.c $(CFLAGS) -g3 -DINTERP -o interp_v -lm
+		gcc -g main.c Functions/nlab.c General/general.c $(CFLAGS) -g3 -DINTERP -o interp_v -lm
 
 parse: Functions/nlab.c Functions/nlab.h General/general.h main.c General/general.c
 	gcc main.c Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -g3 -o parse -lm
@@ -58,4 +58,4 @@ pv: parse_v
 	valgrind --leak-check=full --track-origins=yes ./parse_v trivial.nlb
 
 iv: interp_v
-	valgrind --leak-check=full --track-origins=yes ./interp_v trivial.nlb
+	valgrind --leak-check=full --track-origins=yes --dsymutil=yes ./interp_v trivial.nlb

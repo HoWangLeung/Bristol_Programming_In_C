@@ -652,14 +652,14 @@ void free_struct(Program *p)
 {
     for (int i = 0; i < 26; i++)
     {
-        if (p->variables[i] != 0)
+        printf("%d\n", p->variables[i].num);
+        if (p->variables[i].num != 0)
         {
-            for (int j = 0; j < p->variables[i]->y; j++)
+            for (int j = 0; j < p->variables[i].y; j++)
             {
-                free(p->variables[i]->num[j]);
+                free(p->variables[i].num[j]);
             }
-            free(p->variables[i]->num);
-            free(p->variables[i]);
+            free(p->variables[i].num);
         }
     }
 }
