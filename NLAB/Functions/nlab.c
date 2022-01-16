@@ -20,44 +20,32 @@ bool PROG(Program *p)
         printf("SOMETHING WORONG IN INSTRCLIST\n");
         return false;
     }
-    printf("PROG RETURNS TRUE\n");
+
     return true;
 }
 
 bool INSTRCLIST(Program *p)
 {
-    printf("======== parsing INSTRCLIST ========\n");
+
     printCur(p, __LINE__);
     if (strsame(p->wds[p->cw], "}"))
     {
-        printf("->RETURN TRUE FROM INSTRCLIST }}} \n");
+
         var *popped = pop(&p->stacknode);
         if (popped)
         {
-            printf("YES < p->variables[p->pos].num[0][0]=%d ,max =%d\n", p->variables[popped->pos].num[0][0], popped->max_loop);
+
             if (popped->num[0][0] != p->variables[popped->pos].num[0][0])
             {
-                printf("DIFF FOUND\n");
+
                 popped->num[0][0] = p->variables[popped->pos].num[0][0];
-                printf("UPDATED popped: %d\n", popped->num[0][0]);
             }
             if (popped->num[0][0] < popped->max_loop)
             {
-                printf("CONTINUE??? popped->num[0][0]= %d\n", popped->num[0][0]);
-                printf("REDIRECT TO START cw: %d\n", popped->start);
+
                 p->cw = popped->start;
                 INSTRCLIST(p);
             }
-            // else
-            // {
-            //     printf("ENTER ELSE\n");
-            //     printf("REDIRECT TO START cw: %d\n", popped->start);
-            //     if (popped->num[0][0] < popped->max_loop)
-            //     {
-            //         p->cw = popped->start;
-            //         INSTRCLIST(p);
-            //     }
-            // }
         }
 
         return true;
@@ -70,10 +58,10 @@ bool INSTRCLIST(Program *p)
 
         return false;
     }
-    printf("INSTRC OK \n");
+
     if (strsame(p->wds[p->cw], "}") && strsame(p->wds[p->cw + 1], ""))
     {
-        printf("CONDITIONAL RETURN>>>>>>>>>>>>>>>>>>>!!!!!");
+
         return true;
     }
     p->cw = p->cw + 1;
@@ -82,17 +70,13 @@ bool INSTRCLIST(Program *p)
     {
         return false;
     }
-    // printf("INSTRCLIST returns true\n");
-    // #ifdef TESTMODE
-    //     printf("IN TEST...\n");
-    // #endif
 
     return true;
 }
 
 bool INSTRC(Program *p)
 {
-    printf("======== parsing INSTRC ========\n");
+
     printCur(p, __LINE__);
 
     if (strsame(p->wds[p->cw], "PRINT"))
@@ -108,7 +92,6 @@ bool INSTRC(Program *p)
     {
         if (SET(p))
         {
-            printf("SET OK\n");
 
             return true;
         }
@@ -119,7 +102,6 @@ bool INSTRC(Program *p)
         if (CREATE(p))
         {
 
-            printf("CREATE() returns true\n");
             return true;
         }
     }
@@ -129,7 +111,7 @@ bool INSTRC(Program *p)
 
         if (LOOP(p))
         {
-            printf("LOOP() returns true\n");
+
             printCur(p, __LINE__);
             return true;
         }
@@ -142,27 +124,27 @@ bool INSTRC(Program *p)
 bool PRINT(Program *p)
 {
     p->cw = p->cw + 1;
-    printf("======== parsing PRINT ========\n");
+
     if (is_variable(p->wds[p->cw]))
     {
 
 #ifdef INTERP
         var v = get_value(p);
-        printf("PRINTING VARIABLE\n");
-        printCur(p, __LINE__);
+
+        // printCur(p, __LINE__);
         if (!print_variable(v))
         {
             ERROR("undefined varialbe ?\n");
             return false;
         }
 #endif
-        printf("is variable  return true\n");
+
         return true;
     }
-    printf("check if string\n");
+
     if (is_string(p->wds[p->cw]))
     {
-        printf("is string\n");
+
         char *word = p->wds[p->cw];
         word++;                     // remove first double quote
         word[strlen(word) - 1] = 0; // remove last double quote
@@ -180,7 +162,6 @@ bool PRINT(Program *p)
 
 bool SET(Program *p)
 {
-    printf("======== parsing SET ========\n");
 
     p->cw = p->cw + 1;
     if (!VARNAME(p))
@@ -189,7 +170,7 @@ bool SET(Program *p)
     }
     printCur(p, __LINE__);
     int pos = get_pos(p);
-    printf("NOW POS = %d\n", pos);
+
     p->pos = pos;
 
     p->cw = p->cw + 1;
@@ -202,7 +183,7 @@ bool SET(Program *p)
     {
         ERROR("Expected symbol = \n");
     }
-    printf("VARNAME AND COLON-EQUAL ok\n");
+
     p->cw = p->cw + 1;
     if (!POLISHLIST(p))
     {
@@ -211,36 +192,34 @@ bool SET(Program *p)
     }
     else
     {
-        printf("POLISHLIST IS GOOD\n");
+        //  printf("POLISHLIST IS GOOD\n");
     }
 
     return true;
 }
 bool CREATE(Program *p)
 {
-    printf("======== parsing CREATE ========\n");
+
     p->cw = p->cw + 1;
     if (ROWS(p))
     {
         p->cw = p->cw + 1;
         if (COLS(p))
         {
-            printf("COLS OK\n");
+
             p->cw = p->cw + 1;
             if (VARNAME(p))
             {
-                printf("create valname true ....\n");
+
                 int y = atoi(p->wds[p->cw - 2]);
-                printf("y = %d\n", y);
+
                 int x = atoi(p->wds[p->cw - 1]);
-                printf("x = %d\n", x);
+
                 // #ifdef INTERP
                 int pos = get_pos(p);
-                printf("create pos = %d\n", pos);
 
                 p->pos = pos;
-                printf("create pos y = %d\n", p->variables[pos].y);
-                printf("create pos x = %d\n", p->variables[pos].x);
+
                 p->variables[pos].y = y;
                 p->variables[pos].x = x;
                 p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
@@ -259,26 +238,21 @@ bool CREATE(Program *p)
         }
     }
 
-    printf("COUNTINUE TO CHECK FILENAME & VARNAME\n");
     if (FILENAME(p))
     {
         p->cw = p->cw + 1;
         if (VARNAME(p))
         {
-            printf("VALID READ FILE\n");
 
 #ifdef INTERP
             int pos = get_pos(p);
-            printf("filename create pos = %d\n", pos);
+
             p->pos = pos;
             char *filename = p->wds[p->cw - 1];
             filename++;                         // remove first double quote
             filename[strlen(filename) - 1] = 0; // remove last double quote
-            printf("filename = %s\n", filename);
-            FILE *file_pointer = h_open(filename);
-            // p->variables[pos] = ncalloc(1, sizeof(var));
 
-            // char buffer[FILESIZE];
+            FILE *file_pointer = h_open(filename);
             int array[6][6];
             int height, width;
             if (fscanf(file_pointer, "%d%d", &height, &width) != 2)
@@ -287,23 +261,29 @@ bool CREATE(Program *p)
             p->variables[pos].x = width;
             p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
 
-            for (int jj = 0; jj < 5; jj++)
-                for (int ii = 0; ii < 5; ii++)
-                    if (fscanf(file_pointer, "%d", &array[jj][ii]) != 1)
-                        exit(1);
-
-            // printf("Test print\n");
-
-            for (int jj = 0; jj < 5; jj++)
+            for (int jj = 0; jj < height; jj++)
             {
-                for (int ii = 0; ii < 5; ii++)
+
+                for (int ii = 0; ii < width; ii++)
+                {
+                    if (fscanf(file_pointer, "%d", &array[jj][ii]) != 1)
+                    {
+
+                        exit(1);
+                    }
+                }
+            }
+
+            for (int jj = 0; jj < height; jj++)
+            {
+                for (int ii = 0; ii < width; ii++)
                 {
                     p->variables[pos].num[jj][ii] = array[jj][ii];
-                    //printf("%d", p->variables[pos]->num[jj][ii]);
+                    //
                 }
                 printf("\n");
             }
-
+            printf("close file pointer\n");
             // free(p->variables);
             fclose(file_pointer);
 #endif
@@ -324,7 +304,6 @@ bool LOOP(Program *p)
     v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
     v->start = p->cw;
 
-    printf("loop something , cw = %d\n", p->cw);
     p->cw = p->cw + 1;
     if (!VARNAME(p))
     {
@@ -338,15 +317,12 @@ bool LOOP(Program *p)
     p->variables[p->pos].x = 1;
 
     //===========================================SET I INITIAL VALUE
-    printf("SET INITIAL\n");
-    printf("POS: %d\n", p->pos);
+
     if (!p->variables[p->pos].num)
     {
-        printf("need to allocate ! \n");
+
         p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
     }
-    printf("MAX: %d\n", p->variables[p->pos].max_loop);
-    printf("BEFORE: %d\n", p->variables[p->pos].num[0][0]);
 
     if (p->variables[p->pos].max_loop == 0 || p->variables[p->pos].num[0][0] < p->variables[p->pos].max_loop)
     {
@@ -355,15 +331,11 @@ bool LOOP(Program *p)
     }
     else if (p->variables[p->pos].num[0][0] == p->variables[p->pos].max_loop)
     {
-        printf("same\n");
-        v->num[0][0] = (p->variables[p->pos].num[0][0] % p->variables[p->pos].max_loop)+1;
-        p->variables[p->pos].num[0][0] =v->num[0][0];
+
+        v->num[0][0] = (p->variables[p->pos].num[0][0] % p->variables[p->pos].max_loop) + 1;
+        p->variables[p->pos].num[0][0] = v->num[0][0];
     }
 
-    printf("AFTER: %d\n", p->variables[p->pos].num[0][0]);
-
-    if (p->variables[8].num)
-        printf("POS 8 VALUE: %d\n", p->variables[8].num[0][0]);
     //===========================================SET I INITIAL VALUE
 
     p->cw = p->cw + 1;
@@ -375,7 +347,6 @@ bool LOOP(Program *p)
     v->max_loop = atoi(p->wds[p->cw]);
     p->variables[p->pos].max_loop = v->max_loop;
 
-    printf("loop push...\n");
     push(&p->stacknode, v);
 
     p->cw = p->cw + 1;
@@ -420,26 +391,24 @@ bool INTEGER(Program *p)
 //==========================
 bool POLISHLIST(Program *p)
 {
-    printf("======== LEVEL3:POLISHLIST ========\n");
 
     if (p->wds[p->cw][0] == ';')
     {
-        // #ifdef INTERP
-        printf(">>>>>>>> A THE END, FOUND HI ;\n");
-        // printf("set pos = %d\n", p->pos);
+
+#ifdef INTERP
         var *v = pop(&p->stacknode);
-        printf("popped success\n");
 
         if (v)
         {
-            printf("The value inside v = %d\n", v->num[0][0]);
+
             set_value(p, v);
         }
 
         free_stack_node(v);
+#endif
         return true;
     }
-    // printf("p->wds[p->cw][0] = %d\n", p->wds[p->cw]);
+    //
 
     if (p->wds[p->cw] && !p->wds[p->cw][0])
     {
@@ -458,33 +427,32 @@ bool POLISHLIST(Program *p)
     POLISHLIST(p);
     if (p->wds[p->cw][0] != ';')
     {
-        printf("AT THE END NO ;, false\n");
+
         return false;
     }
 
-    printf("POLISHLIST return true at the end\n");
     return true;
 }
 
 bool POLISH(Program *p)
 {
-    printf("======== LEVEL3:POLISH ========\n");
+
     printCur(p, __LINE__);
     if (PUSHDOWN(p) == true)
     {
-        printf(" => IS PUSHDOWN\n");
+
         printCur(p, __LINE__);
 
         return true;
     }
     else if (UNARYOP(p))
     {
-        printf(" => IS UNARYOP\n");
+
         return true;
     }
     else if (BINARYOP(p))
     {
-        printf(" => IS BINARYOP\n");
+
         return true;
     }
     else
@@ -517,12 +485,12 @@ bool FILENAME(Program *p)
 
 bool PUSHDOWN(Program *p)
 {
-    printf("PUSHDOWN()\n");
+
     printCur(p, __LINE__);
     if (digits_only(p->wds[p->cw]))
     {
-        // #ifdef INTERP
-        printf("<<<<<<<<<<< digitsonly >>>>>>>>>>>>\n");
+#ifdef INTERP
+
         var *v = calloc(1, sizeof(var));
         v->y = 1;
         v->x = 1;
@@ -535,19 +503,19 @@ bool PUSHDOWN(Program *p)
                 v->num[y][x] = atoi(p->wds[p->cw]);
             }
         }
-        printf("v-val= %d\n", v->num[0][0]);
+
         push(&p->stacknode, v);
+#endif
 
         return true;
     }
 
     if (is_variable(p->wds[p->cw]))
     {
-
-        printf("<<<<<<<<<<< is_variable >>>>>>>>>>>>\n");
+#ifdef INTERP
         printCur(p, __LINE__);
         var val = get_value(p);
-        printf("HELLO : %d , %d\n", val.y, val.x);
+
         var *v = calloc(1, sizeof(var));
         v->y = val.y;
         v->x = val.x;
@@ -561,20 +529,21 @@ bool PUSHDOWN(Program *p)
             }
         }
         push(&p->stacknode, v);
+#endif
         return true;
     }
-    printf("PUSHDOWN RETURNS FALSE\n");
+
     return false;
 }
 bool UNARYOP(Program *p)
 {
-    printf("CHECKING UNARYOP\n");
 
     if (strsame(p->wds[p->cw], "U-NOT"))
     {
+#ifdef INTERP
         var *v3 = calloc(1, sizeof(var));
         var *v1 = pop(&p->stacknode);
-        printf("IN U-NOT");
+
         v3->y = v1->y;
         v3->x = v1->x;
         v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -588,21 +557,21 @@ bool UNARYOP(Program *p)
 
         push(&p->stacknode, v3);
         free_stack_node(v1);
+#endif
         return true;
     }
 
     if (strsame(p->wds[p->cw], "U-EIGHTCOUNT"))
     {
+#ifdef INTERP
         var *v3 = calloc(1, sizeof(var));
         var *v1 = pop(&p->stacknode);
         var *tmp = calloc(1, sizeof(var));
-        printf("IN U-EIGHTCOUNT\n");
+
         v3->y = v1->y;
         v3->x = v1->x;
         tmp->y = v1->y;
         tmp->x = v1->x;
-
-        printf("v3: y=%d, x=%d\n", v3->y, v3->x);
 
         v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
         tmp->num = (int **)n2dcalloc(v3->y + 2, v3->x + 2, sizeof(int *));
@@ -614,15 +583,6 @@ bool UNARYOP(Program *p)
             }
         }
 
-        for (int y = 0; y < tmp->y + 2; y++)
-        {
-            for (int x = 0; x < tmp->x + 2; x++)
-            {
-                printf("%d", tmp->num[y][x]);
-            }
-            printf("\n");
-        }
-        printf("next:\n");
         int offset[8][2] = {
             {-1, -1},
             {-1, 0},
@@ -640,7 +600,7 @@ bool UNARYOP(Program *p)
                 int count = 0;
                 for (int k = 0; k < 8; k++)
                 {
-                    //printf("HELLO %d\n",tmp->num[y + offset[k][1]][x + offset[k][0]]);
+                    //
                     if (tmp->num[y + offset[k][1]][x + offset[k][0]] >= 1)
                     {
                         count += 1;
@@ -648,17 +608,6 @@ bool UNARYOP(Program *p)
                     }
                 }
             }
-        }
-
-        printf("after222:\n");
-        for (int y = 0; y < v3->y; y++)
-        {
-            for (int x = 0; x < v3->x; x++)
-            {
-
-                printf("%d", v3->num[y][x]);
-            }
-            printf("\n");
         }
 
         push(&p->stacknode, v3);
@@ -670,28 +619,26 @@ bool UNARYOP(Program *p)
         }
         free(tmp->num);
         free(tmp);
-
-        printf("finished\n");
+#endif
         return true;
     }
-    printf(" UNARYOP returns false\n");
+
     return false;
 }
 
 bool BINARYOP(Program *p)
 {
-    printf("BINARYOP CHECK\n");
+#ifdef INTERP
     var *v1 = pop(&p->stacknode);
     var *v2 = pop(&p->stacknode);
     var *v3 = calloc(1, sizeof(var));
+#endif
     if (strsame(p->wds[p->cw], "B-ADD"))
     {
-        printf("IN B-ADD\n");
-        printf("v1: y=%d, x=%d\n", v1->y, v1->x);
-        printf("v2: y=%d, x=%d\n", v2->y, v2->x);
+#ifdef INTERP
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND_1\n");
+
             v3->y = 1;
             v3->x = 1;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -702,7 +649,7 @@ bool BINARYOP(Program *p)
                     v3->num[y][x] = v1->num[y][x] + v2->num[y][x];
                 }
             }
-            printf("v-val= %d\n", v3->num[0][0]);
+
             push(&p->stacknode, v3);
         }
 
@@ -748,15 +695,16 @@ bool BINARYOP(Program *p)
         // #endif
         free_stack_node(v1);
         free_stack_node(v2);
-
+#endif
         return true;
     }
 
     if (strsame(p->wds[p->cw], "B-AND"))
     {
+#ifdef INTERP
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND_1\n");
+
             v3->y = 1;
             v3->x = 1;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -767,13 +715,13 @@ bool BINARYOP(Program *p)
                     v3->num[y][x] = v1->num[y][x] & v2->num[y][x];
                 }
             }
-            printf("v-val= %d\n", v3->num[0][0]);
+
             push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
         {
-            printf("COND_2\n");
+
             v3->y = v2->y;
             v3->x = v2->x;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -792,7 +740,7 @@ bool BINARYOP(Program *p)
         {
             if (v2->y == v1->y && v2->x == v1->x)
             {
-                printf("COND_3\n");
+
                 v3->y = v2->y;
                 v3->x = v2->x;
                 v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -813,14 +761,16 @@ bool BINARYOP(Program *p)
         }
         free_stack_node(v1);
         free_stack_node(v2);
+#endif
         return true;
     }
 
     if (strsame(p->wds[p->cw], "B-OR"))
     {
+#ifdef INTERP
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND_1\n");
+
             v3->y = 1;
             v3->x = 1;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -831,13 +781,13 @@ bool BINARYOP(Program *p)
                     v3->num[y][x] = v1->num[y][x] | v2->num[y][x];
                 }
             }
-            printf("v-val= %d\n", v3->num[0][0]);
+
             push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
         {
-            printf("COND_2\n");
+
             v3->y = v2->y;
             v3->x = v2->x;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -856,7 +806,7 @@ bool BINARYOP(Program *p)
         {
             if (v2->y == v1->y && v2->x == v1->x)
             {
-                printf("COND_3\n");
+
                 v3->y = v2->y;
                 v3->x = v2->x;
                 v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -877,14 +827,16 @@ bool BINARYOP(Program *p)
         }
         free_stack_node(v1);
         free_stack_node(v2);
+#endif
         return true;
     }
 
     if (strsame(p->wds[p->cw], "B-GREATER"))
     {
+#ifdef INTERP
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND_1\n");
+
             v3->y = 1;
             v3->x = 1;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -895,13 +847,13 @@ bool BINARYOP(Program *p)
                     v3->num[y][x] = v1->num[y][x] < v2->num[y][x];
                 }
             }
-            printf("v-val= %d\n", v3->num[0][0]);
+
             push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
         {
-            printf("COND_2\n");
+
             v3->y = v2->y;
             v3->x = v2->x;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -920,7 +872,7 @@ bool BINARYOP(Program *p)
         {
             if (v2->y == v1->y && v2->x == v1->x)
             {
-                printf("COND_3\n");
+
                 v3->y = v2->y;
                 v3->x = v2->x;
                 v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -941,14 +893,16 @@ bool BINARYOP(Program *p)
         }
         free_stack_node(v1);
         free_stack_node(v2);
+#endif
         return true;
     }
 
     if (strsame(p->wds[p->cw], "B-LESS"))
     {
+#ifdef INTERP
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND_1\n");
+
             v3->y = 1;
             v3->x = 1;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -959,13 +913,13 @@ bool BINARYOP(Program *p)
                     v3->num[y][x] = v1->num[y][x] > v2->num[y][x];
                 }
             }
-            printf("v-val= %d\n", v3->num[0][0]);
+
             push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
         {
-            printf("COND_2\n");
+
             v3->y = v2->y;
             v3->x = v2->x;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -984,7 +938,7 @@ bool BINARYOP(Program *p)
         {
             if (v2->y == v1->y && v2->x == v1->x)
             {
-                printf("COND_3\n");
+
                 v3->y = v2->y;
                 v3->x = v2->x;
                 v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -1005,14 +959,16 @@ bool BINARYOP(Program *p)
         }
         free_stack_node(v1);
         free_stack_node(v2);
+#endif
         return true;
     }
 
     if (strsame(p->wds[p->cw], "B-TIMES"))
     {
+#ifdef INTERP
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND_1\n");
+
             v3->y = 1;
             v3->x = 1;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -1023,13 +979,13 @@ bool BINARYOP(Program *p)
                     v3->num[y][x] = v1->num[y][x] * v2->num[y][x];
                 }
             }
-            printf("v-val= %d\n", v3->num[0][0]);
+
             push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
         {
-            printf("COND_2\n");
+
             v3->y = v2->y;
             v3->x = v2->x;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -1048,7 +1004,7 @@ bool BINARYOP(Program *p)
         {
             if (v2->y == v1->y && v2->x == v1->x)
             {
-                printf("COND_3\n");
+
                 v3->y = v2->y;
                 v3->x = v2->x;
                 v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -1069,14 +1025,16 @@ bool BINARYOP(Program *p)
         }
         free_stack_node(v1);
         free_stack_node(v2);
+#endif
         return true;
     }
 
     if (strsame(p->wds[p->cw], "B-EQUALS"))
     {
+#ifdef INTERP
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND_1\n");
+
             v3->y = 1;
             v3->x = 1;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -1087,13 +1045,13 @@ bool BINARYOP(Program *p)
                     v3->num[y][x] = v1->num[y][x] == v2->num[y][x];
                 }
             }
-            printf("v-val= %d\n", v3->num[0][0]);
+
             push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
         {
-            printf("COND_2\n");
+
             v3->y = v2->y;
             v3->x = v2->x;
             v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -1111,7 +1069,7 @@ bool BINARYOP(Program *p)
         {
             if (v2->y == v1->y && v2->x == v1->x)
             {
-                printf("COND_3\n");
+
                 v3->y = v2->y;
                 v3->x = v2->x;
                 v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -1132,6 +1090,7 @@ bool BINARYOP(Program *p)
         }
         free_stack_node(v1);
         free_stack_node(v2);
+#endif
         return true;
     }
 
@@ -1140,12 +1099,11 @@ bool BINARYOP(Program *p)
 
 void printCur(Program *p, int line)
 {
-    printf("printCur() is %s ,line %d\n", p->wds[p->cw], line);
+    // printf("PRINT CUR\n");
 }
 
 bool ROWS(Program *p)
 {
-    printf("handling ROWS\n");
 
     // p->cw = p->cw + 1;
 
@@ -1160,7 +1118,6 @@ bool ROWS(Program *p)
 
 bool COLS(Program *p)
 {
-    printf("handling ROWS");
 
     // p->cw = p->cw + 1;
 
@@ -1175,14 +1132,14 @@ bool COLS(Program *p)
 
 bool VARNAME(Program *p)
 {
-    // printf("check if VARNAME\n");
+    //
 
     if (is_variable(p->wds[p->cw]))
     {
         return true;
     }
     ERROR("Expect $<A-Z> \n");
-    printf("HI\n");
+
     return false;
 }
 
@@ -1190,6 +1147,7 @@ void read_file(FILE *file_pointer, Program *p)
 {
     char buffer[FILESIZE];
     int count = 0;
+
     while (fscanf(file_pointer, "%s", buffer) != EOF)
     {
         strcpy(p->wds[count++], buffer);
@@ -1199,12 +1157,11 @@ void read_file(FILE *file_pointer, Program *p)
 
 bool testmode(char *PHRASE)
 {
-    printf("test mode called , %s\n", PHRASE);
+
     return false;
 }
 void allocate_space(Program *p)
 {
-    printf("allocate_space()\n");
 
     p->variables[p->pos].y = 1;
     p->variables[p->pos].x = 1;
@@ -1213,8 +1170,7 @@ void allocate_space(Program *p)
 
 bool set_value(Program *p, var *v)
 {
-    printf("y:%d,x:%d\n", v->y, v->x);
-    printf("py:%d,px:%d\n", p->variables[p->pos].y, p->variables[p->pos].x);
+
     p->variables[p->pos].y = v->y;
     p->variables[p->pos].x = v->x;
     if (!p->variables[p->pos].num)
@@ -1222,7 +1178,6 @@ bool set_value(Program *p, var *v)
         p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
     }
 
-    printf("OK?\n");
     for (int y = 0; y < v->y; y++)
     {
         for (int x = 0; x < v->x; x++)
@@ -1230,16 +1185,6 @@ bool set_value(Program *p, var *v)
 
             p->variables[p->pos].num[y][x] = v->num[y][x];
         }
-    }
-    printf("VALUE SET\n");
-
-    for (int y = 0; y < p->variables[p->pos].y; y++)
-    {
-        for (int x = 0; x < p->variables[p->pos].x; x++)
-        {
-            printf("%d", p->variables[p->pos].num[y][x]);
-        }
-        printf("\n");
     }
 
     return true;
@@ -1249,14 +1194,12 @@ var get_value(Program *p)
 {
 
     int pos = get_pos(p);
-    printf("pos =%d\n", pos);
 
     if (!p->variables[pos].num)
     {
-        ERROR("UNDEFINED VARIABLED DETECTED\n");
+        printf("UNDEFINED VARIABLED DETECTED\n");
+        
     }
-
-    printf("val inside get_value =%d\n", p->variables[pos].num[0][0]);
 
     return p->variables[pos];
 
@@ -1270,9 +1213,7 @@ int get_pos(Program *p)
 
 bool print_variable(var v)
 {
-    printf("printing variable:\n");
 
-    printf("y=%d , x=%d\n", v.y, v.x);
     if (v.num != 0)
     {
         for (int y = 0; y < v.y; y++)
@@ -1283,6 +1224,7 @@ bool print_variable(var v)
             }
             printf("\n");
         }
+        // printf("@-----------\n");
         return true;
     }
     else
@@ -1310,19 +1252,18 @@ bool isEmpty(struct StackNode *root)
 
 void push(struct StackNode **root, var *data)
 {
-    printf("START TO PUSH-->\n");
+
     struct StackNode *stackNode = newNode(data);
     stackNode->next = *root;
     *root = stackNode;
-    printf(" pushed to stack: %d\n", data->num[0][0]);
 }
 
 var *pop(struct StackNode **root)
 {
-    printf("->START POPPING\n");
+
     if (isEmpty(*root))
     {
-        printf("EMPTY!!!!!!!!!!\n");
+        // printf("EMPTY!!!!!!!!!!\n");
         return NULL;
     }
 
@@ -1331,12 +1272,6 @@ var *pop(struct StackNode **root)
     var *popped = temp->data;
 
     free(temp);
-
-    printf("popped num = %d\n", popped->num[0][0]);
-    printf("popped y= %d\n", popped->y);
-    printf("popped x= %d\n", popped->x);
-    printf("popped pos= %d\n", popped->pos);
-    printf("popped max loop= %d\n", popped->max_loop);
 
     return popped;
 }
@@ -1347,6 +1282,6 @@ void free_stack_node(var *v)
     {
         free(v->num[y]);
     }
-    free(v->num);
+    free(v->num); 
     free(v);
 }

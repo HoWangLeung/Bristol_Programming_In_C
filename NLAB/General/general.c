@@ -111,7 +111,7 @@ bool digits_only(const char *s)
 
 bool is_variable(const char *s)
 {
-   printf("*s = %c\n", s[0]);
+  // printf("*s = %c\n", s[0]);
    if (s[0] == 0)
    {
       return false;
