@@ -34,24 +34,29 @@ bool INSTRCLIST(Program *p)
         var *popped = pop(&p->stacknode);
         if (popped)
         {
-            printf("YES < POPPED, num=%d ,max =%d\n", p->variables[p->pos].num[0][0], popped->max_loop);
-            if (p->variables[p->pos].num[0][0] < popped->max_loop)
+            printf("YES < p->variables[p->pos].num[0][0]=%d ,max =%d\n", p->variables[popped->pos].num[0][0], popped->max_loop);
+            if (popped->num[0][0] != p->variables[popped->pos].num[0][0])
+            {
+                printf("DIFF FOUND\n");
+                popped->num[0][0] = p->variables[popped->pos].num[0][0];
+                printf("UPDATED popped: %d\n", popped->num[0][0]);
+            }
+            if (popped->num[0][0] < popped->max_loop)
             {
                 printf("CONTINUE??? popped->num[0][0]= %d\n", popped->num[0][0]);
-                // if (popped->num[0][0] + 1 == popped->max_loop)
-                // {
-                //     printf("EQUAL!!!!!!!!!!!!!\n");
-                //     printCur(p, __LINE__);
-                //     return true;
-                // }
+                printf("REDIRECT TO START cw: %d\n", popped->start);
                 p->cw = popped->start;
                 INSTRCLIST(p);
             }
-            // else if (popped->num[0][0] == popped->max_loop)
+            // else
             // {
-            //     printf("EQUAL!!!!!!!!!!!!!\n");
-            //     printCur(p, __LINE__);
-            //     return true;
+            //     printf("ENTER ELSE\n");
+            //     printf("REDIRECT TO START cw: %d\n", popped->start);
+            //     if (popped->num[0][0] < popped->max_loop)
+            //     {
+            //         p->cw = popped->start;
+            //         INSTRCLIST(p);
+            //     }
             // }
         }
 
@@ -334,6 +339,7 @@ bool LOOP(Program *p)
 
     //===========================================SET I INITIAL VALUE
     printf("SET INITIAL\n");
+    printf("POS: %d\n", p->pos);
     if (!p->variables[p->pos].num)
     {
         printf("need to allocate ! \n");
@@ -350,13 +356,14 @@ bool LOOP(Program *p)
     else if (p->variables[p->pos].num[0][0] == p->variables[p->pos].max_loop)
     {
         printf("same\n");
-        v->num[0][0] = p->variables[p->pos].num[0][0];
+        v->num[0][0] = (p->variables[p->pos].num[0][0] % p->variables[p->pos].max_loop)+1;
+        p->variables[p->pos].num[0][0] =v->num[0][0];
     }
 
     printf("AFTER: %d\n", p->variables[p->pos].num[0][0]);
-    // int next_value = v->num[0][0];
-    // printf("v-num now = %d\n", next_value);
-    // p->variables[p->pos].num[0][0] = next_value;
+
+    if (p->variables[8].num)
+        printf("POS 8 VALUE: %d\n", p->variables[8].num[0][0]);
     //===========================================SET I INITIAL VALUE
 
     p->cw = p->cw + 1;
@@ -381,6 +388,7 @@ bool LOOP(Program *p)
 
     INSTRCLIST(p);
 
+    free_stack_node(v);
     return true;
 }
 
@@ -1328,7 +1336,7 @@ var *pop(struct StackNode **root)
     printf("popped y= %d\n", popped->y);
     printf("popped x= %d\n", popped->x);
     printf("popped pos= %d\n", popped->pos);
-    //printf("popped count= %d\n", popped->count);
+    printf("popped max loop= %d\n", popped->max_loop);
 
     return popped;
 }

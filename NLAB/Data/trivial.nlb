@@ -1,6 +1,15 @@
 BEGIN {
+
+   READ "lglider.arr" $A
    LOOP $I 10 {
-      SET $I := $I 1 B-ADD ; 
+
+      SET $B := $A U-EIGHTCOUNT ;
+      SET $D := $B 3 B-EQUALS ;
+      SET $C := $B 2 B-EQUALS $D B-OR $A B-AND ;
+      SET $E := $A U-NOT $D B-AND $C B-OR ;
+
       PRINT $I
+      PRINT $E
+      SET $A := $E ;
    }
 }
