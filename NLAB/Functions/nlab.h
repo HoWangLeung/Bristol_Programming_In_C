@@ -11,12 +11,12 @@
 #include "../General/general.h"
 
 #ifdef TESTMODE
-#define ERROR(PHRASE) \
+#define ERROR(PHRASE)                                             \
    {                                                              \
-     fprintf(stderr,                                             \
+      fprintf(stderr,                                             \
               "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
               __FILE__, __LINE__);                                \
-      return false;   \
+      return false;                                               \
    }
 #else
 #define ERROR(PHRASE)                                             \
@@ -29,30 +29,29 @@
 #endif
 #define strsame(A, B) (strcmp(A, B) == 0)
 
-
-struct var {
-   int ** num;
+struct var
+{
+   int **num;
    int y;
    int x;
-   int count;
 };
 typedef struct var var;
 
-struct Stack {
-    int top;
-    int capacity;
-    var* arr;
+struct StackNode
+{
+   var *data;
+   struct StackNode *next;
 };
-typedef struct Stack Stack;
+typedef struct StackNode StackNode;
 struct prog
 {
    char wds[MAXNUMTOKENS][MAXTOKENSIZE];
    int cw; // Current Word
    var variables[26];
    int pos;
-   Stack* stack;
-   var tmp;
-   
+   StackNode *stacknode;
+   int start;
+   int count;
 };
 typedef struct prog Program;
 
@@ -91,21 +90,24 @@ void read_file(FILE *file_pointer, Program *p);
 bool testmode(char *PHRASE);
 
 void allocate_space(Program *p);
-bool set_value(Program *p,var* v);
+bool set_value(Program *p, var *v);
 
 int get_pos(Program *p);
 
-bool print_variable(var  v);
+bool print_variable(var v);
 //A-Z
 //2d-array | INTEGER |
 
 //STACK
-Stack* createStack(int capacity);
-int isFull(struct Stack* stack);
-int isEmpty(struct Stack* stack);
-var get_value(Program *p);
-void push(Program* p);
-var* pop( Program* p);
-int** peek(struct Stack* stack);
-void clear_stack(Program *p);
 
+var get_value(Program *p);
+
+StackNode *newNode(var *data);
+
+bool isEmpty(struct StackNode *root);
+
+void push(struct StackNode **root, var *data);
+
+var *pop(struct StackNode **root);
+
+void free_stack_node(var *v);

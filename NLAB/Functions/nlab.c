@@ -27,10 +27,10 @@ bool PROG(Program *p)
 bool INSTRCLIST(Program *p)
 {
     printf("======== parsing INSTRCLIST ========\n");
-
+    // printCur(p, __LINE__);
     if (strsame(p->wds[p->cw], "}"))
     {
-        printf("RETURN TRUE FROM INSTRCLIST }}} \n");
+        printf("->RETURN TRUE FROM INSTRCLIST }}} \n");
         return true;
     }
     if (!INSTRC(p))
@@ -58,6 +58,7 @@ bool INSTRCLIST(Program *p)
 bool INSTRC(Program *p)
 {
     printf("======== parsing INSTRC ========\n");
+    printCur(p, __LINE__);
 
     if (strsame(p->wds[p->cw], "PRINT"))
     {
@@ -88,13 +89,14 @@ bool INSTRC(Program *p)
         }
     }
 
-    if (strsame(p->wds[p->cw], "LOOP"))
-    {
-        if (LOOP(p))
-        {
-            return true;
-        }
-    }
+    // if (strsame(p->wds[p->cw], "LOOP"))
+    // {
+
+    //     if (LOOP(p))
+    //     {
+    //         return true;
+    //     }
+    // }
 
     ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR '}' OR ';' ?");
     return false;
@@ -110,6 +112,7 @@ bool PRINT(Program *p)
 #ifdef INTERP
         var v = get_value(p);
         printf("PRINTING VARIABLE\n");
+        printCur(p, __LINE__);
         if (!print_variable(v))
         {
             ERROR("undefined varialbe ?\n");
@@ -278,67 +281,91 @@ bool CREATE(Program *p)
 }
 bool LOOP(Program *p)
 {
-    if (p)
-        printf("loop something \n");
+    // p->start = p->cw;
 
-    p->cw = p->cw + 1;
+    // while (p->count < 3)
+    // {
+    //     printf("loop something , cw = %d\n", p->cw);
+    //     p->cw = p->cw + 1;
+    //     if (!VARNAME(p))
+    //     {
+    //         printf("VAR NOT OK\n");
+    //         ERROR("INVALID VARNAME");
+    //     }
 
-    if (!VARNAME(p))
-    {
-        printf("VAR NOT OK\n");
-        ERROR("INVALID VARNAME");
-    }
+    //     //INTERP
+    //     p->pos = get_pos(p);
+    //     p->variables[p->pos].y = 1;
+    //     p->variables[p->pos].x = 1;
+    //     p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
+    //     p->variables[p->pos].num[0][0] = 1;
 
-#ifdef INTERP
+    //     p->cw = p->cw + 1;
+    //     if (!INTEGER(p))
+    //     {
+    //         printf("INTEGER NOT OK\n");
+    //         ERROR("INVALID INTEGER");
+    //     }
+    //     int max_loop = atoi(p->wds[p->cw]);
+    //     printf("MAX LOOP = %d\n", max_loop);
 
-    // int count = 1;
-    allocate_space(p);
-    p->variables[p->pos].y = 1;
-    p->variables[p->pos].x = 1;
-    printf("p->count =%d\n", p->variables[p->pos].count);
-    p->variables[p->pos].count += 1;
-    int count = p->variables[p->pos].count;
-    for (int y = 0; y < p->variables[p->pos].y; y++)
-    {
-        for (int x = 0; x < p->variables[p->pos].x; x++)
-        {
-            p->variables[p->pos].num[y][x] = count;
-        }
-    }
-    printf("TEST VALUE !!! :\n");
-    for (int y = 0; y < p->variables[p->pos].y; y++)
-    {
-        for (int x = 0; x < p->variables[p->pos].x; x++)
-        {
-            printf("%d", p->variables[p->pos].num[y][x]);
-        }
-        printf("\n");
-    }
-#endif
+    //     p->cw = p->cw + 1;
+    //     if (!LEFTBRACKET(p))
+    //     {
+    //         printf("LEFT BRACKET NOT OK\n");
+    //         ERROR("INVALID INTEGER");
+    //     }
+    //     p->cw = p->cw + 1;
+    //     printCur(p, __LINE__);
+    //     printf("****p->count =%d\n", p->count);
 
-    p->cw = p->cw + 1;
-    if (!INTEGER(p))
-    {
-        printf("INTEGER NOT OK\n");
-        ERROR("INVALID INTEGER");
-    }
-    int max_loop = atoi(p->wds[p->cw]);
-    printf("MAX LOOP = %d\n", max_loop);
+    //     INSTRCLIST(p);
+    //     printf("......END OF INSTRCLIST\n");
+    //     p->cw = p->start;
 
-    p->cw = p->cw + 1;
-    if (!LEFTBRACKET(p))
-    {
-        printf("LEFT BRACKET NOT OK\n");
-        ERROR("INVALID INTEGER");
-    }
-    p->cw = p->cw + 1;
+    //     p->count += 1;
+    //     printf("p->count = %d\n", p->count);
+    // }
 
-    for (int i = 0; i < max_loop; i++)
-    {
-        INSTRCLIST(p);
-    }
+    // p->cw = p->cw + 1;
+    // if (!VARNAME(p))
+    // {
+    //     printf("VAR NOT OK\n");
+    //     ERROR("INVALID VARNAME");
+    // }
 
-    printf("LOOP returns true\n");
+    // //INTERP
+    // p->pos = get_pos(p);
+    // p->variables[p->pos].y = 1;
+    // p->variables[p->pos].x = 1;
+    // p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
+    // p->variables[p->pos].num[0][0] = 1;
+
+    // p->cw = p->cw + 1;
+    // if (!INTEGER(p))
+    // {
+    //     printf("INTEGER NOT OK\n");
+    //     ERROR("INVALID INTEGER");
+    // }
+    // int max_loop = atoi(p->wds[p->cw]);
+    // printf("MAX LOOP = %d\n", max_loop);
+
+    // p->cw = p->cw + 1;
+    // if (!LEFTBRACKET(p))
+    // {
+    //     printf("LEFT BRACKET NOT OK\n");
+    //     ERROR("INVALID INTEGER");
+    // }
+    // p->cw = p->cw + 1;
+    // printCur(p, __LINE__);
+    // printf("****p->count =%d\n", p->count);
+
+    // INSTRCLIST(p);
+    // printf("......END OF INSTRCLIST\n");
+
+    // printf("p->count = %d\n", p->count);
+
+    // printf("LOOP returns true\n");
     return true;
 }
 
@@ -359,6 +386,7 @@ bool INTEGER(Program *p)
 
     if (digits_only(p->wds[p->cw]))
     {
+
         return true;
     }
     return false;
@@ -374,25 +402,18 @@ bool POLISHLIST(Program *p)
     if (p->wds[p->cw][0] == ';')
     {
         // #ifdef INTERP
-        printf("YES ;\n");
-        printf("set pos = %d\n", p->pos);
-        var *v = pop(p);
+        printf(">>>>>>>> A THE END, FOUND HI ;\n");
+        // printf("set pos = %d\n", p->pos);
+        var *v = pop(&p->stacknode);
         printf("popped success\n");
 
         if (v)
         {
-            printf("is there value = %d\n", v->num[0][0]);
+            printf("The value inside v = %d\n", v->num[0][0]);
             set_value(p, v);
         }
-        // printf("value inside = %d\n", p->variables[0].num[0][0]);
-        clear_stack(p);
 
-        // for (int i = 0; i < 1; i++)
-        // {
-        //     free(p->tmp.num[i]);
-        // }
-        // free(p->tmp.num);
-
+        free_stack_node(v);
         return true;
     }
     // printf("p->wds[p->cw][0] = %d\n", p->wds[p->cw]);
@@ -425,17 +446,19 @@ bool POLISHLIST(Program *p)
 bool POLISH(Program *p)
 {
     printf("======== LEVEL3:POLISH ========\n");
+    printCur(p, __LINE__);
     if (PUSHDOWN(p) == true)
     {
         printf(" => IS PUSHDOWN\n");
         printCur(p, __LINE__);
+
         return true;
     }
-    // else if (UNARYOP(p))
-    // {
-    //     printf(" => IS UNARYOP\n");
-    //     return true;
-    // }
+    else if (UNARYOP(p))
+    {
+        printf(" => IS UNARYOP\n");
+        return true;
+    }
     else if (BINARYOP(p))
     {
         printf(" => IS BINARYOP\n");
@@ -471,164 +494,623 @@ bool FILENAME(Program *p)
 
 bool PUSHDOWN(Program *p)
 {
-
-    // allocate_space(p);
-
+    printf("PUSHDOWN()\n");
+    printCur(p, __LINE__);
     if (digits_only(p->wds[p->cw]))
     {
         // #ifdef INTERP
-        printf("INTERPs triggered, is digit only\n");
-        // var *v = ncalloc(1, sizeof(var));
-        p->variables[p->pos].y = 1;
-        p->variables[p->pos].x = 1;
-        printf("ALLOCATING NUM!!!!\n");
-        printf("pos = %d\n", p->pos);
-        printf("my = %d\n", p->variables[p->pos].y);
-        printf("mx = %d\n", p->variables[p->pos].x);
+        printf("<<<<<<<<<<< digitsonly >>>>>>>>>>>>\n");
+        var *v = calloc(1, sizeof(var));
+        v->y = 1;
+        v->x = 1;
+        v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
 
-        printf("IS EMPTY = %d\n", p->variables[p->pos].num);
-
-        p->tmp.num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
-        p->tmp.y = 1;
-        p->tmp.x = 1;
-        for (int y = 0; y < p->tmp.y; y++)
+        for (int y = 0; y < v->y; y++)
         {
-            for (int x = 0; x < p->tmp.x; x++)
+            for (int x = 0; x < v->x; x++)
             {
-                p->tmp.num[y][x] = atoi(p->wds[p->cw]);
+                v->num[y][x] = atoi(p->wds[p->cw]);
             }
         }
+        printf("v-val= %d\n", v->num[0][0]);
+        push(&p->stacknode, v);
 
-        push(p);
-        // #endif
         return true;
     }
 
     if (is_variable(p->wds[p->cw]))
     {
 
-        printf("is variable\n");
+        printf("<<<<<<<<<<< is_variable >>>>>>>>>>>>\n");
         printCur(p, __LINE__);
+        var val = get_value(p);
+        printf("HELLO : %d , %d\n", val.y, val.x);
+        var *v = calloc(1, sizeof(var));
+        v->y = val.y;
+        v->x = val.x;
+        v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
 
-        var v = get_value(p);
-        p->tmp = v;
-        // printf("v-val = %d\n", v.num);
-        if (!v.num)
+        for (int y = 0; y < v->y; y++)
         {
-            ERROR("VARIABLE UNDEFINED????\n");
+            for (int x = 0; x < v->x; x++)
+            {
+                v->num[y][x] = val.num[y][x];
+            }
         }
-
-        push(p);
-
+        push(&p->stacknode, v);
         return true;
     }
-
+    printf("PUSHDOWN RETURNS FALSE\n");
     return false;
 }
 bool UNARYOP(Program *p)
 {
+    printf("CHECKING UNARYOP\n");
 
+    
     if (strsame(p->wds[p->cw], "U-NOT"))
     {
+        var *v3 = calloc(1, sizeof(var));
+        var *v1 = pop(&p->stacknode);
+        printf("IN U-NOT");
+        v3->y = v1->y;
+        v3->x = v1->x;
+        v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+        for (int y = 0; y < v3->y; y++)
+        {
+            for (int x = 0; x < v3->y; x++)
+            {
+                v3->num[y][x] = ~v1->num[y][x];
+            }
+        }
+
+        push(&p->stacknode, v3);
+        free_stack_node(v1);
         return true;
     }
 
     if (strsame(p->wds[p->cw], "U-EIGHTCOUNT"))
     {
+        var *v3 = calloc(1, sizeof(var));
+        var *v1 = pop(&p->stacknode);
+        var *tmp = calloc(1, sizeof(var));
+        printf("IN U-EIGHTCOUNT\n");
+        v3->y = v1->y;
+        v3->x = v1->x;
+        tmp->y = v1->y;
+        tmp->x = v1->x;
+
+        printf("v3: y=%d, x=%d\n", v3->y, v3->x);
+
+        v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+        tmp->num = (int **)n2dcalloc(v3->y + 2, v3->x + 2, sizeof(int *));
+        for (int y = 0; y < tmp->y; y++)
+        {
+            for (int x = 0; x < tmp->x; x++)
+            {
+                tmp->num[y + 1][x + 1] = v1->num[y][x];
+            }
+        }
+
+        for (int y = 0; y < tmp->y + 2; y++)
+        {
+            for (int x = 0; x < tmp->x + 2; x++)
+            {
+                printf("%d", tmp->num[y][x]);
+            }
+            printf("\n");
+        }
+        printf("next:\n");
+        int offset[8][2] = {
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
+            {0, -1},
+            {0, 1},
+            {1, -1},
+            {1, 0},
+            {1, 1}};
+
+        for (int y = 1; y < tmp->y + 1; y++)
+        {
+            for (int x = 1; x < tmp->x + 1; x++)
+            {
+                int count = 0;
+                for (int k = 0; k < 8; k++)
+                {
+                    //printf("HELLO %d\n",tmp->num[y + offset[k][1]][x + offset[k][0]]);
+                    if (tmp->num[y + offset[k][1]][x + offset[k][0]] >= 1)
+                    {
+                        count += 1;
+                        v3->num[y - 1][x - 1] = count;
+                    }
+                }
+            }
+        }
+
+        printf("after222:\n");
+        for (int y = 0; y < v3->y; y++)
+        {
+            for (int x = 0; x < v3->x; x++)
+            {
+
+                printf("%d", v3->num[y][x]);
+            }
+            printf("\n");
+        }
+
+        push(&p->stacknode, v3);
+        free_stack_node(v1);
+
+        for (int y = 0; y < tmp->y + 2; y++)
+        {
+            free(tmp->num[y]);
+        }
+        free(tmp->num);
+        free(tmp);
+
+        printf("finished\n");
         return true;
     }
-
+    printf(" UNARYOP returns false\n");
     return false;
 }
 
 bool BINARYOP(Program *p)
 {
-
+    printf("BINARYOP CHECK\n");
+    var *v1 = pop(&p->stacknode);
+    var *v2 = pop(&p->stacknode);
+    var *v3 = calloc(1, sizeof(var));
     if (strsame(p->wds[p->cw], "B-ADD"))
     {
         printf("IN B-ADD\n");
-        // #ifdef INTERP
-        printf("p->pos = : %d\n", p->pos);
-        var *v1 = pop(p);
-        var *v2 = pop(p);
-
-        printf("v1  y:%d , x:%d\n", v1->y, v1->x);
-        printf("v2 (LEFT-MOST) y:%d , x:%d\n", v2->y, v2->x);
-
-        // var *v3 = ncalloc(1, sizeof(var));
-        p->tmp.num = (int **)n2dcalloc(v2->y, v2->x, sizeof(int *));
-
+        printf("v1: y=%d, x=%d\n", v1->y, v1->x);
+        printf("v2: y=%d, x=%d\n", v2->y, v2->x);
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
-            printf("COND 1\n");
-            p->tmp.y = 1;
-            p->tmp.x = 1;
-            for (int y = 0; y < 1; y++)
+            printf("COND_1\n");
+            v3->y = 1;
+            v3->x = 1;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
             {
-                for (int x = 0; x < 1; x++)
+                for (int x = 0; x < v3->y; x++)
                 {
-                    p->tmp.num[y][x] = v2->num[y][x] + v1->num[y][x];
+                    v3->num[y][x] = v1->num[y][x] + v2->num[y][x];
                 }
             }
+            printf("v-val= %d\n", v3->num[0][0]);
+            push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
         {
-            printf("COND 2\n");
-            p->tmp.y = v2->y;
-            p->tmp.x = v2->x;
-            int final_value = v1->num[0][0] + v2->num[0][0];
-
-            printf("final_value: %d\n", final_value);
-
-            for (int y = 0; y < p->tmp.y; y++)
+            v3->y = v2->y;
+            v3->x = v2->x;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
             {
-                for (int x = 0; x < p->tmp.x; x++)
+                for (int x = 0; x < v3->y; x++)
                 {
-                    p->tmp.num[y][x] = final_value;
-                    // printf("%d", p->tmp.num[y][x]);
+                    v3->num[y][x] = v2->num[y][x] + v1->num[0][0];
                 }
             }
-            printf("assigned success\n");
+
+            push(&p->stacknode, v3);
         }
 
         if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
         {
             if (v2->y == v1->y && v2->x == v1->x)
             {
-                printf("COND 3\n");
-                p->tmp.y = v2->y;
-                p->tmp.x = v2->x;
-
-                int final_value = v1->num[0][0] + v2->num[0][0];
-
-                printf("final_value: %d\n", final_value);
-
-                for (int y = 0; y < p->tmp.y; y++)
+                v3->y = v2->y;
+                v3->x = v2->x;
+                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+                for (int y = 0; y < v3->y; y++)
                 {
-                    for (int x = 0; x < p->tmp.x; x++)
+                    for (int x = 0; x < v3->y; x++)
                     {
-                        p->tmp.num[y][x] = final_value;
+                        v3->num[y][x] = v2->num[y][x] + v1->num[y][x];
                     }
                 }
+
+                push(&p->stacknode, v3);
+            }
+            else
+            {
+                ERROR("HEIGHT & WIDTH DOESN't MATCH");
             }
         }
 
-        push(p);
-
-        // free(v3);
         // #endif
+        free_stack_node(v1);
+        free_stack_node(v2);
+
         return true;
     }
 
-    if (
-        strsame(p->wds[p->cw], "B-AND") ||
-        strsame(p->wds[p->cw], "B-OR") ||
-        strsame(p->wds[p->cw], "B-GREATER") ||
-        strsame(p->wds[p->cw], "B-LESS") ||
-        strsame(p->wds[p->cw], "B-TIMES") ||
-        strsame(p->wds[p->cw], "B-EQUALS"))
+    if (strsame(p->wds[p->cw], "B-AND"))
     {
+        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        {
+            printf("COND_1\n");
+            v3->y = 1;
+            v3->x = 1;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v1->num[y][x] & v2->num[y][x];
+                }
+            }
+            printf("v-val= %d\n", v3->num[0][0]);
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
+        {
+            printf("COND_2\n");
+            v3->y = v2->y;
+            v3->x = v2->x;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v2->num[y][x] & v1->num[0][0];
+                }
+            }
+
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        {
+            if (v2->y == v1->y && v2->x == v1->x)
+            {
+                printf("COND_3\n");
+                v3->y = v2->y;
+                v3->x = v2->x;
+                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+                for (int y = 0; y < v3->y; y++)
+                {
+                    for (int x = 0; x < v3->y; x++)
+                    {
+                        v3->num[y][x] = v2->num[y][x] & v1->num[y][x];
+                    }
+                }
+
+                push(&p->stacknode, v3);
+            }
+            else
+            {
+                ERROR("HEIGHT & WIDTH DOESN't MATCH");
+            }
+        }
+        free_stack_node(v1);
+        free_stack_node(v2);
+        return true;
+    }
+
+    if (strsame(p->wds[p->cw], "B-OR"))
+    {
+        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        {
+            printf("COND_1\n");
+            v3->y = 1;
+            v3->x = 1;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v1->num[y][x] | v2->num[y][x];
+                }
+            }
+            printf("v-val= %d\n", v3->num[0][0]);
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
+        {
+            printf("COND_2\n");
+            v3->y = v2->y;
+            v3->x = v2->x;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v2->num[y][x] | v1->num[0][0];
+                }
+            }
+
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        {
+            if (v2->y == v1->y && v2->x == v1->x)
+            {
+                printf("COND_3\n");
+                v3->y = v2->y;
+                v3->x = v2->x;
+                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+                for (int y = 0; y < v3->y; y++)
+                {
+                    for (int x = 0; x < v3->y; x++)
+                    {
+                        v3->num[y][x] = v2->num[y][x] | v1->num[y][x];
+                    }
+                }
+
+                push(&p->stacknode, v3);
+            }
+            else
+            {
+                ERROR("HEIGHT & WIDTH DOESN't MATCH");
+            }
+        }
+        free_stack_node(v1);
+        free_stack_node(v2);
+        return true;
+    }
+
+    if (strsame(p->wds[p->cw], "B-GREATER"))
+    {
+        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        {
+            printf("COND_1\n");
+            v3->y = 1;
+            v3->x = 1;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v1->num[y][x] < v2->num[y][x];
+                }
+            }
+            printf("v-val= %d\n", v3->num[0][0]);
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
+        {
+            printf("COND_2\n");
+            v3->y = v2->y;
+            v3->x = v2->x;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v2->num[y][x] < v1->num[0][0];
+                }
+            }
+
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        {
+            if (v2->y == v1->y && v2->x == v1->x)
+            {
+                printf("COND_3\n");
+                v3->y = v2->y;
+                v3->x = v2->x;
+                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+                for (int y = 0; y < v3->y; y++)
+                {
+                    for (int x = 0; x < v3->y; x++)
+                    {
+                        v3->num[y][x] = v2->num[y][x] < v1->num[y][x];
+                    }
+                }
+
+                push(&p->stacknode, v3);
+            }
+            else
+            {
+                ERROR("HEIGHT & WIDTH DOESN't MATCH");
+            }
+        }
+        free_stack_node(v1);
+        free_stack_node(v2);
+        return true;
+    }
+
+    if (strsame(p->wds[p->cw], "B-LESS"))
+    {
+        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        {
+            printf("COND_1\n");
+            v3->y = 1;
+            v3->x = 1;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v1->num[y][x] > v2->num[y][x];
+                }
+            }
+            printf("v-val= %d\n", v3->num[0][0]);
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
+        {
+            printf("COND_2\n");
+            v3->y = v2->y;
+            v3->x = v2->x;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v2->num[y][x] > v1->num[0][0];
+                }
+            }
+
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        {
+            if (v2->y == v1->y && v2->x == v1->x)
+            {
+                printf("COND_3\n");
+                v3->y = v2->y;
+                v3->x = v2->x;
+                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+                for (int y = 0; y < v3->y; y++)
+                {
+                    for (int x = 0; x < v3->y; x++)
+                    {
+                        v3->num[y][x] = v2->num[y][x] > v1->num[y][x];
+                    }
+                }
+
+                push(&p->stacknode, v3);
+            }
+            else
+            {
+                ERROR("HEIGHT & WIDTH DOESN't MATCH");
+            }
+        }
+        free_stack_node(v1);
+        free_stack_node(v2);
+        return true;
+    }
+
+    if (strsame(p->wds[p->cw], "B-TIMES"))
+    {
+        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        {
+            printf("COND_1\n");
+            v3->y = 1;
+            v3->x = 1;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v1->num[y][x] * v2->num[y][x];
+                }
+            }
+            printf("v-val= %d\n", v3->num[0][0]);
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
+        {
+            printf("COND_2\n");
+            v3->y = v2->y;
+            v3->x = v2->x;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v2->num[y][x] * v1->num[0][0];
+                }
+            }
+
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        {
+            if (v2->y == v1->y && v2->x == v1->x)
+            {
+                printf("COND_3\n");
+                v3->y = v2->y;
+                v3->x = v2->x;
+                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+                for (int y = 0; y < v3->y; y++)
+                {
+                    for (int x = 0; x < v3->y; x++)
+                    {
+                        v3->num[y][x] = v2->num[y][x] * v1->num[y][x];
+                    }
+                }
+
+                push(&p->stacknode, v3);
+            }
+            else
+            {
+                ERROR("HEIGHT & WIDTH DOESN't MATCH");
+            }
+        }
+        free_stack_node(v1);
+        free_stack_node(v2);
+        return true;
+    }
+
+    if (strsame(p->wds[p->cw], "B-EQUALS"))
+    {
+        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        {
+            printf("COND_1\n");
+            v3->y = 1;
+            v3->x = 1;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v1->num[y][x] == v2->num[y][x];
+                }
+            }
+            printf("v-val= %d\n", v3->num[0][0]);
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y == 1 || v1->x == 1))
+        {
+            printf("COND_2\n");
+            v3->y = v2->y;
+            v3->x = v2->x;
+            v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = 0; x < v3->y; x++)
+                {
+                    v3->num[y][x] = v2->num[y][x] == v1->num[0][0];
+                }
+            }
+
+            push(&p->stacknode, v3);
+        }
+
+        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        {
+            if (v2->y == v1->y && v2->x == v1->x)
+            {
+                printf("COND_3\n");
+                v3->y = v2->y;
+                v3->x = v2->x;
+                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+                for (int y = 0; y < v3->y; y++)
+                {
+                    for (int x = 0; x < v3->y; x++)
+                    {
+                        v3->num[y][x] = v2->num[y][x] == v1->num[y][x];
+                    }
+                }
+
+                push(&p->stacknode, v3);
+            }
+            else
+            {
+                ERROR("HEIGHT & WIDTH DOESN't MATCH");
+            }
+        }
+        free_stack_node(v1);
+        free_stack_node(v2);
         return true;
     }
 
@@ -747,8 +1229,13 @@ var get_value(Program *p)
 
     int pos = get_pos(p);
     printf("pos =%d\n", pos);
-    printf("FINAL?\n");
-    // printf("val =%d\n", p->variables[pos].num[0][0]);
+
+    if (!p->variables[pos].num)
+    {
+        ERROR("UNDEFINED VARIABLED DETECTED\n");
+    }
+
+    printf("val inside get_value =%d\n", p->variables[pos].num[0][0]);
 
     return p->variables[pos];
 
@@ -763,6 +1250,7 @@ int get_pos(Program *p)
 bool print_variable(var v)
 {
     printf("printing variable:\n");
+
     printf("y=%d , x=%d\n", v.y, v.x);
     if (v.num != 0)
     {
@@ -784,88 +1272,58 @@ bool print_variable(var v)
     return false;
 }
 
-//STACK
-Stack *createStack(int capacity)
+struct StackNode *newNode(var *data)
 {
-    // malloc(sizeof(struct Stack));
-    Stack *stack = (struct Stack *)ncalloc(1, sizeof(Stack));
-    stack->capacity = capacity;
-    stack->top = -1;
-    // stack->arr = (var *)n2dcalloc(100, 100, sizeof(var));
-    stack->arr = (var *)calloc(capacity, sizeof(var));
-
-    return stack;
+    struct StackNode *stackNode =
+        (struct StackNode *)
+            malloc(sizeof(struct StackNode));
+    stackNode->data = data;
+    stackNode->next = NULL;
+    return stackNode;
 }
 
-// Stack is full when top is equal to the last index
-int isFull(struct Stack *stack)
+bool isEmpty(struct StackNode *root)
 {
-    return stack->top == stack->capacity - 1;
+    return !root;
 }
 
-// Stack is empty when top is equal to -1
-int isEmpty(struct Stack *stack)
+void push(struct StackNode **root, var *data)
 {
-    return stack->top == -1;
+    printf("START TO PUSH-->\n");
+    struct StackNode *stackNode = newNode(data);
+    stackNode->next = *root;
+    *root = stackNode;
+    printf(" pushed to stack\n");
 }
 
-// Function to add an item to stack.  It increases top by 1
-void push(Program *p)
+var *pop(struct StackNode **root)
 {
-    printf("pushing to stack : %d \n", p->stack->top);
-    if (isFull(p->stack))
-        return;
-    printf("pushing...\n");
-    p->stack->arr[++p->stack->top] = p->tmp;
-
-    printf("pushed to stack : %d, with value: %d \n", p->stack->top, p->stack->arr[p->stack->top].num[0][0]);
-}
-
-// Function to remove an item from stack.  It decreases top by 1
-var *pop(Program *p)
-{
-    if (isEmpty(p->stack))
-        return NULL;
-
-    printf("popping, top = %d\n", p->stack->top);
-    // printf("HI %d\n",stack->arr[stack->top]);
-
-    // printf("pstack inside pop: %d\n", stack->arr[0].num[0][0]);
-
-    for (int y = 0; y < 1; y++)
+    printf("->START POPPING\n");
+    if (isEmpty(*root))
     {
-        for (int x = 0; x < 1; x++)
-        {
-            printf("%d", p->stack->arr[p->stack->top].num[y][x]);
-        }
-        printf("\n");
-    }
-    var *variable = &p->stack->arr[p->stack->top];
-    p->stack->top--;
-
-    return variable;
-}
-
-// Function to return the top from stack without removing it
-int **peek(struct Stack *stack)
-{
-    if (isEmpty(stack))
+        printf("EMPTY!!!!!!!!!!\n");
         return NULL;
-    return NULL;
+    }
+
+    struct StackNode *temp = *root;
+    *root = (*root)->next;
+    var *popped = temp->data;
+
+    free(temp);
+
+    printf("popped = %d\n", popped->num[0][0]);
+    printf("popping y= %d\n", popped->y);
+    printf("popping x= %d\n", popped->x);
+
+    return popped;
 }
 
-void clear_stack(Program *p)
+void free_stack_node(var *v)
 {
-    printf("CLEARING STACK and free, now top = %d\n", p->stack->top);
-
-  
-
-    p->stack->top = -1;
-    // printf("val = %d\n", p->tmp.num[0][0]);
-    free(p->tmp.num[0]);
-    free(p->tmp.num);
-
-    // free(p->variables[p->pos].num[0]);
-    // free(p->variables[p->pos].num);
-    printf("freed ...........\n");
+    for (int y = 0; y < v->y; y++)
+    {
+        free(v->num[y]);
+    }
+    free(v->num);
+    free(v);
 }

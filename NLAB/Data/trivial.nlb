@@ -1,8 +1,5 @@
 BEGIN {
-   SET $D := 6 ;
-   SET $B := $D ;
-
-   PRINT $B
-
-
+   SET $A := 5 ;
+   SET $A := $A 3 B-ADD ;
+   PRINT $A
 }
