@@ -34,6 +34,11 @@ struct var
    int **num;
    int y;
    int x;
+   int max_loop;
+   int start ;
+   int pos;
+   // int count;
+   // int count;
 };
 typedef struct var var;
 

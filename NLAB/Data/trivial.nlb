@@ -1,5 +1,6 @@
 BEGIN {
-   SET $A := 5 ;
-   SET $A := $A 3 B-ADD ;
-   PRINT $A
+   LOOP $I 10 {
+      SET $I := $I 1 B-ADD ; 
+      PRINT $I
+   }
 }

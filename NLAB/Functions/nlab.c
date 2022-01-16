@@ -27,10 +27,34 @@ bool PROG(Program *p)
 bool INSTRCLIST(Program *p)
 {
     printf("======== parsing INSTRCLIST ========\n");
-    // printCur(p, __LINE__);
+    printCur(p, __LINE__);
     if (strsame(p->wds[p->cw], "}"))
     {
         printf("->RETURN TRUE FROM INSTRCLIST }}} \n");
+        var *popped = pop(&p->stacknode);
+        if (popped)
+        {
+            printf("YES < POPPED, num=%d ,max =%d\n", p->variables[p->pos].num[0][0], popped->max_loop);
+            if (p->variables[p->pos].num[0][0] < popped->max_loop)
+            {
+                printf("CONTINUE??? popped->num[0][0]= %d\n", popped->num[0][0]);
+                // if (popped->num[0][0] + 1 == popped->max_loop)
+                // {
+                //     printf("EQUAL!!!!!!!!!!!!!\n");
+                //     printCur(p, __LINE__);
+                //     return true;
+                // }
+                p->cw = popped->start;
+                INSTRCLIST(p);
+            }
+            // else if (popped->num[0][0] == popped->max_loop)
+            // {
+            //     printf("EQUAL!!!!!!!!!!!!!\n");
+            //     printCur(p, __LINE__);
+            //     return true;
+            // }
+        }
+
         return true;
     }
     if (!INSTRC(p))
@@ -41,8 +65,14 @@ bool INSTRCLIST(Program *p)
 
         return false;
     }
-
+    printf("INSTRC OK \n");
+    if (strsame(p->wds[p->cw], "}") && strsame(p->wds[p->cw + 1], ""))
+    {
+        printf("CONDITIONAL RETURN>>>>>>>>>>>>>>>>>>>!!!!!");
+        return true;
+    }
     p->cw = p->cw + 1;
+
     if (!INSTRCLIST(p))
     {
         return false;
@@ -89,14 +119,16 @@ bool INSTRC(Program *p)
         }
     }
 
-    // if (strsame(p->wds[p->cw], "LOOP"))
-    // {
+    if (strsame(p->wds[p->cw], "LOOP"))
+    {
 
-    //     if (LOOP(p))
-    //     {
-    //         return true;
-    //     }
-    // }
+        if (LOOP(p))
+        {
+            printf("LOOP() returns true\n");
+            printCur(p, __LINE__);
+            return true;
+        }
+    }
 
     ERROR("INSTRC : Expecting a PRINT or SET or CREATE or LOOP OR '}' OR ';' ?");
     return false;
@@ -182,7 +214,6 @@ bool SET(Program *p)
 bool CREATE(Program *p)
 {
     printf("======== parsing CREATE ========\n");
-
     p->cw = p->cw + 1;
     if (ROWS(p))
     {
@@ -194,7 +225,6 @@ bool CREATE(Program *p)
             if (VARNAME(p))
             {
                 printf("create valname true ....\n");
-
                 int y = atoi(p->wds[p->cw - 2]);
                 printf("y = %d\n", y);
                 int x = atoi(p->wds[p->cw - 1]);
@@ -281,91 +311,76 @@ bool CREATE(Program *p)
 }
 bool LOOP(Program *p)
 {
-    // p->start = p->cw;
+    //SET UP
+    var *v = calloc(1, sizeof(var));
+    v->y = 1;
+    v->x = 1;
 
-    // while (p->count < 3)
-    // {
-    //     printf("loop something , cw = %d\n", p->cw);
-    //     p->cw = p->cw + 1;
-    //     if (!VARNAME(p))
-    //     {
-    //         printf("VAR NOT OK\n");
-    //         ERROR("INVALID VARNAME");
-    //     }
+    v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
+    v->start = p->cw;
 
-    //     //INTERP
-    //     p->pos = get_pos(p);
-    //     p->variables[p->pos].y = 1;
-    //     p->variables[p->pos].x = 1;
-    //     p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
-    //     p->variables[p->pos].num[0][0] = 1;
+    printf("loop something , cw = %d\n", p->cw);
+    p->cw = p->cw + 1;
+    if (!VARNAME(p))
+    {
+        printf("VAR NOT OK\n");
+        ERROR("INVALID VARNAME");
+    }
+    //INTERP
+    v->pos = get_pos(p);
+    p->pos = v->pos;
+    p->variables[p->pos].y = 1;
+    p->variables[p->pos].x = 1;
 
-    //     p->cw = p->cw + 1;
-    //     if (!INTEGER(p))
-    //     {
-    //         printf("INTEGER NOT OK\n");
-    //         ERROR("INVALID INTEGER");
-    //     }
-    //     int max_loop = atoi(p->wds[p->cw]);
-    //     printf("MAX LOOP = %d\n", max_loop);
+    //===========================================SET I INITIAL VALUE
+    printf("SET INITIAL\n");
+    if (!p->variables[p->pos].num)
+    {
+        printf("need to allocate ! \n");
+        p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
+    }
+    printf("MAX: %d\n", p->variables[p->pos].max_loop);
+    printf("BEFORE: %d\n", p->variables[p->pos].num[0][0]);
 
-    //     p->cw = p->cw + 1;
-    //     if (!LEFTBRACKET(p))
-    //     {
-    //         printf("LEFT BRACKET NOT OK\n");
-    //         ERROR("INVALID INTEGER");
-    //     }
-    //     p->cw = p->cw + 1;
-    //     printCur(p, __LINE__);
-    //     printf("****p->count =%d\n", p->count);
+    if (p->variables[p->pos].max_loop == 0 || p->variables[p->pos].num[0][0] < p->variables[p->pos].max_loop)
+    {
+        p->variables[p->pos].num[0][0] += 1;
+        v->num[0][0] = p->variables[p->pos].num[0][0];
+    }
+    else if (p->variables[p->pos].num[0][0] == p->variables[p->pos].max_loop)
+    {
+        printf("same\n");
+        v->num[0][0] = p->variables[p->pos].num[0][0];
+    }
 
-    //     INSTRCLIST(p);
-    //     printf("......END OF INSTRCLIST\n");
-    //     p->cw = p->start;
+    printf("AFTER: %d\n", p->variables[p->pos].num[0][0]);
+    // int next_value = v->num[0][0];
+    // printf("v-num now = %d\n", next_value);
+    // p->variables[p->pos].num[0][0] = next_value;
+    //===========================================SET I INITIAL VALUE
 
-    //     p->count += 1;
-    //     printf("p->count = %d\n", p->count);
-    // }
+    p->cw = p->cw + 1;
+    if (!INTEGER(p))
+    {
+        printf("INTEGER NOT OK\n");
+        ERROR("INVALID INTEGER");
+    }
+    v->max_loop = atoi(p->wds[p->cw]);
+    p->variables[p->pos].max_loop = v->max_loop;
 
-    // p->cw = p->cw + 1;
-    // if (!VARNAME(p))
-    // {
-    //     printf("VAR NOT OK\n");
-    //     ERROR("INVALID VARNAME");
-    // }
+    printf("loop push...\n");
+    push(&p->stacknode, v);
 
-    // //INTERP
-    // p->pos = get_pos(p);
-    // p->variables[p->pos].y = 1;
-    // p->variables[p->pos].x = 1;
-    // p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
-    // p->variables[p->pos].num[0][0] = 1;
+    p->cw = p->cw + 1;
+    if (!LEFTBRACKET(p))
+    {
+        printf("LEFT BRACKET NOT OK\n");
+        ERROR("INVALID INTEGER");
+    }
+    p->cw = p->cw + 1;
 
-    // p->cw = p->cw + 1;
-    // if (!INTEGER(p))
-    // {
-    //     printf("INTEGER NOT OK\n");
-    //     ERROR("INVALID INTEGER");
-    // }
-    // int max_loop = atoi(p->wds[p->cw]);
-    // printf("MAX LOOP = %d\n", max_loop);
+    INSTRCLIST(p);
 
-    // p->cw = p->cw + 1;
-    // if (!LEFTBRACKET(p))
-    // {
-    //     printf("LEFT BRACKET NOT OK\n");
-    //     ERROR("INVALID INTEGER");
-    // }
-    // p->cw = p->cw + 1;
-    // printCur(p, __LINE__);
-    // printf("****p->count =%d\n", p->count);
-
-    // INSTRCLIST(p);
-    // printf("......END OF INSTRCLIST\n");
-
-    // printf("p->count = %d\n", p->count);
-
-    // printf("LOOP returns true\n");
     return true;
 }
 
@@ -547,7 +562,6 @@ bool UNARYOP(Program *p)
 {
     printf("CHECKING UNARYOP\n");
 
-    
     if (strsame(p->wds[p->cw], "U-NOT"))
     {
         var *v3 = calloc(1, sizeof(var));
@@ -1085,7 +1099,6 @@ bool BINARYOP(Program *p)
 
             push(&p->stacknode, v3);
         }
-
         if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
         {
             if (v2->y == v1->y && v2->x == v1->x)
@@ -1293,7 +1306,7 @@ void push(struct StackNode **root, var *data)
     struct StackNode *stackNode = newNode(data);
     stackNode->next = *root;
     *root = stackNode;
-    printf(" pushed to stack\n");
+    printf(" pushed to stack: %d\n", data->num[0][0]);
 }
 
 var *pop(struct StackNode **root)
@@ -1311,9 +1324,11 @@ var *pop(struct StackNode **root)
 
     free(temp);
 
-    printf("popped = %d\n", popped->num[0][0]);
-    printf("popping y= %d\n", popped->y);
-    printf("popping x= %d\n", popped->x);
+    printf("popped num = %d\n", popped->num[0][0]);
+    printf("popped y= %d\n", popped->y);
+    printf("popped x= %d\n", popped->x);
+    printf("popped pos= %d\n", popped->pos);
+    //printf("popped count= %d\n", popped->count);
 
     return popped;
 }
