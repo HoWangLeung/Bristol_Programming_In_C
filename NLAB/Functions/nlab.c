@@ -1272,7 +1272,7 @@ var *pop(struct StackNode **root)
 
     free(temp);
 
-    printf("popped num=%d\n", popped->num[0][0]);
+    printf("popped nums=%d\n", popped->num[0][0]);
     printf("popped y=%d\n", popped->y);
     printf("popped x=%d\n", popped->x);
 
