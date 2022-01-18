@@ -1,7 +1,7 @@
 BEGIN {
    SET $A := 5 ;
    SET $B := 8 ;
-   IF $A 4 B-EQUALS {
+   IF $A 5 B-EQUALS $B 8 B-EQUALS AND {
       SET $A := 12 ;
    }
    PRINT $A

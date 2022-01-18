@@ -34,6 +34,10 @@ strings can't have spaces in them (for simplicity)
 # B-TIMES operates on corresponding cells in turn (it is not a full matrix multiplication).
 <BINARYOP> :: "B-AND" | "B-OR" | "B-GREATER" | "B-LESS" | "B-ADD" | "B-TIMES" | "B-EQUALS"
 
+#Sort the popped array, push the result
+#Options include Bubble sort
+<SORTOP> :: "B-SORT"
+
 # Create an array full of ones, or read from a file
 <CREATE> ::= "ONES" <ROWS> <COLS> <VARNAME> | "READ" <FILENAME> <VARNAME>
 <ROW> ::= <INTEGER>
