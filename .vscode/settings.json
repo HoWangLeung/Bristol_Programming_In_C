@@ -24,6 +24,21 @@
         "string": "c",
         "stack": "c",
         "stdio.h": "c",
-        "__tree": "c"
+        "__tree": "c",
+        "__functional_base": "c",
+        "__node_handle": "c",
+        "atomic": "c",
+        "cstddef": "c",
+        "deque": "c",
+        "__memory": "c",
+        "functional": "c",
+        "iterator": "c",
+        "limits": "c",
+        "locale": "c",
+        "optional": "c",
+        "system_error": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "memory": "c"
     }
 }

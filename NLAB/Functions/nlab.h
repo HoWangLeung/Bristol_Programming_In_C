@@ -35,7 +35,7 @@ struct var
    int y;
    int x;
    int max_loop;
-   int start ;
+   int start;
    int pos;
    // int count;
    // int count;
@@ -92,7 +92,7 @@ void printCur(Program *p, int line);
 bool LEFTBRACKET(Program *p);
 
 void read_file(FILE *file_pointer, Program *p);
-bool testmode(char *PHRASE);
+bool testmode();
 
 void allocate_space(Program *p);
 bool set_value(Program *p, var *v);
@@ -116,3 +116,16 @@ void push(struct StackNode **root, var *data);
 var *pop(struct StackNode **root);
 
 void free_stack_node(var *v);
+void increment_cw(Program *p);
+
+//EXTENSION
+
+bool IF(Program *p);
+bool COND(Program *p);
+
+bool EQUALS(Program *p);
+
+bool COMPARE(Program *p);
+
+int search_next_right_bracket(Program *p);
+

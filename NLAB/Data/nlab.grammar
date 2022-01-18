@@ -1,7 +1,7 @@
 <PROG> ::= BEGIN "{" <INSTRCLIST>
 
 <INSTRCLIST> ::= "}" | <INSTRC> <INSTRCLIST>
-<INSTRC> ::= <PRINT> | <SET> | <CREATE> | <LOOP>
+<INSTRC> ::= <PRINT> | <SET> | <CREATE> | <LOOP> | <IF>
 
 # Print array or one-word string to stdout
 <PRINT> ::= "PRINT" <VARNAME> | "PRINT" <STRING>
@@ -43,3 +43,8 @@ strings can't have spaces in them (for simplicity)
 # Loop using a variable to count from 1 (!) to <= <INTEGER>
 # IF the variable
 <LOOP> ::= "LOOP" <VARNAME> <INTEGER> "{" <INSTRCLIST>
+
+<IF> ::= "IF" <COND> <THEN>
+<COND> ::=  <PUSHDOWN> <COMPARE> <PUSHDOWN>
+<ASSIGN> ::= "COPY"
+<COMPARE> ::= "EQUALS" | "NOT-EQUALS" | "GREATER"
