@@ -16,7 +16,7 @@ strings can't have spaces in them (for simplicity)
 <SET> ::= <VARNAME> ":=" <POLISHLIST>
 <POLISHLIST> ::= <POLISH><POLISHLIST>  | ";"
 
-<POLISH> ::= <PUSHDOWN> | <UNARYOP> | <BINARYOP>
+<POLISH> ::= <PUSHDOWN> | <UNARYOP> | <BINARYOP> |<SORTOP>|<FLIPOP>
 <PUSHDOWN> ::== <VARNAME> | <INTEGER>
 
 # A non-negative integer

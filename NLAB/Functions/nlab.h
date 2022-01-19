@@ -130,5 +130,8 @@ bool COMPARE(Program *p);
 int search_next_right_bracket(Program *p);
 
 //SORT OP
+bool SORTOP(Program *p);
+int flipcomp(const void* firstArg, const void* secondArg);
 
+bool FLIPOP(Program *p);
 

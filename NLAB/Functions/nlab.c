@@ -392,10 +392,10 @@ bool INTEGER(Program *p)
 //==========================
 bool POLISHLIST(Program *p)
 {
-
+    printf("=====PARSING POLISHLIST=======\n");
     if (p->wds[p->cw][0] == ';')
     {
-
+        printf("YES IS ;;;\n");
 #ifdef INTERP
         var *v = pop(&p->stacknode);
 
@@ -423,8 +423,10 @@ bool POLISHLIST(Program *p)
         ERROR("POLISH ERROR:\n");
         return false;
     }
-
+    printf("AFTER PUSHDOWN\n");
+    printCur(p, __LINE__);
     increment_cw(p);
+    printCur(p, __LINE__);
     POLISHLIST(p);
     if (p->wds[p->cw][0] != ';')
     {
@@ -437,28 +439,40 @@ bool POLISHLIST(Program *p)
 
 bool POLISH(Program *p)
 {
-
-    //  printCur(p, __LINE__);
+    printf("=========parsing polish========\n");
+    printCur(p, __LINE__);
+    printf("IN POLISH....\n");
+    printCur(p, __LINE__);
     if (PUSHDOWN(p) == true)
     {
-
+        printf("=>>IS PUSHDOWN\n");
         // printCur(p, __LINE__);
 
         return true;
     }
     else if (UNARYOP(p))
     {
-
+        printf("=>>IS UNARYOP\n");
         return true;
     }
     else if (BINARYOP(p))
     {
-
+        printf("=>>IS BINARYOP\n");
+        return true;
+    }
+    else if (SORTOP(p))
+    {
+        printf("=>>IS SORTOP\n");
+        return true;
+    }
+    else if (FLIPOP(p))
+    {
+        printf("=>>IS FLIPOP\n");
         return true;
     }
     else
-    {
-
+    { 
+        printf("NOTING...\n");
         ERROR("POLISH ERROR:EXPECT PUSHDOWN | UNARYOP | BINARYOP ");
     }
 }
@@ -531,6 +545,7 @@ bool PUSHDOWN(Program *p)
         }
         push(&p->stacknode, v);
 #endif
+        printf("PUSHDOWN() returns true\n");
         return true;
     }
 
@@ -541,6 +556,7 @@ bool UNARYOP(Program *p)
 
     if (strsame(p->wds[p->cw], "U-NOT"))
     {
+        printf("IN U-NOT\n");
 #ifdef INTERP
         var *v3 = calloc(1, sizeof(var));
         var *v1 = pop(&p->stacknode);
@@ -564,6 +580,7 @@ bool UNARYOP(Program *p)
 
     if (strsame(p->wds[p->cw], "U-EIGHTCOUNT"))
     {
+        printf("IN U-EIGHT\n");
 #ifdef INTERP
         var *v3 = calloc(1, sizeof(var));
         var *v1 = pop(&p->stacknode);
@@ -630,15 +647,17 @@ bool UNARYOP(Program *p)
 
 bool BINARYOP(Program *p)
 {
-#ifdef INTERP
-    var *v1 = pop(&p->stacknode);     //first array popped
-    var *v2 = pop(&p->stacknode);     //second array popped
-    var *v3 = calloc(1, sizeof(var)); //result to be pushed
-#endif
+    printf("IN BINARYOP\n");
+    // #ifdef INTERP
+
+    // #endif
     if (strsame(p->wds[p->cw], "B-ADD"))
     {
 #ifdef INTERP
-        if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
+        var *v1 = pop(&p->stacknode);     //first array popped
+        var *v2 = pop(&p->stacknode);     //second array popped
+        var *v3 = calloc(1, sizeof(var)); //result to be pushed
+        if (v2->y == v1->y && v2->x == v1->x)
         {
 
             v3->y = 1;
@@ -670,30 +689,29 @@ bool BINARYOP(Program *p)
             push(&p->stacknode, v3);
         }
 
-        if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
-        {
-            if (v2->y == v1->y && v2->x == v1->x)
-            {
-                v3->y = v2->y;
-                v3->x = v2->x;
-                v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
-                for (int y = 0; y < v3->y; y++)
-                {
-                    for (int x = 0; x < v3->y; x++)
-                    {
-                        v3->num[y][x] = v2->num[y][x] + v1->num[y][x];
-                    }
-                }
+        // if ((v2->y > 1 || v2->x > 1) && (v1->y > 1 || v1->x > 1))
+        // {
+        //     if (v2->y == v1->y && v2->x == v1->x)
+        //     {
+        //         v3->y = v2->y;
+        //         v3->x = v2->x;
+        //         v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+        //         for (int y = 0; y < v3->y; y++)
+        //         {
+        //             for (int x = 0; x < v3->y; x++)
+        //             {
+        //                 v3->num[y][x] = v2->num[y][x] + v1->num[y][x];
+        //             }
+        //         }
 
-                push(&p->stacknode, v3);
-            }
-            else
-            {
-                ERROR("HEIGHT & WIDTH DOESN't MATCH");
-            }
-        }
+        //         push(&p->stacknode, v3);
+        //     }
+        //     else
+        //     {
+        //         ERROR("HEIGHT & WIDTH DOESN't MATCH");
+        //     }
+        // }
 
-        // #endif
         free_stack_node(v1);
         free_stack_node(v2);
 #endif
@@ -703,6 +721,9 @@ bool BINARYOP(Program *p)
     if (strsame(p->wds[p->cw], "B-AND"))
     {
 #ifdef INTERP
+        var *v1 = pop(&p->stacknode);     //first array popped
+        var *v2 = pop(&p->stacknode);     //second array popped
+        var *v3 = calloc(1, sizeof(var)); //result to be pushed
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
 
@@ -769,6 +790,9 @@ bool BINARYOP(Program *p)
     if (strsame(p->wds[p->cw], "B-OR"))
     {
 #ifdef INTERP
+        var *v1 = pop(&p->stacknode);     //first array popped
+        var *v2 = pop(&p->stacknode);     //second array popped
+        var *v3 = calloc(1, sizeof(var)); //result to be pushed
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
 
@@ -835,6 +859,9 @@ bool BINARYOP(Program *p)
     if (strsame(p->wds[p->cw], "B-GREATER"))
     {
 #ifdef INTERP
+        var *v1 = pop(&p->stacknode);     //first array popped
+        var *v2 = pop(&p->stacknode);     //second array popped
+        var *v3 = calloc(1, sizeof(var)); //result to be pushed
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
 
@@ -901,6 +928,9 @@ bool BINARYOP(Program *p)
     if (strsame(p->wds[p->cw], "B-LESS"))
     {
 #ifdef INTERP
+        var *v1 = pop(&p->stacknode);     //first array popped
+        var *v2 = pop(&p->stacknode);     //second array popped
+        var *v3 = calloc(1, sizeof(var)); //result to be pushed
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
 
@@ -967,6 +997,9 @@ bool BINARYOP(Program *p)
     if (strsame(p->wds[p->cw], "B-TIMES"))
     {
 #ifdef INTERP
+        var *v1 = pop(&p->stacknode);     //first array popped
+        var *v2 = pop(&p->stacknode);     //second array popped
+        var *v3 = calloc(1, sizeof(var)); //result to be pushed
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
 
@@ -1033,6 +1066,9 @@ bool BINARYOP(Program *p)
     if (strsame(p->wds[p->cw], "B-EQUALS"))
     {
 #ifdef INTERP
+        var *v1 = pop(&p->stacknode);     //first array popped
+        var *v2 = pop(&p->stacknode);     //second array popped
+        var *v3 = calloc(1, sizeof(var)); //result to be pushed
         if (v1->y == 1 && v1->x == 1 && v2->y == 1 && v2->x == 1)
         {
 
@@ -1521,4 +1557,134 @@ int search_next_right_bracket(Program *p)
     printf("right } pos = %d\n", tmp);
 
     return tmp;
+}
+
+bool SORTOP(Program *p)
+{
+    printf("IN SORTOP\n");
+    if (strsame(p->wds[p->cw], "B-SORT"))
+    {
+        printf("......IN B-SORT\n");
+        var *v3 = calloc(1, sizeof(var));
+
+        var *v1 = pop(&p->stacknode);
+
+        printf("v1 num = %d\n", v1->num[0][0]);
+
+        v3->y = v1->y;
+        v3->x = v1->x;
+        v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+        for (int y = 0; y < v3->y; y++)
+        {
+            for (int x = 0; x < v3->x; x++)
+            {
+                v3->num[y][x] = v1->num[y][x];
+            }
+        }
+
+        for (int k = 0; k < v3->y; k++)
+        {
+            for (int y = 0; y < v3->y; y++)
+            {
+                for (int x = y + 1; x < v3->x; x++)
+                {
+                    if (v3->num[k][y] > v3->num[k][x])
+                    {
+                        int swap = v3->num[k][y];
+                        v3->num[k][y] = v3->num[k][x];
+                        v3->num[k][x] = swap;
+                    }
+                }
+            }
+        }
+        push(&p->stacknode, v3);
+        free_stack_node(v1);
+
+        return true;
+    }
+
+    if (strsame(p->wds[p->cw], "Q-SORT"))
+    {
+        printf("......IN Q-SORT\n");
+        var *v3 = calloc(1, sizeof(var));
+
+        var *v1 = pop(&p->stacknode);
+
+        printf("v1 num = %d\n", v1->num[0][0]);
+
+        v3->y = v1->y;
+        v3->x = v1->x;
+        v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+        for (int y = 0; y < v3->y; y++)
+        {
+            for (int x = 0; x < v3->x; x++)
+            {
+                v3->num[y][x] = v1->num[y][x];
+            }
+        }
+
+        for (int i = 0; i < v3->y; i++)
+            qsort(v3->num, v3->y, sizeof(int *), flipcomp);
+
+        push(&p->stacknode, v3);
+        free_stack_node(v1);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool FLIPOP(Program *p)
+{
+    printf("IN SORTOP\n");
+    if (strsame(p->wds[p->cw], "FLIP"))
+    {
+        printf("......IN FLIP-SORT\n");
+        var *v3 = calloc(1, sizeof(var));
+
+        var *v1 = pop(&p->stacknode);
+ 
+        printf("v1 num = %d\n", v1->num[0][0]);
+
+        v3->y = v1->y;
+        v3->x = v1->x;
+        v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+        for (int y = 0; y < v3->y; y++)
+        {
+            for (int x = 0; x < v3->x; x++)
+            {
+                v3->num[y][x] = v1->num[y][x];
+            }
+        }
+
+        for (int i = 0; i < v3->y; i++)
+            qsort(v3->num, v3->y, sizeof(int *), flipcomp);
+
+        push(&p->stacknode, v3);
+        free_stack_node(v1);
+
+        return true;
+    }
+
+    return false;
+}
+
+int flipcomp(const void *firstArg, const void *secondArg)
+{
+    /* get the values of the arguments */
+    int first = *(int *)firstArg;
+    int second = *(int *)secondArg;
+
+    /* return the value as expected by the qsort() method */
+    if (first < second)
+    {
+        return 1;
+    }
+    else if (second < first)
+    {
+        return -1;
+    }
+
+    return 0;
 }

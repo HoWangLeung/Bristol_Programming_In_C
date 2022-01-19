@@ -1,9 +1,9 @@
 // #include "Unity/unity.h"
 #include "Functions/nlab.h"
-#define ARR_RANGE 1000
+#define ARR_RANGE 500
 
 void set_up_testdata(Program *p, int test_number, char *func_name);
-void RUN_TEST(char *testcase_name);
+void RUN_PARSER_TEST(char *testcase_name);
 void copy_test_data(Program *p, char test_instructions[ARR_RANGE][ARR_RANGE], int test_number);
 void RUN_INTERP_TEST(char *testcase_name);
 
@@ -13,27 +13,27 @@ void get_interp_data(Program *p, int test_number, char *func_name);
 void clear_previous_data(Program *p);
 void free_struct(Program *p);
 
-int main(void)
+int main(void)  
 {
 #ifdef PARSER
-    RUN_TEST("PROG");
-    RUN_TEST("INSTRCLIST");
-    RUN_TEST("INSTRC");
-    RUN_TEST("SET");
-    RUN_TEST("PRINT");
-    RUN_TEST("CREATE");
-    RUN_TEST("LOOP");
-    RUN_TEST("POLISHLIST");
-    RUN_TEST("VARNAME");
-    RUN_TEST("INTEGER");
-    RUN_TEST("POLISH");
-    RUN_TEST("PUSHDOWN");
-    RUN_TEST("UNARYOP");
-    RUN_TEST("BINARYOP");
-    RUN_TEST("STRING");
-    RUN_TEST("ROWS");
-    RUN_TEST("COLS");
-    RUN_TEST("FILENAME");
+    RUN_PARSER_TEST("PROG");
+    RUN_PARSER_TEST("INSTRCLIST");
+    RUN_PARSER_TEST("INSTRC");
+    RUN_PARSER_TEST("SET");
+    RUN_PARSER_TEST("PRINT");
+    RUN_PARSER_TEST("CREATE");
+    RUN_PARSER_TEST("LOOP"); 
+    RUN_PARSER_TEST("POLISHLIST");
+    RUN_PARSER_TEST("VARNAME");
+    RUN_PARSER_TEST("INTEGER");
+    RUN_PARSER_TEST("POLISH");
+    RUN_PARSER_TEST("PUSHDOWN");
+    RUN_PARSER_TEST("UNARYOP");
+    RUN_PARSER_TEST("BINARYOP");
+    RUN_PARSER_TEST("STRING");
+    RUN_PARSER_TEST("ROWS");
+    RUN_PARSER_TEST("COLS");
+    RUN_PARSER_TEST("FILENAME");
     printf("TESTED PARSER\n");
 #endif
 
@@ -45,7 +45,7 @@ int main(void)
     return 0;
 }
 
-void RUN_TEST(char *testcase_name)
+void RUN_PARSER_TEST(char *testcase_name)
 {
     Program *p = calloc(1, sizeof(Program));
 
@@ -154,7 +154,7 @@ void RUN_TEST(char *testcase_name)
         assert(!SET(p));
 
         set_up_testdata(p, 2, "SET");
-        assert(SET(p));
+        assert(SET(p)); 
     }
     if (strcmp(testcase_name, "PRINT") == 0)
     {
@@ -421,7 +421,10 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
 {
     clear_previous_data(p);
 #ifdef PARSER
+    printf("B4 GETTING DATA\n");
+    printf("test number = %d, %s \n",test_number,func_name);
     get_parser_data(p, test_number, func_name);
+    printf("RETRIEVED DATA\n");
 #elif INTERP
     get_interp_data(p, test_number, func_name);
     printf("INTERP TESTING\n");
@@ -444,9 +447,10 @@ void copy_test_data(Program *p, char test_instructions[ARR_RANGE][ARR_RANGE], in
 
 void get_parser_data(Program *p, int test_number, char *func_name)
 {
+    printf("IND get_parser_data\n");
     if (strcmp(func_name, "PROG") == 0)
     {
-
+        printf("IN PROG GET PARASE DATA\n");
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
             {"BEGIN { }"},               //0: valid
             {"BEGIN { PRINT $A }"},      //0: valid

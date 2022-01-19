@@ -1,8 +1,5 @@
 BEGIN {
-   SET $A := 5 ;
-   SET $B := 8 ;
-   IF $A 5 B-EQUALS $B 8 B-EQUALS AND {
-      SET $A := 12 ;
-   }
+   SET $A := 1 ;
+   SET $A := $A 2 B-ADD ;
    PRINT $A
 }
