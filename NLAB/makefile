@@ -16,12 +16,13 @@ HELPER:=Functions/HELPER/helper.c
 STACK:=Functions/STACK/stack.c
 POLISH:=Functions/POLISH/polish.c
 POLISHLIST:=Functions/POLISHLIST/polishlist.c
+PUSHDOWN:=Functions/PUSHDOWN/pushdown.c
 EXTENSION_ROTATION:= Extension/ROTATION/rotation.c
 EXTENSION_SORT:= Extension/SORT/sort.c
 EXTENSION_FLIP:= Extension/FLIP/flip.c
 EXTENSION_IF:= Extension/IF/if.c
 EXTENSIONS:= $(EXTENSION_ROTATION) $(EXTENSION_SORT) $(EXTENSION_FLIP) $(EXTENSION_IF)
-FUNCTIONS:= $(SET) $(PRINT) $(CREATE) $(BINARYOP) $(LOOP) $(UNARYOP) $(HELPER) $(STACK) $(POLISH) $(POLISHLIST) $(EXTENSIONS)
+FUNCTIONS:= $(SET) $(PRINT) $(CREATE) $(BINARYOP) $(LOOP) $(UNARYOP) $(HELPER) $(STACK) $(POLISH) $(POLISHLIST) $(PUSHDOWN) $(EXTENSIONS)
 
 all: parse parse_s parse_v interp interp_s interp_v
 

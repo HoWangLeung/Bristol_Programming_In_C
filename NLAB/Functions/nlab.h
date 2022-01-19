@@ -96,7 +96,7 @@ void printCur(Program *p, int line);
 bool LEFTBRACKET(Program *p);
 
 void read_file(FILE *file_pointer, Program *p);
-bool testmode();
+// bool testmode();
 
 void allocate_space(Program *p);
 bool set_value(Program *p, var *v);

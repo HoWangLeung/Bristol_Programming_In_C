@@ -94,28 +94,6 @@ bool INSTRC(Program *p)
     return false;
 }
 
-
-bool PUSHDOWN(Program *p)
-{
-    if (digits_only(p->wds[p->cw]))
-    {
-        interp_pushdown_digits(p);
-        return true;
-    }
-
-    if (is_variable(p->wds[p->cw]))
-    {
-        interp_pushdown_variable(p);
-        return true;
-    }
-    return false;
-}
-
-bool testmode()
-{
-    return false;
-}
-
 void interp_instrclist(Program *p)
 {
     (void)p;
@@ -140,3 +118,8 @@ void interp_instrclist(Program *p)
     }
 #endif
 }
+
+// bool testmode()
+// {
+//     return false;
+// }
