@@ -1,9 +1,9 @@
 #include "Functions/nlab.h"
 #define BIGSTR 1000
-#define MAX_VAR_LENGTH 26
+
 
 int main(int argc, char *argv[])
-{
+{ 
     if (argc != 2)
     {
         fprintf(stderr, "Usage : %s <file.nlb> \n", argv[0]);
@@ -17,20 +17,4 @@ int main(int argc, char *argv[])
     clean_up(p);
     printf("END OF PROGRAM\n");
     return 0;
-}
-
-void clean_up(Program *p)
-{
-    for (int i = 0; i < MAX_VAR_LENGTH; i++)
-    {
-        if (p->variables[i].num != 0)
-        {
-            for (int j = 0; j < p->variables[i].y; j++)
-            {
-                free(p->variables[i].num[j]);
-            }
-            free(p->variables[i].num);
-        }
-    }
-    free(p);
 }
