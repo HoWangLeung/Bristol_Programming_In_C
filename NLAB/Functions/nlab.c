@@ -404,7 +404,9 @@ bool BINARYOP(Program *p)
 
 void printCur(Program *p, int line)
 {
+    printf("\033[0;31m");
     printf("printCur() is %s ,line %d\n", p->wds[p->cw], line);
+    printf("\033[0m"); 
 }
 
 bool ROWS(Program *p)
@@ -688,7 +690,6 @@ bool COND(Program *p)
 bool COMPARE(Program *p)
 {
     printf("========PARSING COMPARE========\n");
-
     if (BINARYOP(p))
     {
         printf("IN BINARYOP\n");

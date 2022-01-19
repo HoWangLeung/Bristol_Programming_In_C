@@ -35,12 +35,11 @@ runall: $(RESULTS)
 clean:
 	rm -f parse parse_s parse_v interp interp_s interp_v $(RESULTS)
 
-test: test.c Functions/nlab.c Functions/nlab.h General/general.h 
-	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o test -lm
+test:  Testing/test.c Functions/nlab.c Functions/nlab.h General/general.h 
+	gcc  Testing/test.c  Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test -lm
 
-test_interp: test.c Functions/nlab.c Functions/nlab.h General/general.h 
-	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o test_interp -lm
-
+test_interp: Testing/test.c Functions/nlab.c Functions/nlab.h General/general.h 
+	gcc Testing/test.c  Functions/nlab.c General/general.c $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o Testing/test_interp -lm
 
 test_v: test.c Functions/nlab.c Functions/nlab.h General/general.h 
 	gcc test.c  Functions/nlab.c General/general.c $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
