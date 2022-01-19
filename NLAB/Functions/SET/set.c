@@ -7,9 +7,9 @@ bool SET(Program *p)
     {
         return false;
     }
-    int pos = get_pos(p);
-    p->pos = pos;
+    p->pos = get_pos(p);
     increment_cw(p);
+
     if (!p->wds[p->cw][0] || p->wds[p->cw][0] != ':')
     {
         ERROR("Expected symbol : \n");

@@ -1,15 +1,8 @@
 BEGIN {
-
-   READ "lglider.arr" $A
-   LOOP $I 10 {
-
-      SET $B := $A U-EIGHTCOUNT ;
-      SET $D := $B 3 B-EQUALS ;
-      SET $C := $B 2 B-EQUALS $D B-OR $A B-AND ;
-      SET $E := $A U-NOT $D B-AND $C B-OR ;
-
-      PRINT $I
-      PRINT $E
-      SET $A := $E ;
+   SET $A := 5 ;
+   IF $A 5 B-EQUALS {
+      SET $A := 10 ;
    }
+  PRINT $A
 }
+ 
