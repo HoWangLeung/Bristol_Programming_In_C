@@ -1,5 +1,7 @@
 BEGIN {
-   SET $A := 1 ;
-   SET $A := $A 2 B-ADD ;
+
+   READ "unsorted.arr" $A
+   SET $A := $A ROTATE-L  ;
    PRINT $A
 }
+ 

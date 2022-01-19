@@ -55,8 +55,8 @@ struct prog
    var variables[26];
    int pos;
    StackNode *stacknode;
-   int start;
-   int count;
+   // int start;
+   // int count;
 };
 typedef struct prog Program;
 
@@ -100,10 +100,6 @@ bool set_value(Program *p, var *v);
 int get_pos(Program *p);
 
 bool print_variable(var v);
-//A-Z
-//2d-array | INTEGER |
-
-//STACK
 
 var get_value(Program *p);
 
@@ -134,4 +130,27 @@ bool SORTOP(Program *p);
 int flipcomp(const void* firstArg, const void* secondArg);
 
 bool FLIPOP(Program *p);
+bool ROTATEOP(Program *p);
+
+void interp_instrclist(Program*p);
+void interp_create(Program*p);
+void interp_u_not(Program*p);
+void interp_u_eightcount(Program*p);
+void interp_b_add(Program*p);
+
+void interp_b_and(Program*p);
+void interp_b_or(Program*p);
+void interp_b_greater(Program*p);
+void interp_b_less(Program*p);
+void interp_b_times(Program*p);
+void interp_b_equals(Program*p);
+void interp_create_file(Program*p);
+
+void interp_pushdown_digits(Program*p);
+void interp_pushdown_variable(Program*p);
+
+
+void clean_up(Program*p);
+
+
 
