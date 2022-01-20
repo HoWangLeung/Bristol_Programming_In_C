@@ -8,10 +8,10 @@ void get_create_data(Program *p, int test_number)
         {"ONES 6 5 $A"},             //0: valid
         {"ONES 6 5"},                //1: invalid, missing varname
         {"ONES 6 $A "},              //2: invalid, missing col or row
-        {"READ \"lglider.arr\" $A"}, //3: valid
-        {"READ \"lglider.arr\""},    //4: invalid, missing varname
+        {"READ \"Data/lglider.arr\" $A"}, //3: valid
+        {"READ \"Data/lglider.arr\""},    //4: invalid, missing varname
         {"READ  $A"},                //5: invalid, missing filename
-        {"PRINT \"lglider.arr"},     //6: invalid,missing a double quote on the right
+        {"PRINT \"Data/lglider.arr"},     //6: invalid,missing a double quote on the right
     };
 
     copy_test_data(p, test_instructions, test_number);

@@ -29,3 +29,6 @@ void test_string(Program*p);
 void test_unaryop(Program*p);
 void test_varname(Program*p);
 
+
+void test_interp_prog(Program*p);
+

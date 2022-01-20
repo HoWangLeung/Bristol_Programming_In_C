@@ -111,6 +111,7 @@ bool digits_only(const char *s)
 
 bool is_variable(const char *s)
 {
+   
     printf("is_varaible , *s = %c\n", s[0]);
    if (s[0] == 0)
    {
@@ -124,6 +125,7 @@ bool is_variable(const char *s)
 
    while (*s)
    {
+      
       if (*s != '$' && (*s < 'A' || *s > 'Z'))
       {
          return false;
@@ -131,7 +133,8 @@ bool is_variable(const char *s)
       else
       {
          // s += 1;
-         *s++;
+         (void)*s++;
+         
       }
    }
 
@@ -141,20 +144,20 @@ bool is_variable(const char *s)
 FILE *h_open(char *filename)
 {
    printf("path ==<<<>>>\n");
-   char *path = "Data/";
-   printf("pathsss = %s\n", path);
-   char *file_path = (char *)malloc(1 + strlen(path) + strlen(filename));
-   strcpy(file_path, path);
-   strcat(file_path, filename);
+ //  char *path = "Data/";
+  // printf("pathsss = %s\n", path);
+  // char *file_path = (char *)malloc(1 + strlen(path) + strlen(filename));
+   // strcpy(file_path, path);
+  // strcat(file_path, filename);
    printf("READING...\n");
-   FILE *file_pointer = fopen(file_path, "r");
+   FILE *file_pointer = fopen(filename, "r");
    if (!file_pointer)
    {
-      free(file_path);
+      //free(file_path);
       // free(file_pointer);
       perror("Couldddnd't open file\n");
    }
-   free(file_path);
+  // free(file_path);
    return file_pointer;
 }
 

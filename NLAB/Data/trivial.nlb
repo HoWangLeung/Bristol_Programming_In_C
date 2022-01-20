@@ -1,5 +1,6 @@
 BEGIN {
-   READ "lglider.arr" $A
-   SET $A := $A 1 B-LESS ;
+   ONES 6 5 $A
+   SET $A := $A 0 B-LESS ;
+   PRINT "ARRAY"
    PRINT $A
-}   
+}

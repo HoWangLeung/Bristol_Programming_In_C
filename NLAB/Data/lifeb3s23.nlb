@@ -1,6 +1,6 @@
 BEGIN {
 
-   READ "lglider.arr" $A
+   READ "Data/lglider.arr" $A
    LOOP $I 10 {
 
       SET $B := $A U-EIGHTCOUNT ;

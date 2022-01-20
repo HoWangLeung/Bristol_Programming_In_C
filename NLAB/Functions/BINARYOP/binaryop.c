@@ -156,7 +156,7 @@ void interp_b_greater(Program *p)
     if (v2->y == v1->y && v2->x == v1->x)
     {
         allocate_space(v3, v2->y, v2->x);
-        CALCULATE_SAME_SIZE(v3, v1, v2, >);
+        CALCULATE_SAME_SIZE(v3, v1, v2, <);
         push(&p->stacknode, v3);
     }
 
@@ -181,7 +181,7 @@ void interp_b_less(Program *p)
     if (v2->y == v1->y && v2->x == v1->x)
     {
         allocate_space(v3, v2->y, v2->x);
-        CALCULATE_SAME_SIZE(v3, v1, v2, <);
+        CALCULATE_SAME_SIZE(v3, v1, v2, >);
         push(&p->stacknode, v3);
     }
 

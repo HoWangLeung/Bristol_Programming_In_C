@@ -64,8 +64,8 @@ void interp_create_file(Program *p)
     p->variables[pos].y = height;
     p->variables[pos].x = width;
     p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
-
-    for (int jj = 0; jj < height; jj++)
+ 
+    for (int jj = 0; jj < height; jj++) 
     {
 
         for (int ii = 0; ii < width; ii++)

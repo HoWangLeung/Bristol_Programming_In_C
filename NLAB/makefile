@@ -53,6 +53,7 @@ TEST_SET:=Testing/PARSER_DATA/SET/test_set.c
 TEST_STRING:=Testing/PARSER_DATA/STRING/test_string.c
 TEST_UNARYOP:=Testing/PARSER_DATA/UNARYOP/test_unaryop.c
 TEST_VARNAME:=Testing/PARSER_DATA/VARNAME/test_varname.c
+TEST_PROG_INTERP:=Testing/INTERP_DATA/PROG/test_prog.c
 
 
 
@@ -61,6 +62,7 @@ ALL_TEST:=$(TEST) $(PARSE_TEST_DATAC) $(INTERP_TEST_DATAC) $(TEST_PROG) $(TEST_H
 $(TEST_BINARYOP) $(TEST_COLS) $(TEST_CREATE) $(TEST_FILENAME) $(TEST_INSTRC) \
 $(TEST_INSTRCLIST) $(TEST_INTEGER)  $(TEST_LOOP) $(TEST_POLISH) $(TEST_POLISHLIST) \
 $(TEST_PRINT) $(TEST_PUSHDOWN) $(TEST_ROWS) $(TEST_SET) $(TEST_STRING) $(TEST_UNARYOP) $(TEST_VARNAME) \
+$(TEST_PROG_INTERP) \
 
 
 all: parse parse_s parse_v interp interp_s interp_v
@@ -102,8 +104,8 @@ test_interp: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALH) $(FUNCTIONS)
 test_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALH) $(FUNCTIONS)
 	gcc $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
 
-test_interp_v: test.c $(NLABC) $(NLABH) $(GENERALH) 
-	gcc test.c  $(NLABC) $(GENERALC) $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
+test_interp_v: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALH) $(FUNCTIONS)
+	gcc $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
  
 tpv: test_v
 	valgrind --leak-check=full --track-origins=yes ./test_v
@@ -115,6 +117,6 @@ pv: parse_v
 	valgrind --leak-check=full --track-origins=yes ./parse_v trivial.nlb
 
 iv: interp_v
-	valgrind --leak-check=full --track-origins=yes --dsymutil=yes ./interp_v trivial.nlb
+	valgrind --leak-check=full --track-origins=yes --dsymutil=yes ./interp_v Data/trivial.nlb
 
 
