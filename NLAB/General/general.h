@@ -5,6 +5,23 @@
 #include <ctype.h>
 // #include <limits.h>
 // #include "../nlab.h"
+#ifdef TESTMODE
+#define ERROR(PHRASE)                                             \
+   {                                                              \
+      fprintf(stderr,                                             \
+              "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
+              __FILE__, __LINE__);                                \
+      return false;                                               \
+   }
+#else
+#define ERROR(PHRASE)                                             \
+   {                                                              \
+      fprintf(stderr,                                             \
+              "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
+              __FILE__, __LINE__);                                \
+      exit(EXIT_FAILURE);                                         \
+   }
+#endif
 
 void on_error(const char* s);
 void* ncalloc(int n, size_t size);

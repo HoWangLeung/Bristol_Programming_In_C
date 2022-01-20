@@ -5,6 +5,8 @@ bool SET(Program *p)
     increment_cw(p);
     if (!VARNAME(p))
     {
+        // printf("HIIHIHIHIH\n");
+        ERROR("Expected variable : \n");
         return false;
     }
     p->pos = get_pos(p);
@@ -27,7 +29,3 @@ bool SET(Program *p)
     }
     return true;
 }
-
-
-
-

@@ -34,25 +34,25 @@ FUNCTIONS:= $(SET) $(PRINT) $(CREATE) $(BINARYOP) $(LOOP) $(UNARYOP) $(HELPER) $
 TEST:=Testing/test.c
 PARSE_TEST_DATAC:=Testing/PARSER_DATA/parse_test_data.c
 INTERP_TEST_DATAC:=Testing/INTERP_DATA/interp_test_data.c
-TEST_PROG:=Testing/INTERP_DATA/PROG/test_prog.c
+TEST_PROG:=Testing/PARSER_DATA/PROG/test_prog.c
 TEST_HELPER:=Testing/HELPER/helper.c
-TEST_BINARYOP:=Testing/INTERP_DATA/BINARYOP/test_binaryop.c
-TEST_COLS:=Testing/INTERP_DATA/COLS/test_cols.c
-TEST_CREATE:=Testing/INTERP_DATA/CREATE/test_create.c
-TEST_FILENAME:=Testing/INTERP_DATA/FILENAME/test_filename.c
-TEST_INSTRC:=Testing/INTERP_DATA/INSTRC/test_instrc.c
-TEST_INSTRCLIST:=Testing/INTERP_DATA/INSTRCLIST/test_instrclist.c
-TEST_INTEGER:=Testing/INTERP_DATA/INTEGER/test_integer.c
-TEST_LOOP:=Testing/INTERP_DATA/LOOP/test_loop.c
-TEST_POLISH:=Testing/INTERP_DATA/POLISH/test_polish.c
-TEST_POLISHLIST:=Testing/INTERP_DATA/POLISHLIST/test_polishlist.c
-TEST_PRINT:=Testing/INTERP_DATA/PRINT/test_print.c
-TEST_PUSHDOWN:=Testing/INTERP_DATA/PUSHDOWN/test_pushdown.c
-TEST_ROWS:=Testing/INTERP_DATA/ROWS/test_rows.c
-TEST_SET:=Testing/INTERP_DATA/SET/test_set.c
-TEST_STRING:=Testing/INTERP_DATA/STRING/test_string.c
-TEST_UNARYOP:=Testing/INTERP_DATA/UNARYOP/test_unaryop.c
-TEST_VARNAME:=Testing/INTERP_DATA/VARNAME/test_varname.c
+TEST_BINARYOP:=Testing/PARSER_DATA/BINARYOP/test_binaryop.c
+TEST_COLS:=Testing/PARSER_DATA/COLS/test_cols.c
+TEST_CREATE:=Testing/PARSER_DATA/CREATE/test_create.c
+TEST_FILENAME:=Testing/PARSER_DATA/FILENAME/test_filename.c
+TEST_INSTRC:=Testing/PARSER_DATA/INSTRC/test_instrc.c
+TEST_INSTRCLIST:=Testing/PARSER_DATA/INSTRCLIST/test_instrclist.c
+TEST_INTEGER:=Testing/PARSER_DATA/INTEGER/test_integer.c
+TEST_LOOP:=Testing/PARSER_DATA/LOOP/test_loop.c
+TEST_POLISH:=Testing/PARSER_DATA/POLISH/test_polish.c
+TEST_POLISHLIST:=Testing/PARSER_DATA/POLISHLIST/test_polishlist.c
+TEST_PRINT:=Testing/PARSER_DATA/PRINT/test_print.c
+TEST_PUSHDOWN:=Testing/PARSER_DATA/PUSHDOWN/test_pushdown.c
+TEST_ROWS:=Testing/PARSER_DATA/ROWS/test_rows.c
+TEST_SET:=Testing/PARSER_DATA/SET/test_set.c
+TEST_STRING:=Testing/PARSER_DATA/STRING/test_string.c
+TEST_UNARYOP:=Testing/PARSER_DATA/UNARYOP/test_unaryop.c
+TEST_VARNAME:=Testing/PARSER_DATA/VARNAME/test_varname.c
 
 
 
@@ -77,8 +77,8 @@ interp_s: nlab.c nlab.h $(GENERALH)
 interp_v: $(NLABC) $(NLABH) $(GENERALH) main.c $(GENERALC) $(FUNCTIONS)
 		gcc -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o interp_v -lm
 
-parse: $(NLABC) $(NLABH) $(GENERALH) main.c $(GENERALC)
-	gcc main.c $(NLABC) $(GENERALC) $(CFLAGS) $(SANI) -g3 -o parse -lm
+parse: $(NLABC) $(NLABH) $(GENERALH) main.c $(GENERALC) $(FUNCTIONS)
+	gcc main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -o parse -lm
 
 # parse_s: $(NLABC) $(NLABH) $(GENERALH) main.c
 # 	gcc main.c $(NLABC) $(GENERALC) $(CFLAGS) $(SANI) -g3 -o parse_s -lm

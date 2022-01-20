@@ -9,10 +9,7 @@
 #define MAXNUMTOKENS 100
 #define MAXTOKENSIZE 20
 #include "../General/general.h"
-#define CALCULATE_SAME_SIZE(v3, v1, v2, op) \
-    for (int y = 0; y < v3->y; y++)         \
-        for (int x = 0; x < v3->x; x++)     \
-    v3->num[y][x] = v1->num[y][x] op v2->num[y][x]
+
 
 #ifdef TESTMODE
 #define ERROR(PHRASE)                                             \
@@ -98,7 +95,7 @@ bool LEFTBRACKET(Program *p);
 void read_file(FILE *file_pointer, Program *p);
 // bool testmode();
 
-void allocate_space(Program *p);
+void allocate_space(var *v, int y , int x);
 bool set_value(Program *p, var *v);
 
 int get_pos(Program *p);
@@ -153,8 +150,9 @@ void interp_create_file(Program*p);
 void interp_pushdown_digits(Program*p);
 void interp_pushdown_variable(Program*p);
 
-
 void clean_up(Program*p);
+
+bool at_least_two_varaibles(Program *p);
 
 
 

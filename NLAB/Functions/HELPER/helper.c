@@ -3,11 +3,11 @@
 #define MAX_VAR_LENGTH 26
 void printCur(Program *p, int line)
 {
-    (void)p; 
+    (void)p;
     (void)line;
-    // printf("\033[0;31m");
-    //printf("printCur() is %s ,line %d\n", p->wds[p->cw], line);
-    // printf("\033[0m");
+    printf("\033[0;31m");
+    printf("printCur() is %s ,line %d\n", p->wds[p->cw], line);
+    printf("\033[0m");
 }
 var get_value(Program *p)
 {
@@ -18,7 +18,6 @@ var get_value(Program *p)
     }
     return p->variables[pos];
 }
-
 
 int get_pos(Program *p)
 {
@@ -92,11 +91,11 @@ bool VARNAME(Program *p)
     return false;
 }
 
-void allocate_space(Program *p)
+void allocate_space(var *v, int y, int x)
 {
-    p->variables[p->pos].y = 1;
-    p->variables[p->pos].x = 1;
-    p->variables[p->pos].num = (int **)n2dcalloc(p->variables[p->pos].y, p->variables[p->pos].x, sizeof(int *));
+    v->y = y;
+    v->x = x;
+    v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
 }
 
 bool set_value(Program *p, var *v)
@@ -132,16 +131,3 @@ bool INTEGER(Program *p)
     }
     return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

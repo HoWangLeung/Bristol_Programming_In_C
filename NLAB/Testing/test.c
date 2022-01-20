@@ -204,10 +204,7 @@ void set_up_testdata(Program *p, int test_number, char *func_name)
 {
     clear_previous_data(p);
 #ifdef PARSER
-    printf("B4 GETTING DATA\n");
-    printf("test number = %d, %s \n", test_number, func_name);
     get_parser_data(p, test_number, func_name);
-    printf("RETRIEVED DATA\n");
 #elif INTERP
     get_interp_data(p, test_number, func_name);
     printf("INTERP TESTING\n");

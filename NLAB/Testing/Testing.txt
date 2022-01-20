@@ -1,0 +1,59 @@
+#============================
+#==========STRATEGIES========
+#============================
+
+
+
+
+
+#===========================
+#==========STRUCTURE========
+#===========================
+Testing
+├── HELPER
+│   └── helper.c
+├── INTERP_DATA
+│   ├── BINARYOP
+│   │   └── test_binaryop.c
+│   ├── COLS
+│   │   └── test_cols.c
+│   ├── CREATE
+│   │   └── test_create.c
+│   ├── FILENAME
+│   │   └── test_filename.c
+│   ├── INSTRC
+│   │   └── test_instrc.c
+│   ├── INSTRCLIST
+│   │   └── test_instrclist.c
+│   ├── INTEGER
+│   │   └── test_integer.c
+│   ├── LOOP
+│   │   └── test_loop.c
+│   ├── POLISH
+│   │   └── test_polish.c
+│   ├── POLISHLIST
+│   │   └── test_polishlist.c
+│   ├── PRINT
+│   │   └── test_print.c
+│   ├── PROG
+│   │   └── test_prog.c
+│   ├── PUSHDOWN
+│   │   └── test_pushdown.c
+│   ├── ROWS
+│   │   └── test_rows.c
+│   ├── SET
+│   │   └── test_set.c
+│   ├── STRING
+│   │   └── test_string.c
+│   ├── UNARYOP
+│   │   └── test_unaryop.c
+│   ├── VARNAME
+│   │   └── test_varname.c
+│   └── interp_test_data.c
+├── PARSER_DATA
+│   └── parse_test_data.c
+├── Testing.txt
+├── test
+├── test.c
+├── test.h
+└── test_interp

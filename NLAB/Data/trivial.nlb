@@ -1,8 +1,5 @@
 BEGIN {
-   SET $A := 5 ;
-   IF $A 5 B-EQUALS {
-      SET $A := 10 ;
-   }
-  PRINT $A
-}
- 
+   SET $A := 2 ;
+   SET $A := $A 2 B-ADD ;
+   PRINT $A
+}  

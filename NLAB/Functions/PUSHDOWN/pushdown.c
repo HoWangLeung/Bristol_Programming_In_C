@@ -2,6 +2,7 @@
 
 bool PUSHDOWN(Program *p)
 {
+    printCur(p,__LINE__);
     if (digits_only(p->wds[p->cw]))
     {
         interp_pushdown_digits(p);

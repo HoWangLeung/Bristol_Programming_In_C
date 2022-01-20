@@ -5,12 +5,13 @@ void get_parser_data(Program *p, int test_number, char *func_name)
     printf("IND get_parser_data\n");
     if (strcmp(func_name, "PROG") == 0)
     {
-        printf("IN PROG GET PARASE DATA\n");
+        // printf("IN PROG GET PARASE DATA\n");
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
-            {"BEGIN { }"},               //0: valid
-            {"BEGIN { PRINT $A }"},      //0: valid
-            {"BEGIN }"},                 //0: invalid 1 digit
-            {"BEGIN { SET $Z := 9 ; }"}, //0: valid
+            {"BEGIN { }"},                //0: valid
+            {"BEGIN { PRINT $A }"},       //0: valid
+            {"BEGIN }"},                  //0: invalid 1 digit
+            {"BEGIN { SET $Z := 9 ; }"},  //0: valid
+           
         };
 
         copy_test_data(p, test_instructions, test_number);
@@ -230,4 +231,3 @@ void get_parser_data(Program *p, int test_number, char *func_name)
         copy_test_data(p, test_instructions, test_number);
     }
 }
-

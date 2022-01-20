@@ -1,5 +1,8 @@
+
 BEGIN {
+   SET $F := 1 ;
    LOOP $I 10 {
-      PRINT $I
+      SET $F := $F $I B-TIMES ;
+      PRINT $F
    }
 }

@@ -111,13 +111,14 @@ bool digits_only(const char *s)
 
 bool is_variable(const char *s)
 {
-   // printf("*s = %c\n", s[0]);
+    printf("is_varaible , *s = %c\n", s[0]);
    if (s[0] == 0)
    {
       return false;
    }
    if (s[0] != '$')
    {
+     // ERROR("INVALID VARIABLE, $ is not detected\n");
       return false;
    }
 
