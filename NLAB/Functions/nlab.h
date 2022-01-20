@@ -152,7 +152,7 @@ void interp_pushdown_variable(Program*p);
 
 void clean_up(Program*p);
 
-bool at_least_two_varaibles(Program *p);
+bool check_atleast_two_varaibles(var*v1,var*v2);
 
 
 

@@ -99,12 +99,12 @@ test:  $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALH)  $(FUNCTIONS)
 test_interp: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALH) $(FUNCTIONS)
 	gcc $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o Testing/test_interp -lm
 
-test_v: test.c $(NLABC) $(NLABH) $(GENERALH) 
-	gcc test.c  $(NLABC) $(GENERALC) $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
+test_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALH) $(FUNCTIONS)
+	gcc $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
 
 test_interp_v: test.c $(NLABC) $(NLABH) $(GENERALH) 
 	gcc test.c  $(NLABC) $(GENERALC) $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
-
+ 
 tpv: test_v
 	valgrind --leak-check=full --track-origins=yes ./test_v
 

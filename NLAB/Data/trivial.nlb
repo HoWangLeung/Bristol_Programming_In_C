@@ -1,5 +1,5 @@
 BEGIN {
-   SET $A := 2 ;
-   SET $A := $A 2 B-ADD ;
+   READ "lglider.arr" $A
+   SET $A := $A 1 B-LESS ;
    PRINT $A
-}  
+}   

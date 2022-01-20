@@ -1,12 +1,23 @@
 #include "../../test.h"
+void get_unaryop_data(Program *p, int test_number);
+void get_unaryop_data(Program *p, int test_number)
+{
+  clear_previous_data(p);
+      char test_instructions[ARR_RANGE][ARR_RANGE] = {
+            {"U-NOT"},        //valid
+            {"U-EIGHTCOUNT"}, //valid
+            {"TEXT"},         //invalid
+        };
+        copy_test_data(p, test_instructions, test_number);
+}
 void test_unaryop(Program *p)
 {
-  set_up_testdata(p, 0, "UNARYOP");
+  get_unaryop_data(p, 0);
   assert(UNARYOP(p));
 
-  set_up_testdata(p, 1, "UNARYOP");
+  get_unaryop_data(p, 1);
   assert(UNARYOP(p));
 
-  set_up_testdata(p, 2, "UNARYOP");
+  get_unaryop_data(p, 2);
   assert(!UNARYOP(p));
 }

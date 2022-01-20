@@ -1,12 +1,25 @@
 #include "../../test.h"
+
+void get_filename_data(Program *p, int test_number);
+
+void get_filename_data(Program *p, int test_number)
+{
+    clear_previous_data(p);
+    char test_instructions[ARR_RANGE][ARR_RANGE] = {
+        {" \"WORD\""},
+        {" \"WORD\""}, //invalid
+        {"NOQUOTES"},  //invalid
+    };
+    copy_test_data(p, test_instructions, test_number);
+}
 void test_filename(Program *p)
 {
-    set_up_testdata(p, 0, "FILENAME");
+    get_filename_data(p, 0);
     assert(FILENAME(p));
 
-    set_up_testdata(p, 1, "FILENAME");
+    get_filename_data(p, 1);
     assert(FILENAME(p));
 
-    set_up_testdata(p, 2, "FILENAME");
+    get_filename_data(p, 2);
     assert(!FILENAME(p));
 }

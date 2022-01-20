@@ -1,13 +1,28 @@
 #include "../../test.h"
+
+void get_instrc_data(Program *p, int test_number);
+
+void get_instrc_data(Program *p, int test_number)
+{
+    clear_previous_data(p);
+    char test_instructions[ARR_RANGE][ARR_RANGE] = {
+        {"SET $X = $Y"}, //invalid missing :
+        {"SET $A = 5"},  //invalid, missing :
+        {"SET $A := 5"}, //invalid, missing :
+
+    };
+
+    copy_test_data(p, test_instructions, test_number);
+}
 void test_instrc(Program *p)
 {
-    set_up_testdata(p, 0, "INSTRC");
+    get_instrc_data(p, 0);
     assert(!INSTRC(p));
 
-    set_up_testdata(p, 1, "INSTRC");
+    get_instrc_data(p, 1);
     assert(!INSTRC(p));
 
-    set_up_testdata(p, 2, "INSTRC");
+    get_instrc_data(p, 2);
     assert(!INSTRC(p));
 
     printf("TESTED INSTRC\n");
