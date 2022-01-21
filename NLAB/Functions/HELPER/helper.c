@@ -18,7 +18,7 @@ var get_value(Program *p)
     int pos = get_pos(p);
     if (!p->variables[pos].num)
     {
-       // printf("UNDEFINED VARIABLED DETECTED\n");
+        // printf("UNDEFINED VARIABLED DETECTED\n");
     }
     return p->variables[pos];
 }
@@ -35,7 +35,14 @@ void read_file(FILE *file_pointer, Program *p)
 
     while (fscanf(file_pointer, "%s", buffer) != EOF)
     {
-        strcpy(p->wds[count++], buffer);
+        if (buffer[0] == '#')
+        {
+            continue;
+        }
+        else
+        {
+            strcpy(p->wds[count++], buffer);
+        }
     }
 }
 

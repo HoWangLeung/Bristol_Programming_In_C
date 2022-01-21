@@ -63,8 +63,6 @@ void RUN_PARSER_TEST(char *testcase_name)
 
     if (strcmp(testcase_name, "SET") == 0)
     {
-        // printf("START\n");
-
         test_set(p);
     }
     if (strcmp(testcase_name, "PRINT") == 0)
@@ -138,16 +136,3 @@ void RUN_INTERP_TEST(char *testcase_name)
    
 }
 
-// void set_up_testdata(Program *p, int test_number, char *func_name)
-// {
-//    // clear_previous_data(p);
-// #ifdef PARSER
-//    // get_parser_data(p, test_number, func_name);
-// #elif INTERP
-//    // get_interp_data(p, test_number, func_name);
-//     printf("INTERP TESTING\n");
-
-// #else
-//     printf("Need to add -DPARSER or -DINTERP in makefile\n");
-// #endif
-// }

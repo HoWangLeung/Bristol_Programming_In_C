@@ -2,10 +2,6 @@
 
 bool CREATE(Program *p)
 {
-    // if (!strsame(p->wds[p->pos], "READ") || !strsame(p->wds[p->pos], "CREATE"))
-    // {
-    //     ERROR("INVALID KEYWORD");
-    // }
     printf("now = %s\n",p->wds[p->pos]);
     increment_cw(p);
     if (ROWS(p))

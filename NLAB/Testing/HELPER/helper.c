@@ -11,14 +11,12 @@ void copy_test_data(Program *p, char test_instructions[ARR_RANGE][ARR_RANGE], in
         pch = strtok(NULL, " ");
     }
 }
-
 void clear_previous_data(Program *p)
 {
     memset(p->wds, 0, sizeof(p->wds));
     memset(p->variables, 0, sizeof(p->variables));
     p->cw = 0;
 }
-
 void free_struct(Program *p)
 {
     for (int i = 0; i < 26; i++)

@@ -1,5 +1,13 @@
 #include "../../test.h"
-void get_interp_prog_data(Program *p, int test_number);
+#define ASSERT_CALCULATION(p, pos, N, op)                                            \
+    for (int y = 0; y < p->variables[0].y; y++)                                      \
+    {                                                                                \
+        for (int x = 0; x < p->variables[0].x; x++)                                  \
+        {                                                                            \
+            assert(p->variables[pos].num[y][x] == (p->variables[0].num[y][x] op N)); \
+        }                                                                            \
+    }                                                                                \
+    void get_interp_prog_data(Program *p, int test_number);
 void get_interp_prog_data(Program *p, int test_number)
 {
     clear_previous_data(p);
@@ -230,13 +238,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[23].num[y][x] == p->variables[0].num[y][x] + 2);
-        }
-    }
+    ASSERT_CALCULATION(p, 23, 2, +);
     free_struct(p);
 
     get_interp_prog_data(p, 31);
@@ -244,13 +246,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[24].num[y][x] == p->variables[0].num[y][x] + 200);
-        }
-    }
+    ASSERT_CALCULATION(p, 24, 200, +);
     free_struct(p);
 
     get_interp_prog_data(p, 32);
@@ -258,13 +254,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[25].num[y][x] == p->variables[0].num[y][x] + 50);
-        }
-    }
+    ASSERT_CALCULATION(p, 25, 50, +);
     free_struct(p);
 
     get_interp_prog_data(p, 33);
@@ -272,13 +262,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[23].num[y][x] == p->variables[0].num[y][x] * 2);
-        }
-    }
+    ASSERT_CALCULATION(p, 23, 2, *);
     free_struct(p);
 
     get_interp_prog_data(p, 34);
@@ -286,13 +270,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[24].num[y][x] == p->variables[0].num[y][x] * 200);
-        }
-    }
+    ASSERT_CALCULATION(p, 24, 200, *);
     free_struct(p);
 
     get_interp_prog_data(p, 35);
@@ -300,13 +278,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[25].num[y][x] == p->variables[0].num[y][x] * 50);
-        }
-    }
+    ASSERT_CALCULATION(p, 25, 50, *);
     free_struct(p);
 
     get_interp_prog_data(p, 36);
@@ -314,13 +286,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[23].num[y][x] == (p->variables[0].num[y][x] == 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 23, 1, ==);
     free_struct(p);
 
     get_interp_prog_data(p, 37);
@@ -328,13 +294,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[24].num[y][x] == (p->variables[0].num[y][x] == 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 24, 1, ==);
     free_struct(p);
 
     get_interp_prog_data(p, 38);
@@ -342,13 +302,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[25].num[y][x] == (p->variables[0].num[y][x] == 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 25, 1, ==);
     free_struct(p);
 
     get_interp_prog_data(p, 39);
@@ -356,13 +310,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[23].num[y][x] == (p->variables[0].num[y][x] < 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 23, 1, <);
     free_struct(p);
 
     get_interp_prog_data(p, 40);
@@ -370,13 +318,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[24].num[y][x] == (p->variables[0].num[y][x] < 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 24, 1, <);
     free_struct(p);
 
     get_interp_prog_data(p, 41);
@@ -384,13 +326,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[25].num[y][x] == (p->variables[0].num[y][x] < 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 25, 1, <);
     free_struct(p);
 
     get_interp_prog_data(p, 42);
@@ -398,13 +334,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[23].num[y][x] == (p->variables[0].num[y][x] > 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 23, 1, >);
     free_struct(p);
 
     get_interp_prog_data(p, 43);
@@ -412,13 +342,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[24].num[y][x] == (p->variables[0].num[y][x] > 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 24, 1, >);
     free_struct(p);
 
     get_interp_prog_data(p, 44);
@@ -426,13 +350,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[25].num[y][x] == (p->variables[0].num[y][x] > 1));
-        }
-    }
+    ASSERT_CALCULATION(p, 25, 1, >);
     free_struct(p);
 
     get_interp_prog_data(p, 45);
@@ -440,13 +358,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[23].num[y][x] == (p->variables[0].num[y][x] & 12));
-        }
-    }
+    ASSERT_CALCULATION(p, 23, 12, &);
     free_struct(p);
 
     get_interp_prog_data(p, 46);
@@ -454,13 +366,7 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[24].num[y][x] == (p->variables[0].num[y][x] & 12));
-        }
-    }
+    ASSERT_CALCULATION(p, 24, 12, &);
     free_struct(p);
 
     get_interp_prog_data(p, 47);
@@ -468,17 +374,8 @@ void test_interp_prog(Program *p)
     //======================================================
     //==========TEST B-ADD with lglider.arr ================
     //======================================================
-    for (int y = 0; y < p->variables[0].y; y++)
-    {
-        for (int x = 0; x < p->variables[0].x; x++)
-        {
-            assert(p->variables[25].num[y][x] == (p->variables[0].num[y][x] & 12));
-        }
-    }
+    ASSERT_CALCULATION(p, 25, 12, &);
     free_struct(p);
 
-   // printf("RUN_INTERP_TEST PROG\n");
     free(p);
 }
-
-// }
