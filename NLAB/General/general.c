@@ -100,6 +100,7 @@ void *nfopen(char *fname, char *mode)
 bool digits_only(const char *s)
 {
 
+  // printf("IS DIGIT = %s\n", s);
    while (*s)
    {
       if (isdigit(*s++) == 0)
@@ -111,7 +112,7 @@ bool digits_only(const char *s)
 
 bool is_variable(const char *s)
 {
-   
+
    //  printf("is_varaible , *s = %c\n", s[0]);
    if (s[0] == 0)
    {
@@ -119,22 +120,26 @@ bool is_variable(const char *s)
    }
    if (s[0] != '$')
    {
-     // ERROR("INVALID VARIABLE, $ is not detected\n");
+      // ERROR("INVALID VARIABLE, $ is not detected\n");
       return false;
    }
-
+   int count = 0;
    while (*s)
    {
-      
+
       if (*s != '$' && (*s < 'A' || *s > 'Z'))
       {
          return false;
       }
       else
       {
-         // s += 1;
+         count += 1;
+         if (count >= 3)
+         {
+            printf("COUNT >333333\n");
+            return false;
+         }
          (void)*s++;
-         
       }
    }
 
@@ -144,11 +149,11 @@ bool is_variable(const char *s)
 FILE *h_open(char *filename)
 {
    //printf("path ==<<<>>>\n");
- //  char *path = "Data/";
-  // printf("pathsss = %s\n", path);
-  // char *file_path = (char *)malloc(1 + strlen(path) + strlen(filename));
+   //  char *path = "Data/";
+   // printf("pathsss = %s\n", path);
+   // char *file_path = (char *)malloc(1 + strlen(path) + strlen(filename));
    // strcpy(file_path, path);
-  // strcat(file_path, filename);
+   // strcat(file_path, filename);
    //printf("READING...\n");
    FILE *file_pointer = fopen(filename, "r");
    if (!file_pointer)
@@ -157,7 +162,7 @@ FILE *h_open(char *filename)
       // free(file_pointer);
       perror("Couldddnd't open file\n");
    }
-  // free(file_path);
+   // free(file_path);
    return file_pointer;
 }
 
@@ -166,7 +171,7 @@ bool is_string(const char *s)
 
    if (s[0] == '"' && s[strlen(s) - 1] == '"')
    {
-     // printf("yes valid\n");
+      // printf("yes valid\n");
       return true;
    }
    // int numDouble = 0;

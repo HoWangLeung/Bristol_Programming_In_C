@@ -69,26 +69,23 @@ $(TEST_PROG_INTERP) \
 
 all: parse parse_s parse_v interp interp_s interp_v
 
-# interp: nlab.c nlab.h $(GENERALH)
-# 		gcc nlab.c $(CFLAGS) -O2 -DINTERP -o interp -lm
-
 interp: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
-		gcc main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -DINTERP -o interp -lm
+		clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -DINTERP -o interp -lm
 
 interp_s: nlab.c nlab.h $(GENERALS)
-		gcc nlab.c $(CFLAGS) $(SANI) -g3 -DINTERP -o interp_s -lm
+		clang nlab.c $(CFLAGS) $(SANI) -g3 -DINTERP -o interp_s -lm
 
 interp_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
-		gcc -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o interp_v -lm
+		clang -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o interp_v -lm
 
 parse: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
-	gcc main.c $(NLABC) $(GENERALS) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -o parse -lm
+	clang main.c $(NLABC) $(GENERALS) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -o parse -lm
 
 # parse_s: $(NLABC) $(NLABH) $(GENERALH) main.c
 # 	gcc main.c $(NLABC) $(GENERALC) $(CFLAGS) $(SANI) -g3 -o parse_s -lm
 
 parse_v: $(NLABC) $(NLABH) $(GENERALS) main.c
-	gcc main.c $(NLABC) $(GENERALS) $(CFLAGS) -g3 -o parse_v -lm
+	clang main.c $(NLABC) $(GENERALS) $(CFLAGS) -g3 -o parse_v -lm
 
 runall: $(RESULTS)
 
@@ -98,16 +95,16 @@ clean:
 	rm -f parse parse_s parse_v interp interp_s interp_v  $(RESULTS)
 
 test:  $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS)  $(FUNCTIONS)
-	gcc  $(ALL_TEST) $(NLABC) $(GENERALS) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test -lm
+	clang  $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test -lm
 
 test_interp: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	gcc $(ALL_TEST) $(NLABC) $(GENERALS) $(FUNCTIONS) $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o Testing/test_interp -lm
+	clang $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o Testing/test_interp -lm
 
 test_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	gcc $(ALL_TEST)  $(NLABC) $(GENERALS) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
+	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
 
 test_interp_v: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	gcc $(ALL_TEST)  $(NLABC) $(GENERALS) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
+	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
  
 tpv: test_v
 	valgrind --leak-check=full --track-origins=yes ./test_v

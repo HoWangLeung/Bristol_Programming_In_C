@@ -6,9 +6,12 @@ void get_filename_data(Program *p, int test_number)
 {
     clear_previous_data(p);
     char test_instructions[ARR_RANGE][ARR_RANGE] = {
-        {" \"WORD\""},
-        {" \"WORD\""}, //invalid
-        {"NOQUOTES"},  //invalid
+        //========================================
+        //=====<testcase No.>:<description>=======
+        //========================================
+        {" \"lgblock\""},
+        {" \"lglider\""}, //invalid
+        {"NOQUOTES"},     //invalid
     };
     copy_test_data(p, test_instructions, test_number);
 }

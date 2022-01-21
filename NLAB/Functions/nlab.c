@@ -119,7 +119,3 @@ void interp_instrclist(Program *p)
 #endif
 }
 
-// bool testmode()
-// {
-//     return false;
-// }

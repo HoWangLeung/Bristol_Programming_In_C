@@ -53,15 +53,18 @@ bool LOOP(Program *p)
     p->variables[p->pos].max_loop = v->max_loop;
 
     push(&p->stacknode, v);
-
+#endif
     increment_cw(p);
+
     if (!LEFTBRACKET(p))
     {
         printf("LEFT BRACKET NOT OK\n");
         ERROR("INVALID INTEGER");
     }
-#endif
+
     increment_cw(p);
+    //printf("p->wds[p->cw] ===== %s\n", p->wds[p->cw]);
+
     INSTRCLIST(p);
 #ifdef INTERP
     free_stack_node(v);
