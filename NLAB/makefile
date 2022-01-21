@@ -55,9 +55,9 @@ TEST_SET:=Testing/PARSER_DATA/SET/test_set.c
 TEST_STRING:=Testing/PARSER_DATA/STRING/test_string.c
 TEST_UNARYOP:=Testing/PARSER_DATA/UNARYOP/test_unaryop.c
 TEST_VARNAME:=Testing/PARSER_DATA/VARNAME/test_varname.c
-TEST_PROG_INTERP:=Testing/INTERP_DATA/PROG/test_prog.c
+TEST_PROG_INTERP:=Testing/INTERP_DATA/Prog/test_prog.c
 
-
+ 
 
 
 ALL_TEST:=$(TEST) $(PARSE_TEST_DATAC)  $(TEST_PROG) $(TEST_HELPER) \
