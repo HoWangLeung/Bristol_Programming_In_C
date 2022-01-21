@@ -2,7 +2,7 @@
 #include "test.h"
 int main(void)
 {
-#ifdef PARSER
+#ifdef PARSER 
     RUN_PARSER_TEST("PROG");
     RUN_PARSER_TEST("INSTRCLIST");
     RUN_PARSER_TEST("INSTRC");
@@ -135,83 +135,19 @@ void RUN_INTERP_TEST(char *testcase_name)
     {
         test_interp_prog(p);
     }
-    //     printf("ASSERTIN*\n");
-    //     set_up_testdata(p, 0, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 1, "PROG");
-    //     assert(!PROG(p));
-
-    //     set_up_testdata(p, 2, "PROG");
-    //     assert(!PROG(p));
-
-    //     set_up_testdata(p, 3, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 4, "PROG");
-    //     assert(!PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 5, "PROG");
-    //     assert(!PROG(p));
-
-    //     set_up_testdata(p, 6, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 7, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 8, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 9, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 10, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 11, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 12, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 13, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 14, "PROG");
-    //     assert(PROG(p));
-    //     free_struct(p);
-
-    //     set_up_testdata(p, 15, "PROG");
-    //     assert(PROG(p));
-    //     printf("RUN_INTERP_TEST PROG\n");
-    // }
-
-    // free_struct(p);
-    // free(p);
+   
 }
 
-void set_up_testdata(Program *p, int test_number, char *func_name)
-{
-   // clear_previous_data(p);
-#ifdef PARSER
-   // get_parser_data(p, test_number, func_name);
-#elif INTERP
-   // get_interp_data(p, test_number, func_name);
-    printf("INTERP TESTING\n");
+// void set_up_testdata(Program *p, int test_number, char *func_name)
+// {
+//    // clear_previous_data(p);
+// #ifdef PARSER
+//    // get_parser_data(p, test_number, func_name);
+// #elif INTERP
+//    // get_interp_data(p, test_number, func_name);
+//     printf("INTERP TESTING\n");
 
-#else
-    printf("Need to add -DPARSER or -DINTERP in makefile\n");
-#endif
-}
+// #else
+//     printf("Need to add -DPARSER or -DINTERP in makefile\n");
+// #endif
+// }

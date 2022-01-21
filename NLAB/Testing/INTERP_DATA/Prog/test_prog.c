@@ -83,7 +83,7 @@ void get_interp_prog_data(Program *p, int test_number)
 }
 void test_interp_prog(Program *p)
 {
-    printf("ASSERTIN*\n");
+    //printf("ASSERTIN*\n");
     get_interp_prog_data(p, 0);
     assert(PROG(p));
     assert(p->variables[0].num[0][0] == 5);
@@ -477,7 +477,7 @@ void test_interp_prog(Program *p)
     }
     free_struct(p);
 
-    printf("RUN_INTERP_TEST PROG\n");
+   // printf("RUN_INTERP_TEST PROG\n");
     free(p);
 }
 

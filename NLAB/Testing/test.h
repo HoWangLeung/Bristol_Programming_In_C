@@ -8,8 +8,6 @@ void RUN_INTERP_TEST(char *testcase_name);
 void get_interp_data(Program *p, int test_number, char *func_name);
 void clear_previous_data(Program *p);
 void free_struct(Program *p);
-
-
 void test_prog(Program *p);
 void test_binaryop(Program*p);
 void test_cols(Program*p);

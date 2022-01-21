@@ -7,13 +7,14 @@ bool PRINT(Program *p)
     if (is_variable(p->wds[p->cw]))
     {
 
-#ifdef INTERP
+#if defined INTERP
         var v = get_value(p);
         if (!print_variable(v))
         {
             ERROR("undefined varialbe ?\n");
             return false;
         }
+
 #endif
 
         return true;
@@ -26,7 +27,7 @@ bool PRINT(Program *p)
         word++;                     // remove first double quote
         word[strlen(word) - 1] = 0; // remove last double quote
 
-#ifdef INTERP
+#if defined INTERP && !defined TESTMODE
         printf("%s\n", word);
 #endif
 
@@ -38,24 +39,31 @@ bool PRINT(Program *p)
 
 bool print_variable(var v)
 {
-    printf("=>printing variable:\n");
+#if !defined TESTMODE
+    printf("===>printings variables:\n");
+#endif
     if (v.num != 0)
     {
         for (int y = 0; y < v.y; y++)
         {
             for (int x = 0; x < v.x; x++)
             {
+#if !defined TESTMODE
                 printf("%d", v.num[y][x]);
+#endif
             }
+#if !defined TESTMODE
             printf("\n");
+#endif
         }
         return true;
     }
+
     else
     {
-        printf("NOT PRINTING ANYTHING !!! \n");
+        // printf("NOT PRINTING ANYTHING !!! \n");
         ERROR("Undefined Variable ");
     };
+
     return false;
 }
-

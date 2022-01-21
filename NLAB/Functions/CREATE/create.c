@@ -64,8 +64,8 @@ void interp_create_file(Program *p)
     p->variables[pos].y = height;
     p->variables[pos].x = width;
     p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
- 
-    for (int jj = 0; jj < height; jj++) 
+
+    for (int jj = 0; jj < height; jj++)
     {
 
         for (int ii = 0; ii < width; ii++)
@@ -83,9 +83,11 @@ void interp_create_file(Program *p)
             p->variables[pos].num[jj][ii] = array[jj][ii];
             //
         }
-        printf("\n");
+#if !defined TESTMODE
+        // printf("\n");
+#endif
     }
-    printf("close file pointer\n");
+    //printf("close file pointer\n");
     fclose(file_pointer);
 #endif
 }
@@ -95,14 +97,11 @@ void interp_create(Program *p)
     (void)p;
 #ifdef INTERP
     int y = atoi(p->wds[p->cw - 2]);
-
     int x = atoi(p->wds[p->cw - 1]);
-
     // #ifdef INTERP
     int pos = get_pos(p);
 
     p->pos = pos;
-
     p->variables[pos].y = y;
     p->variables[pos].x = x;
     p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
@@ -115,7 +114,3 @@ void interp_create(Program *p)
     }
 #endif
 }
-
-
-
-

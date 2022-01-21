@@ -14,16 +14,13 @@
 #ifdef TESTMODE
 #define ERROR(PHRASE)                                             \
    {                                                              \
-      fprintf(stderr,                                             \
-              "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
-              __FILE__, __LINE__);                                \
       return false;                                               \
    }
 #else
 #define ERROR(PHRASE)                                             \
    {                                                              \
       fprintf(stderr,                                             \
-              "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
+              "Fatalsssssss Error %s occurred in %s, line %d\n", PHRASE, \
               __FILE__, __LINE__);                                \
       exit(EXIT_FAILURE);                                         \
    }

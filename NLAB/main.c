@@ -1,7 +1,7 @@
 #include "Functions/nlab.h"
 #define BIGSTR 1000
-
-
+ 
+       
 int main(int argc, char *argv[])
 { 
     if (argc != 2)

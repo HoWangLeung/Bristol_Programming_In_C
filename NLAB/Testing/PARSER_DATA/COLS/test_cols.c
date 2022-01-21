@@ -10,6 +10,9 @@ void test_cols(Program *p)
 
         get_cols_data(p, 2);
         assert(!COLS(p));
+
+        get_cols_data(p, 3);
+        assert(!COLS(p));
 }
 
 void get_cols_data(Program *p, int test_number)
@@ -21,6 +24,7 @@ void get_cols_data(Program *p, int test_number)
             {"1"},
             {"12"},   //invalid
             {"@123"}, //invalid
+            {"!!!"},  //invalid
         };
         copy_test_data(p, test_instructions, test_number);
 }

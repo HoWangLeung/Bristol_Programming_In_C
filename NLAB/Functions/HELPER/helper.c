@@ -3,18 +3,22 @@
 #define MAX_VAR_LENGTH 26
 void printCur(Program *p, int line)
 {
+
     (void)p;
     (void)line;
-    printf("\033[0;31m");
-    printf("printCur() is %s ,line %d\n", p->wds[p->cw], line);
-    printf("\033[0m");
+    //===
+    //Commented out in production
+    //====
+    // printf("\033[0;31m");
+    // printf("printCur() is %s ,line %d\n", p->wds[p->cw], line);
+    // printf("\033[0m");
 }
 var get_value(Program *p)
 {
     int pos = get_pos(p);
     if (!p->variables[pos].num)
     {
-        printf("UNDEFINED VARIABLED DETECTED\n");
+       // printf("UNDEFINED VARIABLED DETECTED\n");
     }
     return p->variables[pos];
 }

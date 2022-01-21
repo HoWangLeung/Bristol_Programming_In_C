@@ -2,7 +2,7 @@
 // #define INTERP
 
 bool PROG(Program *p)
-{
+{   
     int *cw = &p->cw;
     if (!strsame(p->wds[*cw], "BEGIN"))
     {
@@ -12,11 +12,11 @@ bool PROG(Program *p)
     if (!strsame(p->wds[*cw], "{"))
     {
         ERROR("Expected {");
-    }
+    } 
     increment_cw(p);
     if (!INSTRCLIST(p))
     {
-        printf("SOMETHING WORONG IN INSTRCLIST\n");
+       // printf("SOMETHING WORONG IN INSTRCLIST\n");
         return false;
     }
     return true;
@@ -100,7 +100,7 @@ void interp_instrclist(Program *p)
 #ifdef INTERP
     var *popped = pop(&p->stacknode);
     if (popped)
-    {
+    {    
         int popped_val = popped->num[0][0];
         int pos = popped->pos;
         int max_loop = popped->max_loop;
