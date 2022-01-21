@@ -1,17 +1,5 @@
-#HELLO
-#WWWW
 BEGIN {
-
-   READ "Data/lglider.arr" $A
-   LOOP $I 10 {
-
-      SET $B := $A U-EIGHTCOUNT ;
-      SET $D := $B 3 B-EQUALS ;
-      SET $C := $B 2 B-EQUALS $D B-OR $A B-AND ;
-      SET $E := $A U-NOT $D B-AND $C B-OR ;
-
-      PRINT $I
-      PRINT $E
-      SET $A := $E ;
-   }
+   ONES 6 5 $A
+   PRINT "ARRAY"
+   PRINT $A
 }

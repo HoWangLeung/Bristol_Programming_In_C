@@ -1,18 +1,17 @@
 #include "../nlab.h"
+void free_tmp(var *tmp);
 bool UNARYOP(Program *p)
 {
 
     if (strsame(p->wds[p->cw], "U-NOT"))
     {
-
-        interp_u_not(p);
+        interp_u_not(p); //codes within excutes only when INTERP is defined
         return true;
     }
 
     if (strsame(p->wds[p->cw], "U-EIGHTCOUNT"))
     {
-
-        interp_u_eightcount(p);
+        interp_u_eightcount(p); //codes within excutes only when INTERP is defined
         return true;
     }
     return false;
@@ -26,12 +25,14 @@ void interp_u_eightcount(Program *p)
     var *v1 = pop(&p->stacknode);
     var *tmp = calloc(1, sizeof(var));
 
-    v3->y = v1->y;
-    v3->x = v1->x;
+    // v3->y = v1->y;
+    // v3->x = v1->x;
     tmp->y = v1->y;
     tmp->x = v1->x;
+    allocate_space(v3, v1->y, v1->x);
+    // allocate_space(tmp, v1->y + 2, v1->x + 2);
 
-    v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+    // v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
     tmp->num = (int **)n2dcalloc(v3->y + 2, v3->x + 2, sizeof(int *));
     for (int y = 0; y < tmp->y; y++)
     {
@@ -59,7 +60,6 @@ void interp_u_eightcount(Program *p)
             int count = 0;
             for (int k = 0; k < 8; k++)
             {
-                //
                 if (tmp->num[y + offset[k][1]][x + offset[k][0]] >= 1)
                 {
                     count += 1;
@@ -68,16 +68,9 @@ void interp_u_eightcount(Program *p)
             }
         }
     }
-
     push(&p->stacknode, v3);
     free_stack_node(v1);
-
-    for (int y = 0; y < tmp->y + 2; y++)
-    {
-        free(tmp->num[y]);
-    }
-    free(tmp->num);
-    free(tmp);
+    free_tmp(tmp);
 #endif
 }
 
@@ -88,9 +81,10 @@ void interp_u_not(Program *p)
     var *v3 = calloc(1, sizeof(var));
     var *v1 = pop(&p->stacknode);
 
-    v3->y = v1->y;
-    v3->x = v1->x;
-    v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+    // v3->y = v1->y;
+    // v3->x = v1->x;
+    // v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
+    allocate_space(v3, v1->y, v1->x);
     for (int y = 0; y < v3->y; y++)
     {
         for (int x = 0; x < v3->y; x++)
@@ -104,4 +98,12 @@ void interp_u_not(Program *p)
 #endif
 }
 
-
+void free_tmp(var *tmp)
+{
+    for (int y = 0; y < tmp->y + 2; y++)
+    {
+        free(tmp->num[y]);
+    }
+    free(tmp->num);
+    free(tmp);
+}

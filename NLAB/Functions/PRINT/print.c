@@ -40,7 +40,7 @@ bool PRINT(Program *p)
 bool print_variable(var v)
 {
 #if !defined TESTMODE
-    printf("===>printings variables:\n");
+   // printf("===>printings variables:\n");
 #endif
     if (v.num != 0)
     {

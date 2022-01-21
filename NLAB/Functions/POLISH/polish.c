@@ -2,7 +2,7 @@
 
 bool POLISH(Program *p)
 {
-    printCur(p, __LINE__);
+   // printCur(p, __LINE__);
     if (PUSHDOWN(p) == true)
     {
 

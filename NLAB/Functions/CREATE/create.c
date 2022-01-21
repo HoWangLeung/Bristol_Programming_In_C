@@ -2,7 +2,6 @@
 
 bool CREATE(Program *p)
 {
-    printf("now = %s\n",p->wds[p->pos]);
     increment_cw(p);
     if (ROWS(p))
     {
@@ -61,27 +60,30 @@ void interp_create_file(Program *p)
     int array[6][6];
     int height, width;
     if (fscanf(file_pointer, "%d%d", &height, &width) != 2)
-        exit(1);
-    p->variables[pos].y = height;
-    p->variables[pos].x = width;
-    p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
-
-    for (int jj = 0; jj < height; jj++)
     {
+        exit(1);
+    }
 
-        for (int ii = 0; ii < width; ii++)
+    allocate_space(&p->variables[pos], height, width);
+    // p->variables[pos].y = height;
+    // p->variables[pos].x = width;
+    // p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
+
+    for (int y = 0; y < height; y++)
+    {
+        for (int x = 0; x < width; x++)
         {
-            if (fscanf(file_pointer, "%d", &array[jj][ii]) != 1)
+            if (fscanf(file_pointer, "%d", &array[y][x]) != 1)
             {
                 exit(1);
             }
         }
     }
-    for (int jj = 0; jj < height; jj++)
+    for (int y = 0; y < height; y++)
     {
-        for (int ii = 0; ii < width; ii++)
+        for (int x = 0; x < width; x++)
         {
-            p->variables[pos].num[jj][ii] = array[jj][ii];
+            p->variables[pos].num[y][x] = array[y][x];
             //
         }
 #if !defined TESTMODE
@@ -103,9 +105,11 @@ void interp_create(Program *p)
     int pos = get_pos(p);
 
     p->pos = pos;
-    p->variables[pos].y = y;
-    p->variables[pos].x = x;
-    p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
+    allocate_space(&p->variables[pos], y, x);
+    // p->variables[pos].y = y;
+    // p->variables[pos].x = x;
+    // p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
+
     for (int y = 0; y < p->variables[pos].y; y++)
     {
         for (int x = 0; x < p->variables[pos].x; x++)

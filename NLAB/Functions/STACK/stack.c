@@ -1,29 +1,29 @@
 #include "../nlab.h"
 
-struct StackNode *newNode(var *data)
+ StackNode *newNode(var *data)
 {
-    struct StackNode *stackNode =
-        (struct StackNode *)
-            malloc(sizeof(struct StackNode));
+     StackNode *stackNode =
+        ( StackNode *)
+            malloc(sizeof( StackNode));
     stackNode->data = data;
     stackNode->next = NULL;
     return stackNode;
 }
 
-bool isEmpty(struct StackNode *root)
+bool isEmpty( StackNode *root)
 {
     return !root;
 }
 
-void push(struct StackNode **root, var *data)
+void push( StackNode **root, var *data)
 {
 
-    struct StackNode *stackNode = newNode(data);
+     StackNode *stackNode = newNode(data);
     stackNode->next = *root;
     *root = stackNode;
 }
 
-var *pop(struct StackNode **root)
+var *pop( StackNode **root)
 {
 
     if (isEmpty(*root))

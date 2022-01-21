@@ -2,7 +2,7 @@
 
 bool PUSHDOWN(Program *p)
 {
-    printCur(p,__LINE__);
+    printCur(p, __LINE__);
     if (digits_only(p->wds[p->cw]))
     {
         interp_pushdown_digits(p);
@@ -23,9 +23,7 @@ void interp_pushdown_digits(Program *p)
 #ifdef INTERP
 
     var *v = calloc(1, sizeof(var));
-    v->y = 1;
-    v->x = 1;
-    v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
+    allocate_space(v, 1, 1);
 
     for (int y = 0; y < v->y; y++)
     {
@@ -47,9 +45,11 @@ void interp_pushdown_variable(Program *p)
     var val = get_value(p);
 
     var *v = calloc(1, sizeof(var));
-    v->y = val.y;
-    v->x = val.x;
-    v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
+    // v->y = val.y;
+    // v->x = val.x;
+    // v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
+
+    allocate_space(v, val.y, val.x);
 
     for (int y = 0; y < v->y; y++)
     {
@@ -61,5 +61,3 @@ void interp_pushdown_variable(Program *p)
     push(&p->stacknode, v);
 #endif
 }
-
-

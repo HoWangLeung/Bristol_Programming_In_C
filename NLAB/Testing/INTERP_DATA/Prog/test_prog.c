@@ -86,6 +86,8 @@ void get_interp_prog_data(Program *p, int test_number)
         {"BEGIN { READ \"Data/ltoad.arr\" $A \
          SET $Z := $A 12 B-AND ; }"}, //47: Valid, B-AND test
 
+         
+
     };
     copy_test_data(p, test_instructions, test_number);
 }
@@ -235,145 +237,91 @@ void test_interp_prog(Program *p)
 
     get_interp_prog_data(p, 30);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 23, 2, +);
     free_struct(p);
 
     get_interp_prog_data(p, 31);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 24, 200, +);
     free_struct(p);
 
     get_interp_prog_data(p, 32);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 25, 50, +);
     free_struct(p);
 
     get_interp_prog_data(p, 33);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 23, 2, *);
     free_struct(p);
 
     get_interp_prog_data(p, 34);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 24, 200, *);
     free_struct(p);
 
     get_interp_prog_data(p, 35);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 25, 50, *);
     free_struct(p);
 
     get_interp_prog_data(p, 36);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 23, 1, ==);
     free_struct(p);
 
     get_interp_prog_data(p, 37);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 24, 1, ==);
     free_struct(p);
 
     get_interp_prog_data(p, 38);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 25, 1, ==);
     free_struct(p);
 
     get_interp_prog_data(p, 39);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 23, 1, <);
     free_struct(p);
 
     get_interp_prog_data(p, 40);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 24, 1, <);
     free_struct(p);
 
     get_interp_prog_data(p, 41);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 25, 1, <);
     free_struct(p);
 
     get_interp_prog_data(p, 42);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 23, 1, >);
     free_struct(p);
 
     get_interp_prog_data(p, 43);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 24, 1, >);
     free_struct(p);
 
     get_interp_prog_data(p, 44);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 25, 1, >);
     free_struct(p);
 
     get_interp_prog_data(p, 45);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 23, 12, &);
     free_struct(p);
 
     get_interp_prog_data(p, 46);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 24, 12, &);
     free_struct(p);
 
     get_interp_prog_data(p, 47);
     assert(PROG(p));
-    //======================================================
-    //==========TEST B-ADD with lglider.arr ================
-    //======================================================
     ASSERT_CALCULATION(p, 25, 12, &);
     free_struct(p);
 

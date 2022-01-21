@@ -32,15 +32,15 @@ void read_file(FILE *file_pointer, Program *p)
 {
     char buffer[FILESIZE];
     int count = 0;
-
     while (fscanf(file_pointer, "%s", buffer) != EOF)
     {
         if (buffer[0] == '#')
         {
-            continue;
+            fscanf(file_pointer, "%[^\n] ", buffer);
         }
         else
         {
+            //printf("Buffer = %s\n", buffer);
             strcpy(p->wds[count++], buffer);
         }
     }
