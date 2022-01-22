@@ -57,7 +57,7 @@ void interp_create_file(Program *p)
     filename++;                         // remove first double quote
     filename[strlen(filename) - 1] = 0; // remove last double quote
     FILE *file_pointer = h_open(filename);
-    int array[6][6];
+    int array[100][100];
     int height, width;
     if (fscanf(file_pointer, "%d%d", &height, &width) != 2)
     {
