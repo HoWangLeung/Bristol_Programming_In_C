@@ -128,6 +128,17 @@ bool set_value(Program *p, var *v)
     return true;
 }
 
+void set_value_single(Program *p, int pos, int data)
+{
+     for (int y = 0; y < p->variables[pos].y; y++)
+    {
+        for (int x = 0; x < p->variables[pos].x; x++)
+        {
+            p->variables[pos].num[y][x] = data;
+        }
+    }
+}
+
 void increment_cw(Program *p)
 {
     p->cw += 1;

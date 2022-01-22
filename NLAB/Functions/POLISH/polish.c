@@ -2,35 +2,29 @@
 
 bool POLISH(Program *p)
 {
-   // printCur(p, __LINE__);
-    if (PUSHDOWN(p) == true)
+    // printCur(p, __LINE__);
+    if (PUSHDOWN(p))
     {
-
         return true;
     }
     else if (UNARYOP(p))
     {
-
         return true;
     }
     else if (BINARYOP(p))
     {
-
         return true;
     }
     else if (SORTOP(p))
     {
-
         return true;
     }
     else if (FLIPOP(p))
     {
-
         return true;
     }
     else if (ROTATEOP(p))
     {
-
         return true;
     }
     else
@@ -38,4 +32,3 @@ bool POLISH(Program *p)
         ERROR("POLISH ERROR:EXPECT PUSHDOWN | UNARYOP | BINARYOP | SORTOP | FLIPOP | ROTATEOP ");
     }
 }
-

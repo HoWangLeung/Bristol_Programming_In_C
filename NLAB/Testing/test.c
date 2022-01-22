@@ -2,7 +2,7 @@
 #include "test.h"
 int main(void)
 {
-#ifdef PARSER 
+#ifdef PARSER //White box testing
     RUN_PARSER_TEST("PROG");
     RUN_PARSER_TEST("INSTRCLIST");
     RUN_PARSER_TEST("INSTRC");
@@ -25,7 +25,7 @@ int main(void)
 #endif
 
 #ifdef INTERP
-    RUN_INTERP_TEST("PROG");
+    RUN_INTERP_TEST("PROG"); //Black box testing
     printf("PASSED INTERP TESTING\n");
 #endif
     printf("END OF TESTING\n");

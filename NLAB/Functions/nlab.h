@@ -27,6 +27,7 @@
 #endif
 #define strsame(A, B) (strcmp(A, B) == 0)
 
+
 struct var
 {
    int **num;
@@ -94,6 +95,7 @@ void read_file(FILE *file_pointer, Program *p);
 
 void allocate_space(var *v, int y , int x);
 bool set_value(Program *p, var *v);
+void set_value_single(Program *p, int pos, int data);
 
 int get_pos(Program *p);
 

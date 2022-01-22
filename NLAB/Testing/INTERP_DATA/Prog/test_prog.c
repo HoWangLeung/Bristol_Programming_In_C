@@ -1,13 +1,28 @@
 #include "../../test.h"
-#define ASSERT_CALCULATION(p, pos, N, op)                                            \
-    for (int y = 0; y < p->variables[0].y; y++)                                      \
-    {                                                                                \
-        for (int x = 0; x < p->variables[0].x; x++)                                  \
-        {                                                                            \
-            assert(p->variables[pos].num[y][x] == (p->variables[0].num[y][x] op N)); \
-        }                                                                            \
-    }                                                                                \
-    void get_interp_prog_data(Program *p, int test_number);
+#define ASSERT_CALCULATION(p, pos, N, op)                                                \
+    {                                                                                    \
+        for (int y = 0; y < p->variables[0].y; y++)                                      \
+        {                                                                                \
+            for (int x = 0; x < p->variables[0].x; x++)                                  \
+            {                                                                            \
+                assert(p->variables[pos].num[y][x] == (p->variables[0].num[y][x] op N)); \
+            }                                                                            \
+        }                                                                                \
+    }
+#define ASSERT_2D_ARRAY_EQUAL(a, b, height, width) \
+    {                                              \
+        {                                          \
+            for (int y = 0; y < height; y++)       \
+            {                                      \
+                for (int x = 0; x < width; x++)    \
+                {                                  \
+                    assert(a[y][x] == b[y][x]);    \
+                }                                  \
+            }                                      \
+        }                                          \
+    }
+
+void get_interp_prog_data(Program *p, int test_number);
 void get_interp_prog_data(Program *p, int test_number)
 {
     clear_previous_data(p);
@@ -17,7 +32,7 @@ void get_interp_prog_data(Program *p, int test_number)
          PRINT $A }"},                                             //0: valid
         {"BEGIN { \
             PRINT $A }"},                                          //1: Invalid, $A is undefined
-        {"BEGIN }"},                                               //2: Invalid , missing {
+        {"BEGIN { }"},                                             //2: Invalid , missing {
         {"BEGIN { SET $Z := 9 ; }"},                               //3: valid
         {"BEGIN { SET $A := 5 ; PRINT $B }"},                      //4: Invalid, $A is set but $B is undefined
         {"BEGIN {  PRINT $C SET $C := 5 ; }"},                     //5: Invalid, print $C before $C is set
@@ -85,10 +100,147 @@ void get_interp_prog_data(Program *p, int test_number)
          SET $Y := $A 12 B-AND ; }"}, //46: Valid, B-AND test
         {"BEGIN { READ \"Data/ltoad.arr\" $A \
          SET $Z := $A 12 B-AND ; }"}, //47: Valid, B-AND test
+        //==================================================
+        //=====  Example Data ======================
+        //==================================================
+        {"BEGIN { \
+             READ \"Data/lglider.arr\" $A\
+             LOOP $I 10 {\
+                SET $B := $A U-EIGHTCOUNT ; \
+                SET $D := $B 3 B-EQUALS ; \
+                SET $C := $B 2 B-EQUALS $D B-OR $A B-AND ; \
+                SET $E := $A U-NOT $D B-AND $C B-OR ; \
+                PRINT $I \
+                PRINT $E\
+                SET $A := $E ;  \
+               } } "},                              //48: Valid, # John Conway's Game of LIFE (B3/S23)
+        {"BEGIN {\
+                SET $F := 1 ;\
+                LOOP $I 10 {\
+                SET $F := $F $I B-TIMES ;\
+                PRINT $F\
+                 }\
+               }"},                                 //49: valid, loopa.nlb
+        {"BEGIN {\
+               LOOP $I 10 {\
+            SET $I := $I 1 B-ADD ; PRINT $I } } "}, //50: valid, loopb.nlb
+        {"BEGIN {\
+                SET $A := 0 ;\
+                LOOP $I 5 {\
+                    LOOP $J 5 {\
+                SET $A := $I $J B-TIMES ;\
+                PRINT $A } } } "},                  //51: valid, nestedloop.nlb
+        {"BEGIN {\
+                ONES 6 5 $A\
+                PRINT \"ARRAY\"\
+                PRINT $A }  "},                     //52: valid, onesprint.nlb
+        {"BEGIN {\
+                SET $I := 5 ;\
+                PRINT $I }  "},                     //53: valid, setprinta.nlb
 
-         
+        {"BEGIN {\
+                ONES 6 5 $A \
+                SET $A := $A 2 B-ADD ; \
+                PRINT \"ARRAY:\" \
+                PRINT $A }  "}, //54: valid, setprintb.nlb
+        {"BEGIN {\
+                SET $F := 2 ;\
+                PRINT $F\
+                SET $E := 5 ;\
+                PRINT $E\
+                SET $D := $F $E B-TIMES ;\
+                PRINT $D\
+                PRINT $D }  "}, //55: valid, setprintc.nlb
+
+        {"BEGIN  }"}, //56: Invalid , missing {
+        //==============================================
+        //=====Test Data for Extensions=================
+        //==============================================
+        {"BEGIN {\
+                READ \"Data/rotate.arr\" $D\
+                SET $D := $D ROTATE-R ; }  "}, //57: Valid, rotate matrix RIGHT by 90 degrees
+        {"BEGIN {\
+                READ \"Data/rotate.arr\" $D\
+                SET $D := $D ROTATE-L ; }  "}, //58: Valid, rotate matrix LEFT by 90 degrees
+        {"BEGIN {\
+                READ \"Data/rotate.arr\" $D\
+                SET $D := $D ROTATE-R ; }  "}, //59: Valid, rotate matrix RIGHT by 90 degrees
+        {"BEGIN {\
+                READ \"Data/unsorted.arr\" $D\
+                SET $D := $D FLIP ; }  "},     //60: Valid, rotate matrix LEFT by 90 degrees
+        {"BEGIN {\
+                READ \"Data/unsorted.arr\" $D\
+                SET $D := $D B-SORT ; }  "},   //61: Valid, sort the matrix with bubble-sort
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                    IF $D 5 B-EQUALS {\
+                        SET $D := 10 ;\
+                    }\
+                PRINT $D }  "},                //62: Valid, IF statement, D should equals 10
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                    IF $D 15 B-EQUALS {\
+                        SET $D := 10 ;\
+                    }\
+                PRINT $D }  "},                //63: Valid, IF statement, D should equals 5 as condition is not met
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                 SET $A := 8 ;\
+                    IF $D 5 B-EQUALS {\
+                        IF $A 8 B-EQUALS {\
+                            SET $D := 10 ;\
+                        }\
+                    }\
+                PRINT $D }  "},                //64: Valid,  NESTED IF, D should = 10
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                 SET $A := 8 ;\
+                    IF $D 5 B-EQUALS {\
+                        IF $A $D B-EQUALS {\
+                            SET $D := 10 ;\
+                        }\
+                    }\
+                PRINT $D }  "},                //65: Valid, NESTED IF, $A != $B, so D remains to be 5
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                 SET $A := 8 ;\
+                    IF $D 5 B-EQUALS $A 8 B-EQUALS AND {\
+                            SET $D := 10 ;\
+                    }\
+                PRINT $D }  "},                //66: Valid, IF cond1 AND cond2 are both true, d = 10
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                 SET $A := 125 ;\
+                    IF $D 5 B-EQUALS $A 8 B-EQUALS AND {\
+                            SET $D := 10 ;\
+                    }\
+                PRINT $D }  "},                //67: Valid, IF cond1 AND cond2 are NOT both true, d remains as 5
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                 SET $A := 125 ;\
+                    IF $D 5 B-EQUALS $A 8 B-EQUALS OR {\
+                            SET $D := 10 ;\
+                    }\
+                PRINT $D }  "},                //68: Valid, IF either cond1 OR cond2 is true, d = 10
+
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                 SET $A := 125 ;\
+                    IF $D 35 B-EQUALS $A 8 B-EQUALS OR {\
+                            SET $D := 10 ;\
+                    }\
+                PRINT $D }  "}, //69: Valid, IF neither cond1 OR cond2 is true, d remains as 5
+
+        {"BEGIN {\
+                 SET $D := 5 ;\
+                 SET $A := 125 ;\
+                    IF $D 35 B-EQUALS $A 8 B-EQUALS AND {\
+                            SET $D := 10 ;\
+                    }\
+                PRINT $D }  "}, //69: Valid,  AND does not meet condition, d remains as 5
 
     };
+
     copy_test_data(p, test_instructions, test_number);
 }
 void test_interp_prog(Program *p)
@@ -104,7 +256,7 @@ void test_interp_prog(Program *p)
     assert(!PROG(p));
 
     get_interp_prog_data(p, 2);
-    assert(!PROG(p));
+    assert(PROG(p));
 
     get_interp_prog_data(p, 3);
     assert(PROG(p));
@@ -238,6 +390,13 @@ void test_interp_prog(Program *p)
     get_interp_prog_data(p, 30);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 23, 2, +);
+    int expected_result_30[5][5] = {
+        {2, 2, 2, 2, 2},
+        {2, 2, 2, 2, 2},
+        {2, 3, 3, 3, 2},
+        {2, 2, 2, 2, 2},
+        {2, 2, 2, 2, 2}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[23].num, expected_result_30, 5, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 31);
@@ -323,6 +482,131 @@ void test_interp_prog(Program *p)
     get_interp_prog_data(p, 47);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 25, 12, &);
+    free_struct(p);
+
+    get_interp_prog_data(p, 48);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 49);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 50);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 51);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 52);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 53);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 54);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 55);
+    assert(PROG(p));
+    free_struct(p);
+
+    get_interp_prog_data(p, 56);
+    assert(!PROG(p));
+    free_struct(p);
+
+    //=====================================================
+    //===========TESTING FOR EXTENSIONS====================
+    //=====================================================
+
+    get_interp_prog_data(p, 57);
+    assert(PROG(p));
+    int expected_result_57[3][3] = {
+        {7, 4, 1},
+        {8, 5, 2},
+        {9, 6, 3}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[3].num, expected_result_57, 3, 3);
+    free_struct(p);
+
+    get_interp_prog_data(p, 58);
+    assert(PROG(p));
+    int expected_result_58[3][3] = {
+        {3, 6, 9},
+        {2, 5, 8},
+        {1, 4, 7}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[3].num, expected_result_58, 3, 3);
+    free_struct(p);
+
+    get_interp_prog_data(p, 60);
+    assert(PROG(p));
+    int expected_result_60[5][5] = {
+        {1, 3, 5, 7, 9},
+        {2, 4, 6, 8, 1},
+        {0, 1, 2, 1, 0},
+        {8, 6, 3, 4, 3},
+        {8, 2, 1, 3, 9}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[3].num, expected_result_60, 5, 5);
+    free_struct(p);
+
+    get_interp_prog_data(p, 61);
+    assert(PROG(p));
+    int expected_result_61[5][5] = {
+        {1, 2, 3, 8, 9},
+        {3, 3, 4, 6, 8},
+        {0, 0, 1, 1, 2},
+        {1, 2, 4, 6, 8},
+        {1, 3, 5, 7, 9}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[3].num, expected_result_61, 5, 5);
+    free_struct(p);
+
+    get_interp_prog_data(p, 62);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 10); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 63);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 5); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 64);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 10); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 65);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 5); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 66);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 10); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 67);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 5); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 68);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 10); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 69);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 5); // IF statement
+    free_struct(p);
+
+    get_interp_prog_data(p, 70);
+    assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 5); // IF statement
     free_struct(p);
 
     free(p);

@@ -4,6 +4,7 @@ void push_and_free(Program *p, var *v1, var *v3);
 void count_eight(var *tmp, var *v3);
 void calculate_not(var *v1, var *v3);
 void pad_with_zeros(var *v1, var *tmp);
+var *allocate_tmp(var *v1);
 bool UNARYOP(Program *p)
 {
 
@@ -29,11 +30,8 @@ void interp_u_eightcount(Program *p)
 {
     var *v3 = calloc(1, sizeof(var));
     var *v1 = pop(&p->stacknode);
-    var *tmp = calloc(1, sizeof(var));
-    tmp->y = v1->y;
-    tmp->x = v1->x;
+    var *tmp = allocate_tmp(v1);
     allocate_space(v3, v1->y, v1->x);
-    tmp->num = (int **)n2dcalloc(v3->y + 2, v3->x + 2, sizeof(int *));
     pad_with_zeros(v1, tmp);
     count_eight(tmp, v3);
     push_and_free(p, v1, v3);
@@ -114,4 +112,11 @@ void pad_with_zeros(var *v1, var *tmp)
         }
     }
 }
-
+var *allocate_tmp(var *v1)
+{
+    var *tmp = calloc(1, sizeof(var));
+    tmp->y = v1->y;
+    tmp->x = v1->x;
+    tmp->num = (int **)n2dcalloc(v1->y + 2, v1->x + 2, sizeof(int *));
+    return tmp;
+}

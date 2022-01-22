@@ -11,7 +11,9 @@ bool CREATE(Program *p)
             increment_cw(p);
             if (VARNAME(p))
             {
+#ifdef INTERP
                 interp_create(p);
+#endif
                 return true;
             }
         }
@@ -21,7 +23,10 @@ bool CREATE(Program *p)
         increment_cw(p);
         if (VARNAME(p))
         {
+#ifdef INTERP
             interp_create_file(p);
+#endif
+
             return true;
         }
     }
@@ -49,8 +54,7 @@ bool COLS(Program *p)
 
 void interp_create_file(Program *p)
 {
-    (void)p;
-#ifdef INTERP
+
     int pos = get_pos(p);
     p->pos = pos;
     char *filename = p->wds[p->cw - 1];
@@ -89,27 +93,23 @@ void interp_create_file(Program *p)
     }
     //printf("close file pointer\n");
     fclose(file_pointer);
-#endif
 }
 
 void interp_create(Program *p)
 {
     (void)p;
-#ifdef INTERP
+
     int y = atoi(p->wds[p->cw - 2]);
     int x = atoi(p->wds[p->cw - 1]);
-    // #ifdef INTERP
     int pos = get_pos(p);
-
     p->pos = pos;
     allocate_space(&p->variables[pos], y, x);
-
-    for (int y = 0; y < p->variables[pos].y; y++)
-    {
-        for (int x = 0; x < p->variables[pos].x; x++)
-        {
-            p->variables[pos].num[y][x] = 1;
-        }
-    }
-#endif
+    set_value_single(p,p->pos,1);
+    // for (int y = 0; y < p->variables[pos].y; y++)
+    // {
+    //     for (int x = 0; x < p->variables[pos].x; x++)
+    //     {
+    //         p->variables[pos].num[y][x] = 1;
+    //     }
+    // }
 }
