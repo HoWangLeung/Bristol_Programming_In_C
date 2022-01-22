@@ -65,9 +65,6 @@ void interp_create_file(Program *p)
     }
 
     allocate_space(&p->variables[pos], height, width);
-    // p->variables[pos].y = height;
-    // p->variables[pos].x = width;
-    // p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
 
     for (int y = 0; y < height; y++)
     {
@@ -106,9 +103,6 @@ void interp_create(Program *p)
 
     p->pos = pos;
     allocate_space(&p->variables[pos], y, x);
-    // p->variables[pos].y = y;
-    // p->variables[pos].x = x;
-    // p->variables[pos].num = (int **)n2dcalloc(p->variables[pos].y, p->variables[pos].x, sizeof(int *));
 
     for (int y = 0; y < p->variables[pos].y; y++)
     {

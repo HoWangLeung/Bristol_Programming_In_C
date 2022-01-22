@@ -35,7 +35,7 @@ bool POLISH(Program *p)
     }
     else
     {
-        ERROR("POLISH ERROR:EXPECT PUSHDOWN | UNARYOP | BINARYOP ");
+        ERROR("POLISH ERROR:EXPECT PUSHDOWN | UNARYOP | BINARYOP | SORTOP | FLIPOP | ROTATEOP ");
     }
 }
 

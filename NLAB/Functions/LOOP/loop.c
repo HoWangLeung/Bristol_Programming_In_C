@@ -1,14 +1,14 @@
 #include "../nlab.h"
 
+void handle_loop(Program *p, var *v);
+void handle_push(Program *p, var *v);
+var *set_up_loop(Program *p);
+
 bool LOOP(Program *p)
 {
 //SET UP
 #ifdef INTERP
-    var *v = calloc(1, sizeof(var));
-    v->y = 1;
-    v->x = 1;
-    v->num = (int **)n2dcalloc(v->y, v->x, sizeof(int *));
-    v->start = p->cw;
+    var*v = set_up_loop(p);
 #endif
     increment_cw(p);
     if (!VARNAME(p))
@@ -17,7 +17,49 @@ bool LOOP(Program *p)
         ERROR("INVALID VARNAME");
     }
 #ifdef INTERP
-    //INTERP
+    handle_loop(p, v);
+#endif
+
+    increment_cw(p);
+    if (!INTEGER(p))
+    {
+        printf("INTEGER NOT OK\n");
+        ERROR("INVALID INTEGER");
+    }
+#ifdef INTERP
+    handle_push(p, v);
+#endif
+    increment_cw(p);
+    if (!LEFTBRACKET(p))
+    {
+        printf("LEFT BRACKET NOT OK\n");
+        ERROR("INVALID INTEGER");
+    }
+    increment_cw(p);
+    INSTRCLIST(p);
+#ifdef INTERP
+    free_stack_node(v);
+#endif
+    return true;
+}
+
+var *set_up_loop(Program *p)
+{
+    var *v = calloc(1, sizeof(var));
+    allocate_space(v, 1, 1);
+    v->start = p->cw;
+    return v;
+}
+
+void handle_push(Program *p, var *v)
+{
+    v->max_loop = atoi(p->wds[p->cw]);
+    p->variables[p->pos].max_loop = v->max_loop;
+    push(&p->stacknode, v);
+}
+
+void handle_loop(Program *p, var *v)
+{
     v->pos = get_pos(p);
     p->pos = v->pos;
     p->variables[p->pos].y = 1;
@@ -41,33 +83,4 @@ bool LOOP(Program *p)
     }
 
     //===========================================SET I INITIAL VALUE
-#endif
-    increment_cw(p);
-    if (!INTEGER(p))
-    {
-        printf("INTEGER NOT OK\n");
-        ERROR("INVALID INTEGER");
-    }
-#ifdef INTERP
-    v->max_loop = atoi(p->wds[p->cw]);
-    p->variables[p->pos].max_loop = v->max_loop;
-
-    push(&p->stacknode, v);
-#endif
-    increment_cw(p);
-
-    if (!LEFTBRACKET(p))
-    {
-        printf("LEFT BRACKET NOT OK\n");
-        ERROR("INVALID INTEGER");
-    }
-
-    increment_cw(p);
-    //printf("p->wds[p->cw] ===== %s\n", p->wds[p->cw]);
-
-    INSTRCLIST(p);
-#ifdef INTERP
-    free_stack_node(v);
-#endif
-    return true;
 }

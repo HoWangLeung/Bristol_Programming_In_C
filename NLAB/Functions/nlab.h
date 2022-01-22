@@ -134,14 +134,7 @@ void interp_instrclist(Program*p);
 void interp_create(Program*p);
 void interp_u_not(Program*p);
 void interp_u_eightcount(Program*p);
-void interp_b_add(Program*p);
 
-void interp_b_and(Program*p);
-void interp_b_or(Program*p);
-void interp_b_greater(Program*p);
-void interp_b_less(Program*p);
-void interp_b_times(Program*p);
-void interp_b_equals(Program*p);
 void interp_create_file(Program*p);
 
 void interp_pushdown_digits(Program*p);

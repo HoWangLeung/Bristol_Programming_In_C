@@ -1,12 +1,12 @@
 #include "Functions/nlab.h"
-#define BIGSTR 1000
+// #define BIGSTR 1000
  
        
 int main(int argc, char *argv[])
 { 
     if (argc != 2)
     {
-        fprintf(stderr, "Usage : %s <file.nlb> \n", argv[0]);
+        fprintf(stderr, "Usage : %s <path/file.nlb> \n", argv[0]);
         exit(EXIT_FAILURE);
     }
     Program *p = ncalloc(1, sizeof(Program));

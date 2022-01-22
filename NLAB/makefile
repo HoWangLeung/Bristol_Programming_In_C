@@ -14,6 +14,8 @@ GENERALH:=General/general.h
 GENERALS:= $(GENERALC) $(GENERALH) 
 
 #Directories:
+INSTRCLIST:=Functions/INSTRCLIST/instrclist.c
+INSTRC:=Functions/INSTRC/instrc.c
 SET:= Functions/SET/set.c
 PRINT:= Functions/PRINT/print.c
 CREATE:= Functions/CREATE/create.c
@@ -30,7 +32,7 @@ EXTENSION_SORT:= Extension/SORT/sort.c
 EXTENSION_FLIP:= Extension/FLIP/flip.c
 EXTENSION_IF:= Extension/IF/if.c
 EXTENSIONS:= $(EXTENSION_ROTATION) $(EXTENSION_SORT) $(EXTENSION_FLIP) $(EXTENSION_IF)
-FUNCTIONS:= $(SET) $(PRINT) $(CREATE) $(BINARYOP) $(LOOP) $(UNARYOP) $(HELPER) $(STACK) $(POLISH) $(POLISHLIST) $(PUSHDOWN) $(EXTENSIONS)
+FUNCTIONS:= $(INSTRCLIST) $(INSTRC) $(SET) $(PRINT) $(CREATE) $(BINARYOP) $(LOOP) $(UNARYOP) $(HELPER) $(STACK) $(POLISH) $(POLISHLIST) $(PUSHDOWN) $(EXTENSIONS)
 
 #Testing Directories
 TEST:=Testing/test.c
@@ -79,7 +81,7 @@ interp_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
 		clang -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o interp_v -lm
 
 parse: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
-	clang main.c $(NLABC) $(GENERALS) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -o parse -lm
+	clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -o parse -lm
 
 # parse_s: $(NLABC) $(NLABH) $(GENERALH) main.c
 # 	gcc main.c $(NLABC) $(GENERALC) $(CFLAGS) $(SANI) -g3 -o parse_s -lm
