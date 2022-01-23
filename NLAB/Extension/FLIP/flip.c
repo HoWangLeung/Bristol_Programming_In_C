@@ -1,5 +1,5 @@
 #include "../../Functions/nlab.h"
-void flip(Program *p);
+
 bool FLIPOP(Program *p)
 {
 
@@ -42,5 +42,3 @@ void flip(Program *p)
     push(&p->stacknode, v3);
     free_stack_node(v1);
 }
-
- 

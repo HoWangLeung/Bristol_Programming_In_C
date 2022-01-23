@@ -127,6 +127,8 @@ int search_next_right_bracket(Program *p);
 
 //SORT OP
 bool SORTOP(Program *p);
+// int flipcomp(const void* firstArg, const void* secondArg);
+void flip(Program *p);
 
 bool FLIPOP(Program *p);
 bool ROTATEOP(Program *p);
@@ -147,4 +149,3 @@ bool check_atleast_two_varaibles(var*v1,var*v2);
 
 
 
- 

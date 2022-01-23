@@ -547,7 +547,6 @@ void test_interp_prog(Program *p)
 
     get_interp_prog_data(p, 60);
     assert(PROG(p));
-    printf("TEST 60\n");
     int expected_result_60[5][5] = {
         {1, 3, 5, 7, 9},
         {2, 4, 6, 8, 1},
