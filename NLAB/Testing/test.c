@@ -27,9 +27,9 @@ int main(void)
     RUN_INTERP_TEST("PROG"); //Black box testing
 #endif
   
-    return 0;
+    return 0; 
 }
-
+ 
 void RUN_PARSER_TEST(char *testcase_name)
 {
     Program *p = calloc(1, sizeof(Program));

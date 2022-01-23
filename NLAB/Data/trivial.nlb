@@ -1,8 +1,5 @@
 BEGIN {
-   SET $D := 5 ;
-   SET $A := 8 ;
-   IF $D 5 B-EQUALS  {
-      SET $D := 10 ;
-   }
-   PRINT $D 
+   READ "Data/unsorted.arr" $A
+   SET $A := $A FLIP ;
+   PRINT $A
 }

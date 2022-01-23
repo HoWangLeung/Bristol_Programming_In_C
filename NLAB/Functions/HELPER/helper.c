@@ -47,7 +47,7 @@ void read_file(FILE *file_pointer, Program *p)
         {
             //printf("Buffer = %s\n", buffer);
             strcpy(p->wds[count++], buffer);
-        }
+        }  
     }
 }
 
