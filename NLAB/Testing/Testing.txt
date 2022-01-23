@@ -1,6 +1,6 @@
-#============================
-#==========STRATEGIES========
-#============================
+#=================================
+#========== STRATEGIES ===========
+#=================================
 
 The main testing strategy is to modularize the functions into sub-folders and sub-functions
 
@@ -24,17 +24,63 @@ When the following flag is NOT applied, the function exits and print debug info 
 
 Each grammar function is designed to return a boolean value so that it can be tested individually
 Each grammar function has it's folder and it's C FILENAME
+    For example, 
+    Testing/PARSER_TEST/INSTRC/test_instrc.c ,
+    Testing/PARSER_TEST/SET/test_set.c 
+     , etc....
+
     In each of these C files, the first function contains an array of test data.
-    The second function calls the first function and copy the test Data by specifying the index of the data
-    With the data copied, assertion test can then performed within the second function
+    The second function calls the first function and copy the test Data by specifying the index of the target data
+    With the data copied, assertion tests are then performed within the second function
+
 The main advantage of this implementation is that it makes the testing highly scalable, 
-each function can be tested with dozens of test data without making the code look messy.
+each function can be tested with dozens of test data without making the code looks messy.
+
+############# Example ##########
+Below is a cut-down version of the Testing/PARSER_TEST/SET/test_set.c 
+
+#include "../../test.h"
+void get_set_data(Program *p, int test_number);
+void get_set_data(Program *p, int test_number)
+{
+        //SET GRAMMAR: <SET> ::= <VARNAME> ":=" <POLISHLIST>
+        clear_previous_data(p);
+        char test_instructions[ARR_RANGE][ARR_RANGE] = {
+            //========================================
+            //=====<testcase No.>:<description>=======
+            //========================================
+            {"SET $A := 1 ;"},               //0:Valid
+            {"SET $A := 3"},                 //1:Invalid, missing semi-colon
+            {"SET $B := $A U-EIGHTCOUNT ;"}, //2:Valid
+            ...
+            ...
+            ...
+        //Omitted for rest simplicity
+
+        };
+        copy_test_data(p, test_instructions, test_number); <============= copy data by index
+}
+void test_set(Program *p)
+{
+        get_set_data(p, 0); <==== copied data index 0 from char test_instructions[ARR_RANGE][ARR_RANGE]
+        assert(SET(p)); <======== This data should pass the test
+
+        get_set_data(p, 1);<==== copied data index 1 from char test_instructions[ARR_RANGE][ARR_RANGE]
+        assert(!SET(p));<======== This data should NOT pass the test
+
+        get_set_data(p, 2);<==== copied data index 2 from char test_instructions[ARR_RANGE][ARR_RANGE]
+        assert(SET(p));<======== This data should  pass the test
+        ...
+        ...
+        ...
+        //Omitted the rest for simplicity
+}
 
 
 
-#===========================
-#==========STRUCTURE========
-#===========================
+#====================================
+#========== STRUCTURE ===============
+#====================================
 Testing
 ├── HELPER
 │   └── helper.c

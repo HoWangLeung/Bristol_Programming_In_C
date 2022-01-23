@@ -97,7 +97,7 @@ void get_interp_prog_data(Program *p, int test_number)
         {"BEGIN { READ \"Data/ltoad.arr\" $A \
          SET $Z := $A 1 B-GREATER ; }"}, //44: Valid, B-GREATER test
 
-        {"BEGIN { READ \"Data/lglider.arr\" $A \
+        {"BEGIN { READ \"Data/unsorted.arr\" $A \
          SET $X := $A 12 B-AND ; }"}, //45: Valid, B-AND test
         {"BEGIN { READ \"Data/lblock.arr\" $A \
          SET $Y := $A 12 B-AND ; }"}, //46: Valid, B-AND test
@@ -534,6 +534,14 @@ void test_interp_prog(Program *p)
     get_interp_prog_data(p, 45);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 23, 12, &);
+    int expected_result_45[5][5] = {
+        {8, 0, 0, 0, 8},
+        {8, 4, 0, 4, 0},
+        {0, 0, 0, 0, 0},
+        {0, 4, 4, 8, 0},
+        {0, 0, 4, 4, 8},
+    };
+    ASSERT_2D_ARRAY_EQUAL(p->variables[23].num, expected_result_45, 5, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 46);
@@ -564,6 +572,15 @@ void test_interp_prog(Program *p)
 
     get_interp_prog_data(p, 52);
     assert(PROG(p));
+    int expected_result_52[6][5] = {
+        {1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1},
+    };
+    ASSERT_2D_ARRAY_EQUAL(p->variables[0].num, expected_result_52, 6, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 53);
@@ -572,10 +589,20 @@ void test_interp_prog(Program *p)
 
     get_interp_prog_data(p, 54);
     assert(PROG(p));
+    int expected_result_54[6][5] = {
+        {3, 3, 3, 3, 3},
+        {3, 3, 3, 3, 3},
+        {3, 3, 3, 3, 3},
+        {3, 3, 3, 3, 3},
+        {3, 3, 3, 3, 3},
+        {3, 3, 3, 3, 3},
+    };
+    ASSERT_2D_ARRAY_EQUAL(p->variables[0].num, expected_result_54, 6, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 55);
     assert(PROG(p));
+    assert(p->variables[3].num[0][0] == 10); 
     free_struct(p);
 
     get_interp_prog_data(p, 56);

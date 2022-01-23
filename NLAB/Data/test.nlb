@@ -1,2 +1,2 @@
-BEGIN { READ "Data/lglider.arr" $A 
-         SET $X := $A 1 B-GREATER ; PRINT $X }
+BEGIN { READ "Data/unsorted.arr" $A 
+         SET $X := $A 12 B-AND ; PRINT $X }

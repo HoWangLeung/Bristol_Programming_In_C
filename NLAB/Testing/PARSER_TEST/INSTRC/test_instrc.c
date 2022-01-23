@@ -79,6 +79,4 @@ void test_instrc(Program *p)
 
     get_instrc_data(p, 15);
     assert(INSTRC(p));
-
-    
 }

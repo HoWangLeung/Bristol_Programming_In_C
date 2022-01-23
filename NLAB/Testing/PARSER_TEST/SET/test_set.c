@@ -2,7 +2,7 @@
 void get_set_data(Program *p, int test_number);
 void get_set_data(Program *p, int test_number)
 {
-        //SET GRAMMAR: <SET> ::= <VARNAME> ":=" <SET>
+        //SET GRAMMAR: <SET> ::= <VARNAME> ":=" <POLISHLIST>
         clear_previous_data(p);
         char test_instructions[ARR_RANGE][ARR_RANGE] = {
             //========================================
