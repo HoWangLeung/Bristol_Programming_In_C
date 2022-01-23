@@ -1,0 +1,159 @@
+
+4 features were implemented as the extension:
+1. If statement
+2. Rotation (Rotate the matrix clockwise/anti-clockwise by 90 degrees)
+3. Sort (Sort the matrix in ascending orders with bubble sort)
+4. Flip (Flip the matrix upside down by vertically sorting the array)
+
+//==================================================
+//===========If statement===========================
+//==================================================
+
+#Example 1
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS  {
+      SET $D := 10 ;
+   }
+   PRINT $D 
+}
+
+Example Output:
+10
+
+#Example 2 (IF ... AND ...)
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS $A B-EQUALS AND {
+      SET $D := 10 ;
+   }
+   PRINT $D 
+}
+
+Final Value of $D:
+5   <====== $A and $B are not euqal, thus value is not changed
+
+#Example 3 (IF ... OR ...)
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS $A B-EQUALS OR {
+      SET $D := 10 ;
+   }
+   PRINT $D 
+}
+
+Final Value of $D:
+10     <====== $D euqals 5 is true, thus final value is 10
+
+#Example 3 ( Nested If )
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS {
+      IF $A 8 B-EQUALS{
+          SET $A := 10 ;
+      }
+   }
+   PRINT $D 
+}
+
+Final Value of $D:
+10     <====== Both if statements are correct, so value is set to 10 
+
+//================ HOW IT WORKS ========================
+1. If the input contains the word "IF"
+2. recursively look for PUSHDOWNS(VARNAME/INTEGER) and push to stacks
+3. pop the values for calculation if "AND" | "OR" | "{" is hit
+4. if result is true, call INSTRCLIST()
+5. if result is NOT true, skip the code block by looking for the appropriate right bracket
+
+
+
+
+//==================================================
+//=========== Rotation =============================
+//==================================================
+#Example 1: ROTATE-R (Rotate clockwise by 90 degrees)
+Data/rotate.arr
+3 3
+1 2 3
+4 5 6
+7 8 9
+
+BEGIN {
+   READ "Data/rotate.arr" $A
+   SET $A := $A ROTATE-R ;
+   PRINT $A
+}
+
+Value of $A at the end: 
+741
+852
+963
+
+#Example 2: ROTATE-R (Rotate anti-clockwise by 90 degrees)
+Data/rotate.arr
+3 3
+1 2 3
+4 5 6
+7 8 9
+
+BEGIN {
+   READ "Data/rotate.arr" $A
+   SET $A := $A ROTATE-L ;
+   PRINT $A
+}
+
+Value of $A at the end: 
+369
+258
+147
+
+//================ HOW IT WORKS ========================
+In each iteration, the 4 corner cells values are swapped 
+At the end of the iteration, 
+the pointer is incremented so another group of 4 corner cell values can perform the swap again
+repeat until y < N / 2 where n is the height of the matrix
+
+
+
+
+//==================================================
+//=========== Bubble Sort ==========================
+//==================================================
+#Example 1:
+Data/unsorted.arr
+5 5
+8 2 1 3 9
+8 6 3 4 3
+0 1 2 1 0
+2 4 6 8 1
+1 3 5 7 9
+
+BEGIN {
+   READ "Data/unsorted.arr" $A
+   SET $A := $A B-SORT ;
+   PRINT $A
+}
+
+Value of $A at the end: 
+12389
+33468
+00112
+12468
+13579
+
+
+//================ HOW IT WORKS ========================
+By applying qsort() vertically to the matrix,
+the matrix is flipped upside down.
+
+
+

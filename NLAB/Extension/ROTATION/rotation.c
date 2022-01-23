@@ -1,14 +1,13 @@
 #include "../../Functions/nlab.h"
 
-
 bool ROTATEOP(Program *p)
 {
-    printf("IN SORTOP\n");
+
     if (strsame(p->wds[p->cw], "ROTATE-L"))
     {
+#ifdef INTERP
         var *v3 = calloc(1, sizeof(var));
         var *v1 = pop(&p->stacknode);
-
         v3->y = v1->y;
         v3->x = v1->x;
         v3->num = (int **)n2dcalloc(v3->y, v3->x, sizeof(int *));
@@ -34,12 +33,14 @@ bool ROTATEOP(Program *p)
         }
         push(&p->stacknode, v3);
         free_stack_node(v1);
+#endif
 
         return true;
     }
 
     if (strsame(p->wds[p->cw], "ROTATE-R"))
     {
+#ifdef INTERP
         var *v3 = calloc(1, sizeof(var));
         var *v1 = pop(&p->stacknode);
 
@@ -55,20 +56,21 @@ bool ROTATEOP(Program *p)
         }
         int N = v3->y;
         //ROTATION
-        for (int i = 0; i < N / 2; i++)
+        for (int y = 0; y < N / 2; y++)
         {
-            for (int j = i; j < N - i - 1; j++)
+            for (int x = y; x < N - y - 1; x++)
             {
-                int temp = v3->num[i][j];
-                v3->num[i][j] = v3->num[N - 1 - j][i];
-                v3->num[N - 1 - j][i] = v3->num[N - 1 - i][N - 1 - j];
-                v3->num[N - 1 - i][N - 1 - j] = v3->num[j][N - 1 - i];
-                v3->num[j][N - 1 - i] = temp;
+                int tmp = v3->num[y][x];
+                v3->num[y][x] = v3->num[N - 1 - x][y];
+                v3->num[N - 1 - x][y] = v3->num[N - 1 - y][N - 1 - x];
+                v3->num[N - 1 - y][N - 1 - x] = v3->num[x][N - 1 - y];
+                v3->num[x][N - 1 - y] = tmp;
             }
         }
 
         push(&p->stacknode, v3);
         free_stack_node(v1);
+#endif
 
         return true;
     }

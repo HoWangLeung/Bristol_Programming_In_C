@@ -136,7 +136,6 @@ bool is_variable(const char *s)
          count += 1;
          if (count >= 3)
          {
-            printf("COUNT >333333\n");
             return false;
          }
          (void)*s++;

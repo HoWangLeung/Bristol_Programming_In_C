@@ -2,8 +2,32 @@
 #==========STRATEGIES========
 #============================
 
+The main testing strategy is to modularize the functions into sub-folders and sub-functions
+
+The entry point of the testing is Testing/test.c
+
+Testing/PARSER_DATA: contains tests for parser
+Testing/INTERP_DATA: contains tests for interpreter
+Testing/HELPER/helper.c: contains functions that helps testing
 
 
+user should compile with 1 of the 2 flags depending on the purpose of testing
+1. -DPARSER 
+2. -DINTERP 
+
+In the actual program, user would want the program to exit and inform the location of the failure.
+However, in test mode, user would not want the program to exit during negative cases testing.
+A macro was designed to solve this problem:
+When the following flag is applied, the function returns false instead of exit
+When the following flag is NOT applied, the function exits instead of returning false
+-DTESTMODE
+    
+
+Each grammar function is designed to return a boolean value so that it can be tested individually
+Each grammar function has it's folder and it's C FILENAME
+    In each of these C files, the first function is the test Data.
+    The second function calls the first function and copy the test Data
+    With the data copied, testing is then performed within the second function
 
 
 #===========================
@@ -13,6 +37,10 @@ Testing
 ├── HELPER
 │   └── helper.c
 ├── INTERP_DATA
+│   └── Prog
+│       ├── test_prog.c
+│       └── tmp.txt
+├── PARSER_DATA
 │   ├── BINARYOP
 │   │   └── test_binaryop.c
 │   ├── COLS
@@ -49,8 +77,6 @@ Testing
 │   │   └── test_unaryop.c
 │   ├── VARNAME
 │   │   └── test_varname.c
-│   └── interp_test_data.c
-├── PARSER_DATA
 │   └── parse_test_data.c
 ├── Testing.txt
 ├── test

@@ -32,9 +32,14 @@ void read_file(FILE *file_pointer, Program *p)
 {
     char buffer[FILESIZE];
     int count = 0;
+
+    if (!file_pointer)
+    {
+        exit(1);
+    }
     while (fscanf(file_pointer, "%s", buffer) != EOF)
     {
-        if (buffer[0] == '#')
+        if (buffer[0] == '#') // SKIP ENTIRE LINE IF FIRST CHAR  IS #
         {
             fscanf(file_pointer, "%[^\n] ", buffer);
         }
@@ -130,7 +135,7 @@ bool set_value(Program *p, var *v)
 
 void set_value_single(Program *p, int pos, int data)
 {
-     for (int y = 0; y < p->variables[pos].y; y++)
+    for (int y = 0; y < p->variables[pos].y; y++)
     {
         for (int x = 0; x < p->variables[pos].x; x++)
         {

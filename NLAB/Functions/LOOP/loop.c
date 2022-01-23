@@ -13,7 +13,6 @@ bool LOOP(Program *p)
     increment_cw(p);
     if (!VARNAME(p))
     {
-        printf("VAR NOT OK\n");
         ERROR("INVALID VARNAME");
     }
 #ifdef INTERP
@@ -23,7 +22,6 @@ bool LOOP(Program *p)
     increment_cw(p);
     if (!INTEGER(p))
     {
-        printf("INTEGER NOT OK\n");
         ERROR("INVALID INTEGER");
     }
 #ifdef INTERP
@@ -32,7 +30,6 @@ bool LOOP(Program *p)
     increment_cw(p);
     if (!LEFTBRACKET(p))
     {
-        printf("LEFT BRACKET NOT OK\n");
         ERROR("INVALID INTEGER");
     }
     increment_cw(p);

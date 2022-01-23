@@ -36,86 +36,84 @@ FUNCTIONS:= $(INSTRCLIST) $(INSTRC) $(SET) $(PRINT) $(CREATE) $(BINARYOP) $(LOOP
 
 #Testing Directories
 TEST:=Testing/test.c
-PARSE_TEST_DATAC:=Testing/PARSER_DATA/parse_test_data.c
-#INTERP_TEST_DATAC:=Testing/INTERP_DATA/interp_test_data.c
-TEST_PROG:=Testing/PARSER_DATA/PROG/test_prog.c
+PARSE_TEST_DATAC:=Testing/PARSER_TEST/parse_test_data.c
+TEST_PROG:=Testing/PARSER_TEST/PROG/test_prog.c
 TEST_HELPER:=Testing/HELPER/helper.c
-TEST_BINARYOP:=Testing/PARSER_DATA/BINARYOP/test_binaryop.c
-TEST_COLS:=Testing/PARSER_DATA/COLS/test_cols.c
-TEST_CREATE:=Testing/PARSER_DATA/CREATE/test_create.c
-TEST_FILENAME:=Testing/PARSER_DATA/FILENAME/test_filename.c
-TEST_INSTRC:=Testing/PARSER_DATA/INSTRC/test_instrc.c
-TEST_INSTRCLIST:=Testing/PARSER_DATA/INSTRCLIST/test_instrclist.c
-TEST_INTEGER:=Testing/PARSER_DATA/INTEGER/test_integer.c
-TEST_LOOP:=Testing/PARSER_DATA/LOOP/test_loop.c
-TEST_POLISH:=Testing/PARSER_DATA/POLISH/test_polish.c
-TEST_POLISHLIST:=Testing/PARSER_DATA/POLISHLIST/test_polishlist.c
-TEST_PRINT:=Testing/PARSER_DATA/PRINT/test_print.c
-TEST_PUSHDOWN:=Testing/PARSER_DATA/PUSHDOWN/test_pushdown.c
-TEST_ROWS:=Testing/PARSER_DATA/ROWS/test_rows.c
-TEST_SET:=Testing/PARSER_DATA/SET/test_set.c
-TEST_STRING:=Testing/PARSER_DATA/STRING/test_string.c
-TEST_UNARYOP:=Testing/PARSER_DATA/UNARYOP/test_unaryop.c
-TEST_VARNAME:=Testing/PARSER_DATA/VARNAME/test_varname.c
-TEST_PROG_INTERP:=Testing/INTERP_DATA/Prog/test_prog.c
-
- 
-
-
+TEST_BINARYOP:=Testing/PARSER_TEST/BINARYOP/test_binaryop.c
+TEST_COLS:=Testing/PARSER_TEST/COLS/test_cols.c
+TEST_CREATE:=Testing/PARSER_TEST/CREATE/test_create.c
+TEST_FILENAME:=Testing/PARSER_TEST/FILENAME/test_filename.c
+TEST_INSTRC:=Testing/PARSER_TEST/INSTRC/test_instrc.c
+TEST_INSTRCLIST:=Testing/PARSER_TEST/INSTRCLIST/test_instrclist.c
+TEST_INTEGER:=Testing/PARSER_TEST/INTEGER/test_integer.c
+TEST_LOOP:=Testing/PARSER_TEST/LOOP/test_loop.c
+TEST_POLISH:=Testing/PARSER_TEST/POLISH/test_polish.c
+TEST_POLISHLIST:=Testing/PARSER_TEST/POLISHLIST/test_polishlist.c
+TEST_PRINT:=Testing/PARSER_TEST/PRINT/test_print.c
+TEST_PUSHDOWN:=Testing/PARSER_TEST/PUSHDOWN/test_pushdown.c
+TEST_ROWS:=Testing/PARSER_TEST/ROWS/test_rows.c
+TEST_SET:=Testing/PARSER_TEST/SET/test_set.c
+TEST_STRING:=Testing/PARSER_TEST/STRING/test_string.c
+TEST_UNARYOP:=Testing/PARSER_TEST/UNARYOP/test_unaryop.c
+TEST_VARNAME:=Testing/PARSER_TEST/VARNAME/test_varname.c
+TEST_PROG_INTERP:=Testing/INTERP_TEST/Prog/test_prog.c
 ALL_TEST:=$(TEST) $(PARSE_TEST_DATAC)  $(TEST_PROG) $(TEST_HELPER) \
 $(TEST_BINARYOP) $(TEST_COLS) $(TEST_CREATE) $(TEST_FILENAME) $(TEST_INSTRC) \
 $(TEST_INSTRCLIST) $(TEST_INTEGER)  $(TEST_LOOP) $(TEST_POLISH) $(TEST_POLISHLIST) \
 $(TEST_PRINT) $(TEST_PUSHDOWN) $(TEST_ROWS) $(TEST_SET) $(TEST_STRING) $(TEST_UNARYOP) $(TEST_VARNAME) \
 $(TEST_PROG_INTERP) \
 
-
-all: parse parse_s parse_v interp interp_s interp_v
-
-interp: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
-		clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -DINTERP -o interp -lm
-
-interp_s: nlab.c nlab.h $(GENERALS)
-		clang nlab.c $(CFLAGS) $(SANI) -g3 -DINTERP -o interp_s -lm
-
-interp_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
-		clang -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o interp_v -lm
-
+########################
+#PARSER
+########################
 parse: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
 	clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -o parse -lm
 
-# parse_s: $(NLABC) $(NLABH) $(GENERALH) main.c
-# 	gcc main.c $(NLABC) $(GENERALC) $(CFLAGS) $(SANI) -g3 -o parse_s -lm
+parse_v: $(NLABC) $(NLABH) $(GENERALS) main.c $(FUNCTIONS)
+	clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -o parse_v -lm
+########################
+#INTERPRETER
+########################
+interp: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
+		clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -DINTERP -o interp -lm
 
-parse_v: $(NLABC) $(NLABH) $(GENERALS) main.c
-	clang main.c $(NLABC) $(GENERALS) $(CFLAGS) -g3 -o parse_v -lm
+interp_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
+		clang -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o interp_v -lm
+########################
+#EXTENSIONS (basically the same)
+########################
+extension: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
+		clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -DINTERP -o extension -lm
 
-runall: $(RESULTS)
+extension_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
+		clang -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o extension_v -lm
 
-%.result:
-		./interp $.nlb > $*.result
-clean:
-	rm -f parse parse_s parse_v interp interp_s interp_v  $(RESULTS)
 
-test:  $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS)  $(FUNCTIONS)
-	clang  $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test -lm
+#Testing
+test_parser:  $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS)  $(FUNCTIONS)
+	clang  $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test_parser -lm
 
 test_interp: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
 	clang $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o Testing/test_interp -lm
 
-test_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o test_v -lm
+test_parser_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
+	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o Testing/test_parser_v -lm
 
 test_interp_v: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
- 
-tpv: test_v
-	valgrind --leak-check=full --track-origins=yes ./test_v
+	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o Testing/test_interp_v -lm
+
+clean:
+	rm -f parse parse_s parse_v interp interp_s interp_v Testing/test_v Testing/test_interp_v Testing/test_parser_v 
+
+
+tpv: test_parser_v
+	valgrind --leak-check=full --track-origins=yes Testing/test_parser_v
 
 tiv: test_interp_v
-	valgrind --leak-check=full --track-origins=yes ./test_interp_v
+	valgrind --leak-check=full --track-origins=yes Testing/test_interp_v
 
 pv: parse_v
-	valgrind --leak-check=full --track-origins=yes ./parse_v trivial.nlb
+	valgrind --leak-check=full --track-origins=yes ./parse_v Data/trivial.nlb
 
 iv: interp_v
 	valgrind --leak-check=full --track-origins=yes --dsymutil=yes ./interp_v Data/trivial.nlb

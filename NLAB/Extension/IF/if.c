@@ -46,84 +46,81 @@ bool COMPARE(Program *p)
     //printf("========PARSING COMPARE========\n");
     if (BINARYOP(p))
     {
-        // printf("IN BINARYOP\n"); 
+        // printf("IN BINARYOP\n");
         increment_cw(p);
         printCur(p, __LINE__);
         if (strsame(p->wds[p->cw], "AND"))
         {
-            // printf("FOUND AND \n"); 
+            // printf("FOUND AND \n");
             increment_cw(p);
             if (strsame(p->wds[p->cw], "{"))
             {
+#ifdef INTERP
                 //printf("HERE\n");
                 var *v1 = pop(&p->stacknode);
                 var *v2 = pop(&p->stacknode);
 
                 if (v1->num[0][0] && v2->num[0][0])
                 {
-                    printf("EQUAL!!!!\n");
                     increment_cw(p);
                     // return true;
                     INSTRCLIST(p);
                 }
                 else
                 {
-                    printf("NOTEQUAL!!!!\n");
                     int right_bracket_pos = search_next_right_bracket(p);
                     p->cw = right_bracket_pos;
                 }
                 free_stack_node(v1);
                 free_stack_node(v2);
+#endif
             }
         }
         else if (strsame(p->wds[p->cw], "OR"))
         {
-            printf("FOUND AND \n");
             increment_cw(p);
             if (strsame(p->wds[p->cw], "{"))
             {
-                printf("HERE\n");
+#ifdef INTERP
                 var *v1 = pop(&p->stacknode);
                 var *v2 = pop(&p->stacknode);
 
                 if (v1->num[0][0] || v2->num[0][0])
                 {
-                    printf("EQUAL!!!!\n");
                     increment_cw(p);
                     // return true;
                     INSTRCLIST(p);
                 }
                 else
                 {
-                    printf("NOTEQUAL!!!!\n");
                     int right_bracket_pos = search_next_right_bracket(p);
                     p->cw = right_bracket_pos;
                 }
                 free_stack_node(v1);
                 free_stack_node(v2);
+#endif
             }
         }
         else
         {
             if (strsame(p->wds[p->cw], "{"))
             {
-                printf("ELSEEEEE\n");
+#ifdef INTERP
                 var *v1 = pop(&p->stacknode);
 
                 if (v1->num[0][0])
                 {
-                    printf("EQUAL!!!!\n");
                     increment_cw(p);
                     // return true;
                     INSTRCLIST(p);
                 }
                 else
                 {
-                    printf("NOTEQUAL!!!!\n");
                     int right_bracket_pos = search_next_right_bracket(p);
                     p->cw = right_bracket_pos;
                 }
                 free_stack_node(v1);
+#endif
             }
         }
     }
@@ -141,7 +138,7 @@ int search_next_right_bracket(Program *p)
         tmp++;
         if (strsame(p->wds[tmp], "IF"))
         {
-            printf("FOUND IF\n");
+
             required += 1;
         }
 
@@ -149,12 +146,7 @@ int search_next_right_bracket(Program *p)
         {
             found += 1;
         }
-        printf("found = %d\n", found);
-        printf("required = %d\n", required);
     }
-
-    printf("right } pos = %d\n", tmp);
 
     return tmp;
 }
-

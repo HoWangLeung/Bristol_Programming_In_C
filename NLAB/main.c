@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
     }
     Program *p = ncalloc(1, sizeof(Program));
     FILE *file_pointer = h_open(argv[1]);
+    // printf("GET POINTER\n");
     read_file(file_pointer, p);
     PROG(p);
     fclose(file_pointer);
     clean_up(p);
-    printf("END OF PROGRAM\n");
     return 0;
 }

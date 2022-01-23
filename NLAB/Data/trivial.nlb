@@ -1,5 +1,8 @@
 BEGIN {
-   LOOP $I 10 {
-      SET $I := $I 1 B-ADD ; PRINT $I
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS  {
+      SET $D := 10 ;
    }
+   PRINT $D 
 }

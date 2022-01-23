@@ -2,15 +2,13 @@
 
 bool FLIPOP(Program *p)
 {
-    printf("IN SORTOP\n");
+
     if (strsame(p->wds[p->cw], "FLIP"))
     {
-        printf("......IN FLIP-SORT\n");
+        #ifdef INTERP
         var *v3 = calloc(1, sizeof(var));
 
         var *v1 = pop(&p->stacknode);
-
-        printf("v1 num = %d\n", v1->num[0][0]);
 
         v3->y = v1->y;
         v3->x = v1->x;
@@ -28,7 +26,7 @@ bool FLIPOP(Program *p)
 
         push(&p->stacknode, v3);
         free_stack_node(v1);
-
+#endif
         return true;
     }
 

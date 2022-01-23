@@ -21,14 +21,12 @@ int main(void)
     RUN_PARSER_TEST("ROWS");
     RUN_PARSER_TEST("COLS");
     RUN_PARSER_TEST("FILENAME");
-    printf("TESTED PARSER\n");
 #endif
 
 #ifdef INTERP
     RUN_INTERP_TEST("PROG"); //Black box testing
-    printf("PASSED INTERP TESTING\n");
 #endif
-    printf("END OF TESTING\n");
+  
     return 0;
 }
 
