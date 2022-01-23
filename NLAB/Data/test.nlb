@@ -1,0 +1,2 @@
+BEGIN { READ "Data/lglider.arr" $A 
+         SET $X := $A 1 B-GREATER ; PRINT $X }

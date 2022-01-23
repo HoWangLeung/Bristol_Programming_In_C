@@ -27,10 +27,10 @@ STACK:=Functions/STACK/stack.c
 POLISH:=Functions/POLISH/polish.c
 POLISHLIST:=Functions/POLISHLIST/polishlist.c
 PUSHDOWN:=Functions/PUSHDOWN/pushdown.c
-EXTENSION_ROTATION:= Extension/ROTATION/rotation.c
-EXTENSION_SORT:= Extension/SORT/sort.c
-EXTENSION_FLIP:= Extension/FLIP/flip.c
-EXTENSION_IF:= Extension/IF/if.c
+EXTENSION_ROTATION:= Extensions/ROTATION/rotation.c
+EXTENSION_SORT:= Extensions/SORT/sort.c
+EXTENSION_FLIP:= Extensions/FLIP/flip.c
+EXTENSION_IF:= Extensions/IF/if.c
 EXTENSIONS:= $(EXTENSION_ROTATION) $(EXTENSION_SORT) $(EXTENSION_FLIP) $(EXTENSION_IF)
 FUNCTIONS:= $(INSTRCLIST) $(INSTRC) $(SET) $(PRINT) $(CREATE) $(BINARYOP) $(LOOP) $(UNARYOP) $(HELPER) $(STACK) $(POLISH) $(POLISHLIST) $(PUSHDOWN) $(EXTENSIONS)
 
@@ -80,7 +80,7 @@ interp: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
 interp_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
 		clang -g main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -g3 -DINTERP -o interp_v -lm
 ########################
-#EXTENSIONS (basically the same)
+#EXTENSIONS (basically the same as interp)
 ########################
 extension: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
 		clang main.c $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -g3 -DINTERP -o extension -lm
@@ -90,24 +90,24 @@ extension_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
 
 
 #Testing
-test_parser:  $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS)  $(FUNCTIONS)
-	clang  $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test_parser -lm
+test_parse:  $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS)  $(FUNCTIONS)
+	clang  $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test_parse -lm
 
 test_interp: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
 	clang $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o Testing/test_interp -lm
 
-test_parser_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o Testing/test_parser_v -lm
+test_parse_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
+	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o Testing/test_parse_v -lm
 
 test_interp_v: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
 	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o Testing/test_interp_v -lm
 
 clean:
-	rm -f parse parse_s parse_v interp interp_s interp_v Testing/test_v Testing/test_interp_v Testing/test_parser_v 
+	rm -f parse parse_s parse_v interp interp_s interp_v Testing/test_v Testing/test_interp_v Testing/test_parse_v extension
 
 
-tpv: test_parser_v
-	valgrind --leak-check=full --track-origins=yes Testing/test_parser_v
+tpv: test_parse_v
+	valgrind --leak-check=full --track-origins=yes Testing/test_parse_v
 
 tiv: test_interp_v
 	valgrind --leak-check=full --track-origins=yes Testing/test_interp_v

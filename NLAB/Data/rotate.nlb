@@ -1,0 +1,11 @@
+BEGIN {
+
+   READ "Data/rotate.arr" $A
+   READ "Data/rotate.arr" $B
+   SET $A := $A ROTATE-R ;
+   SET $B := $B ROTATE-L ;
+   PRINT "ROTATE-RIGHT"
+   PRINT $A
+   PRINT "ROTATE-LEFT"
+   PRINT $B
+}

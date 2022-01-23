@@ -20,7 +20,7 @@
 #define ERROR(PHRASE)                                             \
    {                                                              \
       fprintf(stderr,                                             \
-              "Fatalsssssss Error %s occurred in %s, line %d\n", PHRASE, \
+              "Fatal Error %s occurred in %s, line %d\n", PHRASE, \
               __FILE__, __LINE__);                                \
       exit(EXIT_FAILURE);                                         \
    }
@@ -36,8 +36,7 @@ struct var
    int max_loop;
    int start;
    int pos;
-   // int count;
-   // int count;
+
 };
 typedef struct var var;
 
@@ -54,23 +53,22 @@ struct prog
    var variables[26];
    int pos;
    StackNode *stacknode;
-   // int start;
-   // int count;
+ 
 };
 typedef struct prog Program;
 
-//LEVEL1
+
 bool PROG(Program *p);
 bool INSTRCLIST(Program *p);
 bool INSTRC(Program *p);
 
-//LEVEL2
+
 bool PRINT(Program *p);
 bool SET(Program *p);
 bool CREATE(Program *p);
 bool LOOP(Program *p);
 
-//LEVEL3
+
 bool POLISHLIST(Program *p);
 bool POLISH(Program *p);
 bool VARNAME(Program *p);
@@ -81,17 +79,17 @@ bool ROWS(Program *p);
 bool COLS(Program *p);
 bool INTEGER(Program *p);
 
-//LEVEL4
+
 bool PUSHDOWN(Program *p);
 bool UNARYOP(Program *p);
 bool BINARYOP(Program *p);
 void printCur(Program *p, int line);
 
-//other
+
 bool LEFTBRACKET(Program *p);
 
 void read_file(FILE *file_pointer, Program *p);
-// bool testmode();
+
 
 void allocate_space(var *v, int y , int x);
 bool set_value(Program *p, var *v);

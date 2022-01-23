@@ -1,0 +1,8 @@
+
+BEGIN {
+   SET $F := 1 ;
+   IF $F 10 B-LESS {
+       SET $F := $F 10 B-ADD ;
+   }
+   PRINT $F
+}

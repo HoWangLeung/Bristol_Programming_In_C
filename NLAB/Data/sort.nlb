@@ -1,0 +1,7 @@
+BEGIN {
+
+   READ "Data/unsorted.arr" $A
+   SET $A := $A B-SORT ;
+   PRINT $A
+  
+}

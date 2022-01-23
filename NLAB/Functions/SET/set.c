@@ -25,7 +25,6 @@ bool SET(Program *p)
     if (!POLISHLIST(p))
     {
         ERROR("NOT POLISH LIST, RETURN FALSE\n");
-        // return false;
     }
     return true;
 }

@@ -248,7 +248,6 @@ void get_interp_prog_data(Program *p, int test_number)
 }
 void test_interp_prog(Program *p)
 {
-    //printf("ASSERTIN*\n");
     get_interp_prog_data(p, 0);
     assert(PROG(p));
     assert(p->variables[0].num[0][0] == 5);
@@ -405,31 +404,75 @@ void test_interp_prog(Program *p)
     get_interp_prog_data(p, 31);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 24, 200, +);
+    int expected_result_31[5][5] = {
+        {200, 200, 200, 200},
+        {200, 201, 201, 200},
+        {200, 201, 201, 200},
+        {200, 200, 200, 200}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[24].num, expected_result_31, 4, 4);
     free_struct(p);
 
     get_interp_prog_data(p, 32);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 25, 50, +);
+    int expected_result_32[6][6] = {
+        {50, 50, 50, 50, 50, 50},
+        {50, 50, 50, 50, 50, 50},
+        {50, 50, 51, 51, 51, 50},
+        {50, 51, 51, 51, 50, 50},
+        {50, 50, 50, 50, 50, 50},
+        {50, 50, 50, 50, 50, 50}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[25].num, expected_result_32, 6, 6);
     free_struct(p);
 
     get_interp_prog_data(p, 33);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 23, 2, *);
+    int expected_result_33[5][5] = {
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 2, 2, 2, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+    };
+    ASSERT_2D_ARRAY_EQUAL(p->variables[23].num, expected_result_33, 5, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 34);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 24, 200, *);
+    int expected_result_34[4][4] = {
+        {0, 0, 0, 0},
+        {0, 200, 200, 0},
+        {0, 200, 200, 0},
+        {0, 0, 0, 0},
+    };
+    ASSERT_2D_ARRAY_EQUAL(p->variables[24].num, expected_result_34, 4, 4);
     free_struct(p);
 
     get_interp_prog_data(p, 35);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 25, 50, *);
+    int expected_result_35[6][6] = {
+        {0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0},
+        {0, 0, 50, 50, 50, 0},
+        {0, 50, 50, 50, 0, 0},
+        {0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[25].num, expected_result_35, 6, 6);
     free_struct(p);
 
     get_interp_prog_data(p, 36);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 23, 1, ==);
+    int expected_result_36[5][5] = {
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 1, 1, 1, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0}};
+    ASSERT_2D_ARRAY_EQUAL(p->variables[23].num, expected_result_36, 5, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 37);
@@ -445,6 +488,14 @@ void test_interp_prog(Program *p)
     get_interp_prog_data(p, 39);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 23, 1, <);
+    int expected_result_39[5][5] = {
+        {1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1},
+        {1, 0, 0, 0, 1},
+        {1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1},
+    };
+    ASSERT_2D_ARRAY_EQUAL(p->variables[23].num, expected_result_39, 5, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 40);
@@ -460,6 +511,14 @@ void test_interp_prog(Program *p)
     get_interp_prog_data(p, 42);
     assert(PROG(p));
     ASSERT_CALCULATION(p, 23, 1, >);
+    int expected_result_42[5][5] = {
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0},
+    };
+    ASSERT_2D_ARRAY_EQUAL(p->variables[23].num, expected_result_42, 5, 5);
     free_struct(p);
 
     get_interp_prog_data(p, 43);
@@ -611,6 +670,10 @@ void test_interp_prog(Program *p)
     assert(PROG(p));
     assert(p->variables[3].num[0][0] == 5); // IF statement
     free_struct(p);
+
+    //==========================================================
+    //===========TESTING FOR EXTENSIONS ENDS====================
+    //==========================================================
 
     free(p);
 }

@@ -1,5 +1,3 @@
 BEGIN {
-   READ "Data/unsorted.arr" $A
-   SET $A := $A FLIP ;
-   PRINT $A
+ 
 }

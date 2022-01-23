@@ -1,0 +1,242 @@
+
+4 features were implemented as the extension:
+1. If statement
+2. Rotation (Rotate the matrix clockwise/anti-clockwise by 90 degrees)
+3. Sort (Sort the matrix in ascending orders with bubble sort)
+4. Flip (Flip the matrix upside down by vertically sorting the array)
+
+//==================================================
+//===========If statement===========================
+//==================================================
+
+#Example 1
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS  {
+      SET $D := 10 ;
+   }
+   PRINT $D 
+}
+
+Example Output:
+10
+
+#Example 2 (IF ... AND ...)
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS $A B-EQUALS AND {
+      SET $D := 10 ;
+   }
+   PRINT $D 
+}
+
+Final Value of $D:
+5   <====== $A and $B are not euqal, thus value is not changed
+
+#Example 3 (IF ... OR ...)
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS $A B-EQUALS OR {
+      SET $D := 10 ;
+   }
+   PRINT $D 
+}
+
+Final Value of $D:
+10     <====== $D euqals 5 is true, thus final value is 10
+
+#Example 3 ( Nested If )
+Input:
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS {
+      IF $A 8 B-EQUALS{
+          SET $A := 10 ;
+      }
+   }
+   PRINT $D 
+}
+
+Final Value of $D:
+10     <====== Both if statements are correct, so value is set to 10 
+
+//================ HOW IT WORKS ========================
+1. If the input contains the word "IF"
+2. recursively look for PUSHDOWNS(VARNAME/INTEGER) and push to stacks
+3. pop the values for calculation if "AND" | "OR" | "{" is hit
+4. if result is true, call INSTRCLIST()
+5. if result is NOT true, skip the code block by looking for the appropriate right bracket
+
+
+
+
+//==================================================
+//=========== Rotation =============================
+//==================================================
+#Example 1: ROTATE-R (Rotate clockwise by 90 degrees)
+Data/rotate.arr
+3 3
+1 2 3
+4 5 6
+7 8 9
+
+BEGIN {
+   READ "Data/rotate.arr" $A
+   SET $A := $A ROTATE-R ;
+   PRINT $A
+}
+
+Value of $A at the end: 
+741
+852
+963
+
+#Example 2: ROTATE-R (Rotate anti-clockwise by 90 degrees)
+Data/rotate.arr
+3 3
+1 2 3
+4 5 6
+7 8 9
+
+BEGIN {
+   READ "Data/rotate.arr" $A
+   SET $A := $A ROTATE-L ;
+   PRINT $A
+}
+
+Value of $A at the end: 
+369
+258
+147
+
+//================ HOW IT WORKS ========================
+In each iteration, the 4 corner cells values are swapped 
+At the end of the iteration, 
+the pointer is incremented so another group of 4 corner cell values can perform the swap again
+repeat until y < N / 2 where n is the height of the matrix
+
+
+
+
+//==================================================
+//=========== Bubble Sort ==========================
+//==================================================
+#Example 1:
+Data/unsorted.arr
+5 5
+8 2 1 3 9
+8 6 3 4 3
+0 1 2 1 0
+2 4 6 8 1
+1 3 5 7 9
+
+BEGIN {
+   READ "Data/unsorted.arr" $A
+   SET $A := $A B-SORT ;
+   PRINT $A
+}
+
+Value of $A at the end: 
+12389
+33468
+00112
+12468
+13579
+
+
+//================ HOW IT WORKS ========================
+Compare current number to adjacent number,
+swap the position if they are in wrong order
+repeat the process above
+
+
+//==================================================
+//=========== FLIP =================================
+//==================================================
+#Example 1:
+Data/unsorted.arr
+5 5
+8 2 1 3 9
+8 6 3 4 3
+0 1 2 1 0
+2 4 6 8 1
+1 3 5 7 9
+
+BEGIN {
+   READ "Data/unsorted.arr" $A
+   SET $A := $A FLIP ;
+   PRINT $A
+}
+
+Value of $A at the end: 
+13579
+24681
+01210
+86343
+82139
+
+
+
+//================ GRAMMAR AFTER EXTENSION ========================
+<PROG> ::= BEGIN "{" <INSTRCLIST>
+
+<INSTRCLIST> ::= "}" | <INSTRC> <INSTRCLIST>
+<INSTRC> ::= <PRINT> | <SET> | <CREATE> | <LOOP> | <IF>
+
+<IF> ::= "IF" <COND> 
+<COND> ::=  <PUSHDOWN> <PUSHDOWN> <COMPARE> | <COND>
+<COMPARE> ::= <INSTRCLIST>
+
+# Print array or one-word string to stdout
+<PRINT> ::= "PRINT" <VARNAME> | "PRINT" <STRING>
+
+# One of the 26 possible (upper-case) variables
+<VARNAME> ::= $[A-Z]     % e.g. $A, $B, $Z etc.
+
+# Because of the assumption that a program is just a list of words,
+strings can't have spaces in them (for simplicity)
+<STRING> :: Double-quoted string e.g. "../../doof.arr", "Hello!" etc.
+
+<SET> ::= <VARNAME> ":=" <POLISHLIST>
+<POLISHLIST> ::= <POLISH><POLISHLIST>  | ";"
+
+<POLISH> ::= <PUSHDOWN> | <UNARYOP> | <BINARYOP> |<SORTOP>|<ROTATEOP>|<FLIPOP>
+<PUSHDOWN> ::== <VARNAME> | <INTEGER>
+
+# A non-negative integer
+<INTEGER> ::= [0-9]+    % e.g. 1, 250,  3
+
+# Pop one array, push the result.
+# U-NOT : Flip the Boolean values of an array
+# U-EIGHTCOUNT : Returns the numbers of true values around each cell in the array in its
+# Moore 8-neighbourhood (north, south, west, east, NE, NW, SW, SE).
+<UNARYOP> ::= "U-NOT" | "U-EIGHTCOUNT"
+
+# Pop 2 arrays, push the resultant array
+# If both arrays are bigger than 1x1, they must be the same size
+# If one array is a 1x1 scalar, apply this value to each cell of the other array in turn
+# B-TIMES operates on corresponding cells in turn (it is not a full matrix multiplication).
+<BINARYOP> :: "B-AND" | "B-OR" | "B-GREATER" | "B-LESS" | "B-ADD" | "B-TIMES" | "B-EQUALS"
+
+#Sort the popped array, push the result
+#Options include Bubble sort
+<SORTOP> :: "B-SORT"
+<ROTATEOP> :: "ROTATE"
+
+# Create an array full of ones, or read from a file
+<CREATE> ::= "ONES" <ROWS> <COLS> <VARNAME> | "READ" <FILENAME> <VARNAME>
+<ROW> ::= <INTEGER>
+<COL> ::= <INTEGER>
+<FILENAME> ::= <STRING>
+
+# Loop using a variable to count from 1 (!) to <= <INTEGER>
+# IF the variable
+<LOOP> ::= "LOOP" <VARNAME> <INTEGER> "{" <INSTRCLIST>
+

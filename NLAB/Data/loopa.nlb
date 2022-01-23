@@ -1,4 +1,3 @@
-
 BEGIN {
    SET $F := 1 ;
    LOOP $I 10 {

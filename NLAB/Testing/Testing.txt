@@ -5,7 +5,6 @@
 The main testing strategy is to modularize the functions into sub-folders and sub-functions
 
 The entry point of the testing is Testing/test.c
-
 Testing/PARSER_DATA: contains tests for parser
 Testing/INTERP_DATA: contains tests for interpreter
 Testing/HELPER/helper.c: contains functions that helps testing
@@ -17,17 +16,20 @@ user should compile with 1 of the 2 flags depending on the purpose of testing
 
 In the actual program, user would want the program to exit and inform the location of the failure.
 However, in test mode, user would not want the program to exit during negative cases testing.
-A macro was designed to solve this problem:
+A macro called 'ERROR()'  was implemented to solve this problem:
 When the following flag is applied, the function returns false instead of exit
-When the following flag is NOT applied, the function exits instead of returning false
+When the following flag is NOT applied, the function exits and print debug info instead of returning false
 -DTESTMODE
     
 
 Each grammar function is designed to return a boolean value so that it can be tested individually
 Each grammar function has it's folder and it's C FILENAME
-    In each of these C files, the first function is the test Data.
-    The second function calls the first function and copy the test Data
-    With the data copied, testing is then performed within the second function
+    In each of these C files, the first function contains an array of test data.
+    The second function calls the first function and copy the test Data by specifying the index of the data
+    With the data copied, assertion test can then performed within the second function
+The main advantage of this implementation is that it makes the testing highly scalable, 
+each function can be tested with dozens of test data without making the code look messy.
+
 
 
 #===========================
