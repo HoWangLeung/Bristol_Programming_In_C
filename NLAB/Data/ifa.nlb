@@ -1,8 +1,8 @@
-
 BEGIN {
-   SET $F := 1 ;
-   IF $F 10 B-LESS {
-       SET $F := $F 10 B-ADD ;
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS  {
+      SET $D := 10 ;
    }
-   PRINT $F
+   PRINT $D 
 }

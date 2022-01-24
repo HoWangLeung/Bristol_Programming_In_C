@@ -8,8 +8,15 @@
 //==================================================
 //===========If statement===========================
 //==================================================
+execution:
+./interp Data/ifa.nlb
+./interp Data/ifb.nlb
+./interp Data/ifc.nlb
+./interp Data/ifd.nlb
 
-#Example 1
+
+#Example 1 
+(Data/ifa.nlb)
 Input:
 BEGIN {
    SET $D := 5 ;
@@ -23,26 +30,28 @@ BEGIN {
 Example Output:
 10
 
-#Example 2 (IF ... AND ...)
+#Example 2 (IF ... AND ...) 
+(Data/ifb.nlb)
 Input:
 BEGIN {
    SET $D := 5 ;
    SET $A := 8 ;
-   IF $D 5 B-EQUALS $A B-EQUALS AND {
+   IF $D 5 B-EQUALS $A 8 B-EQUALS AND {
       SET $D := 10 ;
    }
-   PRINT $D 
+   PRINT $D
 }
 
 Final Value of $D:
-5   <====== $A and $B are not euqal, thus value is not changed
+10   <====== $A and $B are  euqal, thus value is  changed
 
 #Example 3 (IF ... OR ...)
+(Data/ifc.nlb)
 Input:
 BEGIN {
    SET $D := 5 ;
    SET $A := 8 ;
-   IF $D 5 B-EQUALS $A B-EQUALS OR {
+   IF $D 5 B-EQUALS $A 8 B-EQUALS OR {
       SET $D := 10 ;
    }
    PRINT $D 
@@ -51,14 +60,14 @@ BEGIN {
 Final Value of $D:
 10     <====== $D euqals 5 is true, thus final value is 10
 
-#Example 3 ( Nested If )
+#Example 4 ( Nested If )
 Input:
 BEGIN {
    SET $D := 5 ;
    SET $A := 8 ;
    IF $D 5 B-EQUALS {
-      IF $A 8 B-EQUALS{
-          SET $A := 10 ;
+      IF $A 8 B-EQUALS {
+          SET $D := 10 ;
       }
    }
    PRINT $D 
@@ -80,6 +89,11 @@ Final Value of $D:
 //==================================================
 //=========== Rotation =============================
 //==================================================
+
+Data is in 'Data/rotate.nlb'
+execution:
+./interp Data/rotate.nlb
+
 #Example 1: ROTATE-R (Rotate clockwise by 90 degrees)
 Data/rotate.arr
 3 3
@@ -128,6 +142,11 @@ repeat until y < N / 2 where n is the height of the matrix
 //==================================================
 //=========== Bubble Sort ==========================
 //==================================================
+
+Data is in 'Data/sort.nlb'
+execution:
+./interp Data/sort.nlb
+
 #Example 1:
 Data/unsorted.arr
 5 5
@@ -160,6 +179,10 @@ repeat the process above
 //==================================================
 //=========== FLIP =================================
 //==================================================
+
+execution:
+./interp Data/flip.nlb
+
 #Example 1:
 Data/unsorted.arr
 5 5

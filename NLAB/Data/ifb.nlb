@@ -1,0 +1,8 @@
+BEGIN {
+   SET $D := 5 ;
+   SET $A := 8 ;
+   IF $D 5 B-EQUALS $A 8 B-EQUALS AND {
+      SET $D := 10 ;
+   }
+   PRINT $D
+}
