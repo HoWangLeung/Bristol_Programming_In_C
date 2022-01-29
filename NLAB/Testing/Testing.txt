@@ -81,13 +81,13 @@ void test_set(Program *p)
 #=========================================
 
 1. make test_parse
-2. ./Testing/test_parse
+2. ./test_parse
 3. make test_interp
-4. ./Testing/test_interp
+4. ./test_interp
 5. make test_parse_v
-6. valgrind ./Testing/test_parse
+6. valgrind ./test_parse_v
 5. make test_interp_v
-6. valgrind ./Testing/test_interp_v
+6. valgrind ./test_interp_v
 
 
 #====================================

@@ -91,26 +91,26 @@ extension_v: $(NLABC) $(NLABH) $(GENERALS) main.c  $(FUNCTIONS)
 
 #Testing
 test_parse:  $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS)  $(FUNCTIONS)
-	clang  $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o Testing/test_parse -lm
+	clang  $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DPARSER -DTESTMODE -o test_parse -lm
 
 test_interp: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	clang $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o Testing/test_interp -lm
+	clang $(ALL_TEST) $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) $(SANI) -DINTERP -DTESTMODE -o test_interp -lm
 
 test_parse_v: $(ALL_TEST)$(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o Testing/test_parse_v -lm
+	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DPARSER -DTESTMODE -o test_parse_v -lm
 
 test_interp_v: $(ALL_TEST) $(NLABC) $(NLABH) $(GENERALS) $(FUNCTIONS)
-	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o Testing/test_interp_v -lm
+	clang $(ALL_TEST)  $(NLABC) $(GENERALC) $(FUNCTIONS) $(CFLAGS) -DINTERP -DTESTMODE -o test_interp_v -lm
 
 clean:
-	rm -f parse parse_s parse_v interp interp_s interp_v Testing/test_v Testing/test_interp_v Testing/test_parse_v extension
+	rm -f parse parse_s parse_v interp interp_s interp_v Testing/test_v Testing/test_interp_v test_parse_v extension
 
 
 tpv: test_parse_v
-	valgrind --leak-check=full --track-origins=yes Testing/test_parse_v
+	valgrind --leak-check=full --track-origins=yes test_parse_v
 
 tiv: test_interp_v
-	valgrind --leak-check=full --track-origins=yes Testing/test_interp_v
+	valgrind --leak-check=full --track-origins=yes test_interp_v
 
 pv: parse_v
 	valgrind --leak-check=full --track-origins=yes ./parse_v Data/trivial.nlb
